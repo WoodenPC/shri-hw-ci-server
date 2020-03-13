@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
+  <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+  <div class="layout">
+    <header class="header">
+      <h1 class="header__title">School CI server</h1>
+    </header>
+    <main class="layout__container">
+      <form class="form">
+        <div class="form__header">
+          <h2 class="form__title">Settings</h2>
+          <p class="form__description">Configure repository connection and synchronization settings.</p>
+        </div>
+        <div class="form__field form__field_required form__field_direction_col">
+          <label for="field-repo">GitHub repository</label>
+          <div class="input">
+            <input name="field-repo" id="field-repo" placeholder="user-name/repo-name" class="input__box" required />
+            <button type="reset" class="input__addon-after button button_type_icon button_style_flat">
+              <span class="button__icon icon icon-clear"></span>
+            </button>
+          </div>
+        </div>
+        <div class="form__field form__field_direction_col">
+          <label for="field-command">Build command</label>
+          <div class="input">
+            <input name="field-command" id="field-command" value="npm ci && npm run build" class="input__box" required />
+            <button type="reset" class="input__addon-after button button_type_icon button_style_flat">
+              <span class="button__icon icon icon-clear"></span>
+            </button>
+          </div>
+        </div>
+        <div class="form__field form__field_direction_col">
+          <label for="field-branch">Main branch</label>
+          <div class="input">
+            <input name="field-branch" id="field-branch" value="master |" class="input__box" required />
+            <button type="reset" class="input__addon-after button button_type_icon button_style_flat">
+              <span class="button__icon icon icon-clear"></span>
+            </button>
+          </div>
+        </div>
+        <div class="form__field form__field_direction_row">
+          <label for="field-timer">Synchronize every</label>
+          <div class="input input_width_short">
+            <input class="input__box" name="field-timer" id="field-timer" value="10">
+          </div>
+          <span>minutes</span>
+        </div>
+        <div class="form__footer">
+          <button type="submit" class="button button_type_default button_color_accent button_text-size_big" tabindex="1">
+            <span class="button__text">Save</span>
+          </button>
+          <button type="button" class="button button_type_default button_text-size_big" tabindex="2">
+            <span class="button__text">Cancel</span>
+          </button>
+        </div>
+      </form>
+    </main>
+    <footer class="footer">
+      <div class="footer__inner">
+        <div class="footer__menu">
+          <button class="button button_style_flat" tabindex="1">
+            <span class="button__text">Support</span>
+          </button>
+          <button class="button button_style_flat" tabindex="1">
+            <span class="button__text">Learning</span>
+          </button>
+        </div>
+        <span class="footer__author">&copy; 2020 Your Name</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
