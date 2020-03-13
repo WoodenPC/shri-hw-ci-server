@@ -3,7 +3,7 @@ const settings = require('express').Router();
 const axios = require('../../axios-instance');
 
 // получение сохраненных настроек
-settings.get('/', (_, res, next) => {
+settings.get('/', async (_, res, next) => {
   const apiResponse = await axios.get('/api/conf');
   const { data } = apiResponse;
   if (data === undefined) {
@@ -21,7 +21,7 @@ settings.get('/', (_, res, next) => {
 });
 
 // cохранение настроек
-settings.post('/', (req, res, next) => {
+settings.post('/', async (req, res, next) => {
   const { body } = req;
 
   const apiResponse = await axios.post('/api/conf', {
