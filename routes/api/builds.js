@@ -6,12 +6,18 @@ const axios = require('../../axios-instance');
 // получение списка сборок
 builds.get('/', async (req, res, next) => {
   const { params } = req;
-  const apiResponse = await axios.get('/api/build/list', {
-    params: {
-      offset: params.offset || 0,
-      limit: params.limit || 25
-    }
-  });
+  let apiResponse;
+  try {
+    apiResponse = await axios.get('/api/build/list', {
+      params: {
+        offset: params.offset || 0,
+        limit: params.limit || 25
+      }
+    });
+  } catch(e) {
+    res.status(500).send(e);
+    return next();
+  }
 
   const { data } = apiResponse;
 
@@ -35,12 +41,18 @@ builds.post('/:commitHash', async (req, res, next) => {
     return next();
   }
   const { body } = req;
-  const apiResponse = await axios.post('/api/build/request', {
-    commitHash,
-    commitMessage: body.commitMessage || '',
-    branchName: body.branchName || '',
-    authorName: body.authorName || ''
-  });
+  let apiResponse;
+  try {
+    apiResponse = await axios.post('/api/build/request', {
+      commitHash,
+      commitMessage: body.commitMessage || '',
+      branchName: body.branchName || '',
+      authorName: body.authorName || ''
+    });
+  } catch(e) {
+    res.send(500).send(e);
+    return next();
+  }
 
   const { data } = apiResponse;
   if (data === undefined) {
@@ -60,11 +72,17 @@ builds.get('/:buildId', async (req, res, next) => {
     return next();
   }
 
-  const apiResponse = await axios.get('/api/build/details', {
-    params: {
-      buildId
-    }
-  });
+  let apiResponse;
+  try {
+    apiResponse = await axios.get('/api/build/details', {
+      params: {
+        buildId
+      }
+    });
+  } catch(e) {
+    res.status(500).send(e);
+    return next();
+  }
 
   const { data } = apiResponse;
 
@@ -87,11 +105,16 @@ builds.get('/:buildId/logs', async (req, res, next) => {
     return next();
   }
 
-  await axios.get('/api/build/log', {
-    params: {
-      buildId
-    }
-  });
+  try {
+    await axios.get('/api/build/log', {
+      params: {
+        buildId
+      }
+    });
+  } catch(e) {
+    res.status(500).send(e);
+    return next();
+  }
 });
 
 

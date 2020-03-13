@@ -4,7 +4,14 @@ const axios = require('../../axios-instance');
 
 // получение сохраненных настроек
 settings.get('/', async (_, res, next) => {
-  const apiResponse = await axios.get('/api/conf');
+  let apiResponse;
+  try {
+    apiResponse = await axios.get('/api/conf');
+  } catch(e) {
+    res.status(500).send(e);
+    return next();
+  }
+
   const { data } = apiResponse;
   if (data === undefined) {
     res.status(500).send('Cannot get configuration settings from api server!');
@@ -23,17 +30,20 @@ settings.get('/', async (_, res, next) => {
 // cохранение настроек
 settings.post('/', async (req, res, next) => {
   const { body } = req;
+  let apiResponse;
+  try {
+    apiResponse = await axios.post('/api/conf', {
+      repoName: body.repoName,
+      buildCommand: body.buildCommand,
+      mainBranch: body.mainBranch,
+      period: body.period
+    });
+  } catch(e) {
+    res.status(500).send(e);
+    return next();
+  }
 
-  const apiResponse = await axios.post('/api/conf', {
-    repoName: body.repoName,
-    buildCommand: body.buildCommand,
-    mainBranch: body.mainBranch,
-    period: body.period
-  });
-
-  const { data } = apiResponse;
-
-  if (data === undefined) {
+  if (apiResponse.status !== 200) {
     res.status(500).send('Cannot save build configuration. Please check request params!');
     return next();
   }
