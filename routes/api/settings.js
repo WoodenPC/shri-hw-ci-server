@@ -39,7 +39,8 @@ settings.post('/', async (req, res, next) => {
       period: body.period
     });
   } catch(e) {
-    res.status(500).send(e);
+    console.log(e);
+    res.status(500).json(e);
     return next();
   }
 
@@ -48,7 +49,7 @@ settings.post('/', async (req, res, next) => {
     return next();
   }
 
-  res.status(200);
+  res.status(200).send('Success');
 });
 
 module.exports = settings;

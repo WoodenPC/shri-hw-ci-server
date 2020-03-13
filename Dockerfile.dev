@@ -1,4 +1,5 @@
 FROM node:alpine
+RUN apk update && apk add inotify-tools
 WORKDIR '/app'
 COPY package.json .
 RUN npm install
