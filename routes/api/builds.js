@@ -1,19 +1,15 @@
 
 const builds = require('express').Router();
 
-const axios = require('../../axios-instance');
+
+const yandexService = require('../../services/yandex-service');
 
 // получение списка сборок
 builds.get('/', async (req, res, next) => {
   const { params } = req;
   let apiResponse;
   try {
-    apiResponse = await axios.get('/api/build/list', {
-      params: {
-        offset: params.offset || 0,
-        limit: params.limit || 25
-      }
-    });
+    apiResponse = await yandexService.getBuildsList(params);
   } catch(e) {
     res.status(500).send(e);
     return next();
@@ -43,11 +39,10 @@ builds.post('/:commitHash', async (req, res, next) => {
   const { body } = req;
   let apiResponse;
   try {
-    apiResponse = await axios.post('/api/build/request', {
-      commitHash,
-      commitMessage: body.commitMessage || '',
-      branchName: body.branchName || '',
-      authorName: body.authorName || ''
+    apiResponse = await yandexService.addBuildToQueue(commitHash, {
+      commitMessage: body.commitMessage,
+      branchName: body.branchName,
+      authorName: body.authorName
     });
   } catch(e) {
     res.send(500).send(e);
@@ -74,11 +69,7 @@ builds.get('/:buildId', async (req, res, next) => {
 
   let apiResponse;
   try {
-    apiResponse = await axios.get('/api/build/details', {
-      params: {
-        buildId
-      }
-    });
+    apiResponse = await yandexService.getBuildInfo(buildId);
   } catch(e) {
     res.status(500).send(e);
     return next();
@@ -106,11 +97,7 @@ builds.get('/:buildId/logs', async (req, res, next) => {
   }
 
   try {
-    await axios.get('/api/build/log', {
-      params: {
-        buildId
-      }
-    });
+    await yandexService.getBuildLogs(buildId)
   } catch(e) {
     res.status(500).send(e);
     return next();
