@@ -17,8 +17,7 @@ class GitService {
   intervalTime = 10000; // 10c
 
   getRepoFolder = (repoName) => {
-    console.log(resolve(__dirname, '../repos', repoName));
-    return resolve(__dirname, '../repos', repoName);
+    return resolve('/home/repos', repoName);
   }
 
   clone = (url, repoName) => {
@@ -31,12 +30,11 @@ class GitService {
   
       gitCloneProcess.on('close', (code) => {
         console.log(`Git clone is finished. code=${code}`);
-        resolve(true);
+        resolve(code === 0);
       });
   
       gitCloneProcess.stderr.on('data', (data) => {
         console.error(`Git clone stderr: ${data}`);
-        reject(data);
       });
     });
   }
@@ -50,10 +48,11 @@ class GitService {
       try {
         await this.clone(this.repoUrl, this.repoName);
       } catch(e) {
-        console.log('error clone');
         console.log(e);
         return false;
       }
+    } else {
+      console.log('repo already cloned. continue');
     }
 
     //this.stop();
