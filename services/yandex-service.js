@@ -97,8 +97,6 @@ class YandexService {
       console.log('Finish build mock failed', e.toString());
       return;
     }
-
-    await this.cacheService.write(buildId, 'some test log');
   }
 }
 

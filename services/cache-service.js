@@ -29,7 +29,8 @@ class CacheService {
    * пишет лог в файл через стрим
    */
   write = async (buildId, log) => {
-    const result = await writeFileAsync(join(this.logsDirPath, buildId), log);
+    const result = await writeFileAsync(join(this.logsDirPath, buildId, '.cache'),
+      log, { recursive: true });
     return result;
   }
 
@@ -37,7 +38,11 @@ class CacheService {
    * читает лог из файла через стрим
    */
   read = async (buildId) => {
-    const result = await readFileAsync(join(this.logsDirPath, buildId));
+    const path = join(this.logsDirPath, buildId, '.cache');
+    if (!await fileExistsAsync(path)) {
+      return;
+    }
+    const result = await readFileAsync(path);
     return result;
   }
 }
