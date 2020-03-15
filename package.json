@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon L",
+    "dev": "nodemon --inspect -L --inspect-brk=0.0.0.0 index.js",
     "start": "node index.js"
   },
   "repository": {

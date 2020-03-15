@@ -56,7 +56,7 @@ class GitService {
   init = async (settings) => {
     this.repoName = settings.repoName;
     this.repoUrl = `${BASE_GITHUB_URL}/${this.repoName}`;
-
+    this.mainBranch = settings.mainBranch;
     if (!await fileExistsAsync(this.getRepoFolder(this.repoName))) {
       this.lastBuildCommitHash = null;
       try {
@@ -83,13 +83,19 @@ class GitService {
       await this.pullRepo(repoName);
       const log = await this.getLog(repoName, this.mainBranch, 1);
       const mostNewLogData = log[0];
-      const { commitHash } = mostNewLogData;
+      const { commitHash, commitMessage, authorName } = mostNewLogData;
       if (this.lastBuildCommitHash !== commitHash) {
         this.lastBuildCommitHash = commitHash;
-        await this.yandexService.addBuildToQueue({
-          commitHash,
-          branchName: this.mainBranch
-        });
+        try {
+          await this.yandexService.addBuildToQueue({
+            commitHash,
+            commitMessage,
+            authorName,
+            branchName: this.mainBranch
+          });
+        } catch(e) {
+          console.log('Cannot add build to queue after pull ', e.toString());
+        }
       }
 
     }, this.intervalTime);

@@ -46,24 +46,10 @@ builds.post('/:commitHash', async (req, res, next) => {
       branchName: body.branchName,
       authorName: body.authorName
     });
-
   } catch(e) {
     res.send(500).send(e);
     return next();
   }
-
-  const { data } = apiResponse;
-  if (data === undefined) {
-    res.send(500).send('Cannot add build to queue!');
-    return next();
-  }
-
-  await yandexService.startBuildMock(data);
-
-  setTimeout(() => {
-    console.log(data);
-    yandexService.finishBuildMock(data);
-  }, 2000);
 
   res.status(200).send('success');
 });

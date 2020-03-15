@@ -8,22 +8,41 @@ class YandexService {
     this.cacheService = cacheService;
   }
 
-  getBuildsList = (params) => {
+  getBuildsList = ({ offset, limit }) => {
     return this.webClient.get('/api/build/list', {
       params: {
-        offset: params.offset || 0,
-        limit: params.limit || 25
+        offset: offset || 0,
+        limit: limit || 25
       }
     });
   }
 
-  addBuildToQueue = ({ commitHash, commitMessage, branchName, authorName }) => {
-    return this.webClient.post('/api/build/request', {
-      commitHash,
-      commitMessage: commitMessage || '',
-      branchName: branchName || '',
-      authorName: authorName || ''
-    });
+  addBuildToQueue = async ({ commitHash, commitMessage, branchName, authorName }) => {
+    try {
+      await this.webClient.post('/api/build/request', {
+        commitHash,
+        commitMessage: commitMessage || '',
+        branchName: branchName || '',
+        authorName: authorName || ''
+      });
+
+      const apiResponse = await this.getBuildsList({ limit: 1, offset: 0 });
+  
+      const { data } = apiResponse;
+      if (data === undefined) {
+        return;
+      }
+      const buildParams = { buildId: data.data[0].id };
+      await this.startBuildMock(buildParams);
+    
+      setTimeout(() => {
+        this.finishBuildMock(buildParams);
+      }, 2000);
+
+      return data;
+    } catch(e) {
+      console.log('Cannot add build to queue', e.toString());
+    }
   }
 
   getBuildInfo = (buildId) => {
@@ -58,8 +77,8 @@ class YandexService {
   startBuildMock = async ({ buildId }) => {
     try {
       await this.webClient.post('/api/build/start', {
-        buildId: buildId,
-        dateTime: Date.now().toLocaleString()
+        buildId,
+        dateTime: new Date(Date.now())
       });
     } catch(e) {
       console.log('Start build mock failed', e.toString());
@@ -69,7 +88,7 @@ class YandexService {
   finishBuildMock = async ({ buildId }) => {
     try {
       await this.webClient.post('/api/build/finish', {
-        buildId: buildId,
+        buildId,
         duration: 1,
         success: true,
         buildLog: 'some test log'
