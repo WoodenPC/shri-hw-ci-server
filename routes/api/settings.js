@@ -9,14 +9,12 @@ settings.get('/', async (_, res, next) => {
   try {
     apiResponse = await yandexService.getSavedSettings();
   } catch(e) {
-    res.status(500).send(e);
-    return next();
+    return res.status(500).send(e);
   }
 
   const { data } = apiResponse;
   if (data === undefined) {
-    res.status(500).send('Cannot get configuration settings from api server!');
-    return next();
+    return res.status(500).send('Cannot get configuration settings from api server!');
   }
 
   res.send({
@@ -43,18 +41,15 @@ settings.post('/', async (req, res, next) => {
     apiResponse = await yandexService.saveSettings(settings);
     const cloneResult = await gitService.init(settings);
     if (cloneResult === false) {
-      res.status(500).send(`Cannot clone repository with settings ${JSON.stringify(settings)}`);
-      return next();
+      return res.status(500).send(`Cannot clone repository with settings ${JSON.stringify(settings)}`);
     }
   } catch(e) {
     console.log(e);
-    res.status(500).json(e);
-    return next();
+    return res.status(500).json(e);
   }
 
   if (apiResponse.status !== 200) {
-    res.status(500).send('Cannot save build configuration. Please check request params!');
-    return next();
+    return res.status(500).send('Cannot save build configuration. Please check request params!');
   }
 
   res.status(200).send('Success');

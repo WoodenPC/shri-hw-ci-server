@@ -12,15 +12,13 @@ builds.get('/', async (req, res, next) => {
   try {
     apiResponse = await yandexService.getBuildsList(params);
   } catch(e) {
-    res.status(500).send(e);
-    return next();
+    return res.status(500).send(e);
   }
 
   const { data } = apiResponse;
 
   if (data === undefined) {
-    res.status(500).send('Cannot get builds data from shri server!');
-    return next();
+    return res.status(500).send('Cannot get builds data from shri server!');
   }
 
   res.send({
@@ -34,8 +32,7 @@ builds.post('/:commitHash', async (req, res, next) => {
   const { commitHash } = params;
 
   if (commitHash === undefined) {
-    res.status(400).send('Commit hash param is required!');
-    return next();
+    return res.status(400).send('Commit hash param is required!');
   }
   const { body } = req;
   let apiResponse;
@@ -47,8 +44,7 @@ builds.post('/:commitHash', async (req, res, next) => {
       authorName: body.authorName
     });
   } catch(e) {
-    res.send(500).send(e);
-    return next();
+    return res.send(500).send(e);
   }
 
   res.status(200).send('success');
@@ -59,23 +55,20 @@ builds.get('/:buildId', async (req, res, next) => {
   const { params } = req;
   const { buildId } = params;
   if (buildId === undefined) {
-    res.status(400).send('buildId param is required!');
-    return next();
+    return res.status(400).send('buildId param is required!');
   }
 
   let apiResponse;
   try {
     apiResponse = await yandexService.getBuildInfo(buildId);
   } catch(e) {
-    res.status(500).send(e);
-    return next();
+    return res.status(500).send(e);
   }
 
   const { data } = apiResponse;
 
   if (data === undefined) {
-    res.status(500).send(`Cannot get build details for id = ${buildId} !`);
-    return next();
+    return res.status(500).send(`Cannot get build details for id = ${buildId} !`);
   }
 
   res.send({
@@ -85,27 +78,27 @@ builds.get('/:buildId', async (req, res, next) => {
 
 // получение логов билда (сплошной текст)
 builds.get('/:buildId/logs', async (req, res, next) => {
+  console.log('test');
   const { params } = req;
   const { buildId } = params;
   if (buildId === undefined) {
-    res.status(400).send('buildId is required');
-    return next();
+    return res.status(400).send('buildId is required');
   }
 
   try {
-    const cache = cacheService.read(buildId);
-    console.log(cache);
-    if (cache !== undefined) {
-      res.send(cache);
-      return next();
+    const isValidLogCache = await cacheService.checkLog(buildId);
+    if (isValidLogCache !== false) {
+      console.log('cache exists');
+      await cacheService.read(buildId, res);
+      return;
     }
   
     const logs = await yandexService.getBuildLogs(buildId);
     const { data } = logs;
-    res.send(data);
+    await cacheService.write(buildId, data);
+    await cacheService.read(buildId, res);
   } catch(e) {
-    res.status(500).send(e);
-    return next();
+    return res.status(500).send(e);
   }
 });
 

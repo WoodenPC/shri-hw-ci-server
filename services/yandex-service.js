@@ -57,7 +57,8 @@ class YandexService {
     return this.webClient.get('/api/build/log', {
       params: {
         buildId
-      }
+      },
+      responseType: 'stream'
     });
   }
 

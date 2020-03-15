@@ -4,7 +4,9 @@ const { spawn } = require('child_process');
 
 const { fileExistsAsync } = require('../utils/promisified');
 const yandexSvc = require('./yandex-service');
+const GitCommandBuilder = require('../utils/git-command-builder');
 const BASE_GITHUB_URL = 'https://github.com';
+
 /**
  * сервис для работы с гит репозиториями
  * умеет в клонирование и слежение за текущем репозиторием
@@ -74,6 +76,9 @@ class GitService {
     return true;
   }
 
+  /**
+   * наблюдение за клонированным репозиторием
+   */
   watch = (repoName) => {
     this.fsWatcher = watch(this.getRepoFolder(repoName), () => {
       console.log('repo updated');
@@ -81,26 +86,25 @@ class GitService {
 
     this.interval = setInterval(async () => {
       await this.pullRepo(repoName);
-      const log = await this.getLog(repoName, this.mainBranch, 1);
-      const mostNewLogData = log[0];
-      const { commitHash, commitMessage, authorName } = mostNewLogData;
-      if (this.lastBuildCommitHash !== commitHash) {
-        this.lastBuildCommitHash = commitHash;
-        try {
-          await this.yandexService.addBuildToQueue({
-            commitHash,
-            commitMessage,
-            authorName,
-            branchName: this.mainBranch
-          });
-        } catch(e) {
-          console.log('Cannot add build to queue after pull ', e.toString());
-        }
+      const log = await this.getLog(repoName, this.mainBranch, this.lastBuildCommitHash);
+      for (let i = 0; i < log.length; i++) {
+        const logData = log[i];
+        const { commitHash, commitMessage, authorName } = logData;
+        this.yandexService.addBuildToQueue({
+          commitHash,
+          commitMessage,
+          authorName,
+          branchName: this.mainBranch
+        }).catch((reason) => {
+          onsole.log('Cannot add build to queue after pull ', reason.toString());
+        });
       }
-
     }, this.intervalTime);
   }
 
+  /**
+   * остановка наблюдения за клонированным репозиторием
+   */
   stop = () => {
     if (this.fsWatcher !== null) {
       this.fsWatcher.close();
@@ -111,6 +115,9 @@ class GitService {
     }
   }
 
+  /**
+   * обновление репозитория
+   */
   pullRepo = (repoName) => {
     return new Promise((resolve, reject) => {
       const pullProcess = spawn('git', ['pull'], {
@@ -134,19 +141,27 @@ class GitService {
     });
   }
 
-  getLogCommand = (branchName, logCount = 0) => {
+  getLogCommand = (branchName, untilHash = null) => {
     const format = '--pretty=format:{ "commitHash":"%H", "authorName":"%cn", "commitMessage": "%s" }';
-    if (logCount === 0) {
-      return ['log', format, branchName];
+    const builder = new GitCommandBuilder();
+    builder.addTarget('log');
+    if (untilHash === null) {
+      builder.addCount(1);
+    } else {
+      builder.addOtherInfo(`${untilHash}...HEAD`);
     }
 
-    return ['log', `-${logCount}`, format, branchName];
+    const command = builder.addPretty(format)
+      .addBranch(branchName)
+      .build();
+
+    return command;
   }
 
-  getLog = (repoName, branchName, logCount = 0) => {
+  getLog = (repoName, branchName, untilHash = null) => {
     return new Promise((resolve, reject) => {
       let logData = '';
-      const logProcess = spawn('git', this.getLogCommand(branchName, logCount),
+      const logProcess = spawn('git', this.getLogCommand(branchName, untilHash),
         {
           cwd: this.getRepoFolder(repoName)
         }
