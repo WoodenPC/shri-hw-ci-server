@@ -4,7 +4,6 @@ const { spawn } = require('child_process');
 
 const { fileExistsAsync } = require('../utils/promisified');
 const yandexSvc = require('./yandex-service');
-const GitCommandBuilder = require('../utils/git-command-builder');
 const BASE_GITHUB_URL = 'https://github.com';
 
 /**
@@ -42,7 +41,7 @@ class GitService {
       gitCloneProcess.on('close', (code) => {
         console.log(`Git clone is finished. code=${code}`);
         if (code === 0) {
-          resolve();
+          resolve(true);
         } else {
           reject();
         }
@@ -68,6 +67,11 @@ class GitService {
         return false;
       }
     } else {
+      const log = await this.getLog(this.repoName, this.mainBranch);
+      if (log) {
+        // получаем последний коммит
+        this.lastBuildCommitHash = log[0] && log[0].commitHash;
+      }
       console.log(`repo ${this.repoName} already cloned. continue`);
     }
 
@@ -77,28 +81,48 @@ class GitService {
   }
 
   /**
+   * отправка коммитов на сборку
+   */
+  sendBuildsForNewCommits = async () => {
+    const log = await this.getLog(this.repoName, this.mainBranch, this.lastBuildCommitHash);
+    if (!log || log.length === 0) {
+        return;
+    }
+
+    // 0 - самый последний коммит
+    this.lastBuildCommitHash = log[0].commitHash;
+
+    // запускаем сборки в порядке истории коммитов
+    for (let i = log.length - 1; i >= 0; i--) {
+      const logData = log[i];
+      if (!logData) {
+        continue;
+      }
+
+      const { commitHash, commitMessage, authorName } = logData;
+      // видимо у хранилища есть таймаут, поэтому приходится дожидаться выполнения добавления
+      await this.yandexService.addBuildToQueue({
+        commitHash,
+        commitMessage,
+        authorName,
+        branchName: this.mainBranch
+      }).catch((reason) => {
+        console.log('Cannot add build to queue after pull ', reason.toString());
+      });
+    }
+  }
+
+  /**
    * наблюдение за клонированным репозиторием
    */
   watch = (repoName) => {
-    this.fsWatcher = watch(this.getRepoFolder(repoName), () => {
+    this.fsWatcher = watch(this.getRepoFolder(repoName), async () => {
       console.log('repo updated');
     });
 
     this.interval = setInterval(async () => {
       await this.pullRepo(repoName);
-      const log = await this.getLog(repoName, this.mainBranch, this.lastBuildCommitHash);
-      for (let i = 0; i < log.length; i++) {
-        const logData = log[i];
-        const { commitHash, commitMessage, authorName } = logData;
-        this.yandexService.addBuildToQueue({
-          commitHash,
-          commitMessage,
-          authorName,
-          branchName: this.mainBranch
-        }).catch((reason) => {
-          onsole.log('Cannot add build to queue after pull ', reason.toString());
-        });
-      }
+      await this.sendBuildsForNewCommits();
     }, this.intervalTime);
   }
 
@@ -141,23 +165,26 @@ class GitService {
     });
   }
 
+  /**
+   * получение команды для лога
+   */
   getLogCommand = (branchName, untilHash = null) => {
     const format = '--pretty=format:{ "commitHash":"%H", "authorName":"%cn", "commitMessage": "%s" }';
-    const builder = new GitCommandBuilder();
-    builder.addTarget('log');
+    const command = ['log']
     if (untilHash === null) {
-      builder.addCount(1);
+      command.push('-1');
     } else {
-      builder.addOtherInfo(`${untilHash}...HEAD`);
+      command.push(`${untilHash}...HEAD`);
     }
 
-    const command = builder.addPretty(format)
-      .addBranch(branchName)
-      .build();
+    command.push(format);
 
     return command;
   }
 
+  /**
+   * получение лога в отдельном процессе
+   */
   getLog = (repoName, branchName, untilHash = null) => {
     return new Promise((resolve, reject) => {
       let logData = '';
@@ -174,13 +201,22 @@ class GitService {
   
       logProcess.on('close', (code) => {
         console.log(`Git log is finished. code=${code}`);
-        if (code === 0) {
-          const dataArr = logData.split('\n');
-          const result = dataArr.map((logItem) => JSON.parse(logItem));
-          resolve(result);
-        } else {
+        if (code !== 0) {
           reject();
         }
+
+        const dataArr = logData.split('\n');
+        const result = [];
+        dataArr.forEach((logItem) =>{
+          try {
+            if (logItem !== '') {
+              result.push(JSON.parse(logItem));
+            }
+          } catch(e) {
+            console.log(e);
+          }
+        });
+        resolve(result);
       });
   
       logProcess.stderr.on('data', (data) => {

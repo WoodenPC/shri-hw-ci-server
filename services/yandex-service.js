@@ -8,6 +8,9 @@ class YandexService {
     this.cacheService = cacheService;
   }
 
+  /**
+   * получение списка сборок
+   */
   getBuildsList = ({ offset, limit }) => {
     return this.webClient.get('/api/build/list', {
       params: {
@@ -17,6 +20,9 @@ class YandexService {
     });
   }
 
+  /**
+   * добавление сборки в очередь
+   */
   addBuildToQueue = async ({ commitHash, commitMessage, branchName, authorName }) => {
     try {
       await this.webClient.post('/api/build/request', {
@@ -45,6 +51,9 @@ class YandexService {
     }
   }
 
+  /**
+   * получение инфо о сборке
+   */
   getBuildInfo = (buildId) => {
     return this.webClient.get('/api/build/details', {
       params: {
@@ -53,6 +62,9 @@ class YandexService {
     });
   }
 
+  /**
+   * получение логов сборки
+   */
   getBuildLogs = (buildId) => {
     return this.webClient.get('/api/build/log', {
       params: {
@@ -62,10 +74,16 @@ class YandexService {
     });
   }
 
+  /**
+   * получение сохраненных настроек
+   */
   getSavedSettings = () => {
     return this.webClient.get('/api/conf');
   }
 
+  /**
+   * сохранение настроек в хранилище
+   */
   saveSettings = ({ repoName, buildCommand, mainBranch, period }) => {
     return this.webClient.post('/api/conf', {
       repoName: repoName,
@@ -75,6 +93,9 @@ class YandexService {
     });
   }
 
+  /**
+   * имитация старта сборки
+   */
   startBuildMock = async ({ buildId }) => {
     try {
       await this.webClient.post('/api/build/start', {
@@ -86,6 +107,9 @@ class YandexService {
     }
   }
 
+  /**
+   * имитация завершения сборки
+   */
   finishBuildMock = async ({ buildId }) => {
     try {
       await this.webClient.post('/api/build/finish', {
