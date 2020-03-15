@@ -1,8 +1,11 @@
+
 const axios = require('../axios-instance');
+const cacheSvc = require('./cache-service');
 
 class YandexService {
-  constructor(webClient) {
+  constructor(webClient, cacheService) {
     this.webClient = webClient;
+    this.cacheService = cacheService;
   }
 
   getBuildsList = (params) => {
@@ -14,12 +17,12 @@ class YandexService {
     });
   }
 
-  addBuildToQueue = (commitHash, params) => {
+  addBuildToQueue = ({ commitHash, commitMessage, branchName, authorName }) => {
     return this.webClient.post('/api/build/request', {
       commitHash,
-      commitMessage: params.commitMessage || '',
-      branchName: params.branchName || '',
-      authorName: params.authorName || ''
+      commitMessage: commitMessage || '',
+      branchName: branchName || '',
+      authorName: authorName || ''
     });
   }
 
@@ -43,15 +46,42 @@ class YandexService {
     return this.webClient.get('/api/conf');
   }
 
-  saveSettings = (params) => {
+  saveSettings = ({ repoName, buildCommand, mainBranch, period }) => {
     return this.webClient.post('/api/conf', {
-      repoName: params.repoName,
-      buildCommand: params.buildCommand,
-      mainBranch: params.mainBranch,
-      period: params.period
+      repoName: repoName,
+      buildCommand: buildCommand,
+      mainBranch: mainBranch,
+      period: period
     });
+  }
+
+  startBuildMock = async ({ buildId }) => {
+    try {
+      await this.webClient.post('/api/build/start', {
+        buildId: buildId,
+        dateTime: Date.now().toLocaleString()
+      });
+    } catch(e) {
+      console.log('Start build mock failed', e.toString());
+    }
+  }
+
+  finishBuildMock = async ({ buildId }) => {
+    try {
+      await this.webClient.post('/api/build/finish', {
+        buildId: buildId,
+        duration: 1,
+        success: true,
+        buildLog: 'some test log'
+      });
+    } catch(e) {
+      console.log('Finish build mock failed', e.toString());
+      return;
+    }
+
+    await this.cacheService.write(buildId, 'some test log');
   }
 }
 
-const instance = new YandexService(axios);
+const instance = new YandexService(axios, cacheSvc);
 module.exports = instance;

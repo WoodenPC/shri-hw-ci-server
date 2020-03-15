@@ -6,3 +6,4 @@ const fs = require('fs');
 exports.fileExistsAsync = promisify(fs.exists);
 exports.readFileAsync = promisify(fs.readFile);
 exports.writeFileAsync = promisify(fs.writeFile);
+exports.getStatAsync = promisify(fs.stat);

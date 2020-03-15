@@ -40,11 +40,13 @@ builds.post('/:commitHash', async (req, res, next) => {
   const { body } = req;
   let apiResponse;
   try {
-    apiResponse = await yandexService.addBuildToQueue(commitHash, {
+    apiResponse = await yandexService.addBuildToQueue({
+      commitHash,
       commitMessage: body.commitMessage,
       branchName: body.branchName,
       authorName: body.authorName
     });
+
   } catch(e) {
     res.send(500).send(e);
     return next();
@@ -55,6 +57,13 @@ builds.post('/:commitHash', async (req, res, next) => {
     res.send(500).send('Cannot add build to queue!');
     return next();
   }
+
+  await yandexService.startBuildMock(data);
+
+  setTimeout(() => {
+    console.log(data);
+    yandexService.finishBuildMock(data);
+  }, 2000);
 
   res.status(200).send('success');
 });
@@ -98,7 +107,16 @@ builds.get('/:buildId/logs', async (req, res, next) => {
   }
 
   try {
-    await yandexService.getBuildLogs(buildId)
+    const cache = cacheService.read(buildId);
+    console.log(cache);
+    if (cache !== undefined) {
+      res.send(cache);
+      return next();
+    }
+  
+    const logs = await yandexService.getBuildLogs(buildId);
+    const { data } = logs;
+    res.send(data);
   } catch(e) {
     res.status(500).send(e);
     return next();

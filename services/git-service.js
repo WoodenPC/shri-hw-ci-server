@@ -1,8 +1,9 @@
 const { resolve } = require('path');
 const { watch } = require('fs');
 const { spawn } = require('child_process');
-const { fileExistsAsync } = require('../utils/promisified');
 
+const { fileExistsAsync } = require('../utils/promisified');
+const yandexSvc = require('./yandex-service');
 const BASE_GITHUB_URL = 'https://github.com';
 /**
  * сервис для работы с гит репозиториями
@@ -17,6 +18,12 @@ class GitService {
   interval = null;
   fsWatcher = null;
   intervalTime = 10000; // 10c
+  lastBuildCommitHash = null;
+  yandexService = null;
+
+  constructor(yandexService) {
+    this.yandexService = yandexService;
+  }
 
   getRepoFolder = (repoName) => {
     return resolve('/home/repos', repoName);
@@ -51,6 +58,7 @@ class GitService {
     this.repoUrl = `${BASE_GITHUB_URL}/${this.repoName}`;
 
     if (!await fileExistsAsync(this.getRepoFolder(this.repoName))) {
+      this.lastBuildCommitHash = null;
       try {
         await this.clone(this.repoUrl, this.repoName);
       } catch(e) {
@@ -73,7 +81,16 @@ class GitService {
 
     this.interval = setInterval(async () => {
       await this.pullRepo(repoName);
-      const fullLog = await this.getLog(repoName, 'master');
+      const log = await this.getLog(repoName, this.mainBranch, 1);
+      const mostNewLogData = log[0];
+      const { commitHash } = mostNewLogData;
+      if (this.lastBuildCommitHash !== commitHash) {
+        this.lastBuildCommitHash = commitHash;
+        await this.yandexService.addBuildToQueue({
+          commitHash,
+          branchName: this.mainBranch
+        });
+      }
 
     }, this.intervalTime);
   }
@@ -111,12 +128,19 @@ class GitService {
     });
   }
 
-  getLog = (repoName, branchName) => {
+  getLogCommand = (branchName, logCount = 0) => {
+    const format = '--pretty=format:{ "commitHash":"%H", "authorName":"%cn", "commitMessage": "%s" }';
+    if (logCount === 0) {
+      return ['log', format, branchName];
+    }
+
+    return ['log', `-${logCount}`, format, branchName];
+  }
+
+  getLog = (repoName, branchName, logCount = 0) => {
     return new Promise((resolve, reject) => {
       let logData = '';
-      const logProcess = spawn('git', ['log',
-        '--pretty=format:{ "commitHash":"%H", "authorName":"%cn", "commitMessage": "%s" }',
-        branchName],
+      const logProcess = spawn('git', this.getLogCommand(branchName, logCount),
         {
           cwd: this.getRepoFolder(repoName)
         }
@@ -145,6 +169,6 @@ class GitService {
   }
 }
 
-const instance = new GitService();
+const instance = new GitService(yandexSvc);
 
 module.exports = instance;
