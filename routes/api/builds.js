@@ -3,6 +3,7 @@ const builds = require('express').Router();
 
 
 const yandexService = require('../../services/yandex-service');
+const cacheService = require('../../services/cache-service');
 
 // получение списка сборок
 builds.get('/', async (req, res, next) => {
@@ -55,7 +56,7 @@ builds.post('/:commitHash', async (req, res, next) => {
     return next();
   }
 
-  res.status(200);
+  res.status(200).send('success');
 });
 
 // получение информации о конкретной сборке
@@ -92,7 +93,7 @@ builds.get('/:buildId/logs', async (req, res, next) => {
   const { params } = req;
   const { buildId } = params;
   if (buildId === undefined) {
-    res.status(400);
+    res.status(400).send('buildId is required');
     return next();
   }
 
@@ -103,6 +104,5 @@ builds.get('/:buildId/logs', async (req, res, next) => {
     return next();
   }
 });
-
 
 module.exports = builds;
