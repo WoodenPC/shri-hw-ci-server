@@ -1,17 +1,15 @@
-
 const builds = require('express').Router();
-
 
 const yandexService = require('../../services/yandex-service');
 const cacheService = require('../../services/cache-service');
 
 // получение списка сборок
-builds.get('/', async (req, res, next) => {
+builds.get('/', async (req, res) => {
   const { params } = req;
   let apiResponse;
   try {
     apiResponse = await yandexService.getBuildsList(params);
-  } catch(e) {
+  } catch (e) {
     return res.status(500).send(e);
   }
 
@@ -22,12 +20,12 @@ builds.get('/', async (req, res, next) => {
   }
 
   res.send({
-    data: data.data
+    data: data.data,
   });
 });
 
 // добавление сборки в очередь
-builds.post('/:commitHash', async (req, res, next) => {
+builds.post('/:commitHash', async (req, res) => {
   const { params } = req;
   const { commitHash } = params;
 
@@ -41,9 +39,9 @@ builds.post('/:commitHash', async (req, res, next) => {
       commitHash,
       commitMessage: body.commitMessage,
       branchName: body.branchName,
-      authorName: body.authorName
+      authorName: body.authorName,
     });
-  } catch(e) {
+  } catch (e) {
     return res.send(500).send(e);
   }
 
@@ -51,7 +49,7 @@ builds.post('/:commitHash', async (req, res, next) => {
 });
 
 // получение информации о конкретной сборке
-builds.get('/:buildId', async (req, res, next) => {
+builds.get('/:buildId', async (req, res) => {
   const { params } = req;
   const { buildId } = params;
   if (buildId === undefined) {
@@ -61,7 +59,7 @@ builds.get('/:buildId', async (req, res, next) => {
   let apiResponse;
   try {
     apiResponse = await yandexService.getBuildInfo(buildId);
-  } catch(e) {
+  } catch (e) {
     return res.status(500).send(e);
   }
 
@@ -72,13 +70,12 @@ builds.get('/:buildId', async (req, res, next) => {
   }
 
   res.send({
-    data: data.data
-  })
+    data: data.data,
+  });
 });
 
 // получение логов билда (сплошной текст)
-builds.get('/:buildId/logs', async (req, res, next) => {
-  console.log('test');
+builds.get('/:buildId/logs', async (req, res) => {
   const { params } = req;
   const { buildId } = params;
   if (buildId === undefined) {
@@ -92,12 +89,15 @@ builds.get('/:buildId/logs', async (req, res, next) => {
       await cacheService.read(buildId, res);
       return;
     }
-  
+
     const logs = await yandexService.getBuildLogs(buildId);
+    if (logs.status !== 200) {
+      return res.send(500);
+    }
     const { data } = logs;
     await cacheService.write(buildId, data);
     await cacheService.read(buildId, res);
-  } catch(e) {
+  } catch (e) {
     return res.status(500).send(e);
   }
 });

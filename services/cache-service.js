@@ -1,51 +1,69 @@
-const { resolve, join } = require('path');
+const { join } = require('path');
 const { createReadStream, createWriteStream } = require('fs');
 const { differenceInMinutes } = require('date-fns');
-const { getStatAsync,
-  fileExistsAsync,
-  mkDirAsync,
-} = require('../utils/promisified');
+const { getStatAsync, fileExistsAsync, mkDirAsync } = require('../utils/promisified');
 
+/**
+ * сервис кэширования логов
+ */
 class CacheService {
   logsDirPath = '';
-  cacheLifetime = 1; // 1minute
+  cacheLifetime = 1; // 1 minute
 
   constructor(logsDirPath) {
     this.logsDirPath = logsDirPath;
+    if (process.env.CACHE_LIFETIME_MINUTES) {
+      try {
+        this.cacheLifetime = parseInt(process.env.CACHE_LIFETIME_MINUTES, 10);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      this.cacheLifetime = 1;
+    }
+
+    console.log('CACHE lifetime = ', this.cacheLifetime);
   }
 
-  getBuildCachePath = (buildId) => {
+  /** возвращает путь до файла с кэшем лога */
+  getBuildCacheLogPath = (buildId) => {
     return join(this.logsDirPath, buildId, 'log.cache');
-  }
+  };
 
+  /** возвращает путь до папки кэша сборки */
   getBuildCacheDir = (buildId) => {
     return join(this.logsDirPath, buildId);
-  }
+  };
 
   /**
    * чекает лог на валидность по времени создании файла
    */
   checkLog = async (buildId) => {
-    const path = this.getBuildCachePath(buildId);
-    if (!await fileExistsAsync(path)) {
-      console.log('cache file not exists');
+    const path = this.getBuildCacheLogPath(buildId);
+    try {
+      if (!(await fileExistsAsync(path))) {
+        console.log('cache file not exists');
+        return false;
+      }
+
+      const stat = await getStatAsync(path);
+      const { mtime } = stat;
+      const now = Date.now();
+      return differenceInMinutes(now, mtime) <= this.cacheLifetime;
+    } catch (e) {
+      console.log(e);
       return false;
     }
-
-    const stat = await getStatAsync(path);
-    const { mtime } = stat;
-    const now = Date.now();
-    return differenceInMinutes(now, mtime) <= this.cacheLifetime; 
-  }
+  };
 
   /**
    * пишет лог в файл через стрим
    */
   write = (buildId, stream) => {
     return new Promise(async (resolve, reject) => {
-      const path = this.getBuildCachePath(buildId);
+      const path = this.getBuildCacheLogPath(buildId);
       const dir = this.getBuildCacheDir(buildId);
-      if (!await fileExistsAsync(dir)) {
+      if (!(await fileExistsAsync(dir))) {
         await mkDirAsync(dir, { recursive: true });
       }
 
@@ -58,19 +76,19 @@ class CacheService {
       });
 
       writeStream.on('error', (err) => {
-        reject(`write cache error ${err.toString()}`)
+        reject(`write cache error ${err.toString()}`);
       });
     });
-  }
+  };
 
   /**
    * читает лог из файла через стрим
    */
-  read = async (buildId, stream) => {
+  read = (buildId, stream) => {
     return new Promise(async (resolve, reject) => {
-      const path = this.getBuildCachePath(buildId);
+      const path = this.getBuildCacheLogPath(buildId);
 
-      if (!await fileExistsAsync(path)) {
+      if (!(await fileExistsAsync(path))) {
         resolve(false);
       }
 
@@ -83,11 +101,10 @@ class CacheService {
         reject('read cache error ', err.toString());
       });
     });
-  }
+  };
 }
 
-const dir = '/home/logsCache';
+const dir = process.env.CACHE_DIR || '/home/logsCache';
 
 const instance = new CacheService(dir);
-
 module.exports = instance;

@@ -4,11 +4,11 @@ const yandexService = require('../../services/yandex-service');
 const gitService = require('../../services/git-service');
 
 // получение сохраненных настроек
-settings.get('/', async (_, res, next) => {
+settings.get('/', async (_, res) => {
   let apiResponse;
   try {
     apiResponse = await yandexService.getSavedSettings();
-  } catch(e) {
+  } catch (e) {
     return res.status(500).send(e);
   }
 
@@ -17,17 +17,19 @@ settings.get('/', async (_, res, next) => {
     return res.status(500).send('Cannot get configuration settings from api server!');
   }
 
-  res.send({
-    id: data.id,
-    repoName: data.repoName,
-    buildCommand: data.buildCommand,
-    mainBranch: data.mainBranch,
-    period: data.period
+  const settingsData = data.data;
+
+  res.status(200).send({
+    id: settingsData.id,
+    repoName: settingsData.repoName,
+    buildCommand: settingsData.buildCommand,
+    mainBranch: settingsData.mainBranch,
+    period: settingsData.period,
   });
 });
 
 // cохранение настроек
-settings.post('/', async (req, res, next) => {
+settings.post('/', async (req, res) => {
   const { body } = req;
   let apiResponse;
   try {
@@ -35,7 +37,7 @@ settings.post('/', async (req, res, next) => {
       repoName: body.repoName,
       buildCommand: body.buildCommand,
       mainBranch: body.mainBranch,
-      period: body.period
+      period: body.period,
     };
 
     apiResponse = await yandexService.saveSettings(settings);
@@ -43,7 +45,7 @@ settings.post('/', async (req, res, next) => {
     if (cloneResult === false) {
       return res.status(500).send(`Cannot clone repository with settings ${JSON.stringify(settings)}`);
     }
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     return res.status(500).json(e);
   }

@@ -4,6 +4,7 @@ const { spawn } = require('child_process');
 
 const { fileExistsAsync } = require('../utils/promisified');
 const yandexSvc = require('./yandex-service');
+
 const BASE_GITHUB_URL = 'https://github.com';
 
 /**
@@ -27,9 +28,13 @@ class GitService {
   }
 
   getRepoFolder = (repoName) => {
-    return resolve('/home/repos', repoName);
-  }
+    const repoFolder = process.env.REPOS_DIR || '/home/repos';
+    return resolve(repoFolder, repoName);
+  };
 
+  /**
+   * клонирование репозитория
+   */
   clone = (url, repoName) => {
     return new Promise((resolve, reject) => {
       const repoPath = this.getRepoFolder(repoName);
@@ -37,32 +42,32 @@ class GitService {
       gitCloneProcess.stdout.on('data', (data) => {
         console.log(`Git clone stdout: ${data}`);
       });
-  
+
       gitCloneProcess.on('close', (code) => {
         console.log(`Git clone is finished. code=${code}`);
         if (code === 0) {
           resolve(true);
         } else {
-          reject();
+          reject(`Cannot clone. Finished this code ${code}`);
         }
       });
-  
+
       gitCloneProcess.stderr.on('data', (data) => {
         console.error(`Git clone stderr: ${data.toString()}`);
       });
     });
-  }
+  };
 
   // инициализация севиса
   init = async (settings) => {
     this.repoName = settings.repoName;
     this.repoUrl = `${BASE_GITHUB_URL}/${this.repoName}`;
     this.mainBranch = settings.mainBranch;
-    if (!await fileExistsAsync(this.getRepoFolder(this.repoName))) {
+    if (!(await fileExistsAsync(this.getRepoFolder(this.repoName)))) {
       this.lastBuildCommitHash = null;
       try {
         await this.clone(this.repoUrl, this.repoName);
-      } catch(e) {
+      } catch (e) {
         console.log(e);
         return false;
       }
@@ -78,15 +83,22 @@ class GitService {
     this.stop();
     this.watch(this.repoName);
     return true;
-  }
+  };
 
   /**
    * отправка коммитов на сборку
    */
   sendBuildsForNewCommits = async () => {
-    const log = await this.getLog(this.repoName, this.mainBranch, this.lastBuildCommitHash);
+    let log;
+    try {
+      log = await this.getLog(this.repoName, this.mainBranch, this.lastBuildCommitHash);
+    } catch(e) {
+      console.log('cannot get log ', e);
+      return;
+    }
+
     if (!log || log.length === 0) {
-        return;
+      return;
     }
 
     // 0 - самый последний коммит
@@ -101,16 +113,18 @@ class GitService {
 
       const { commitHash, commitMessage, authorName } = logData;
       // видимо у хранилища есть таймаут, поэтому приходится дожидаться выполнения добавления
-      await this.yandexService.addBuildToQueue({
-        commitHash,
-        commitMessage,
-        authorName,
-        branchName: this.mainBranch
-      }).catch((reason) => {
-        console.log('Cannot add build to queue after pull ', reason.toString());
-      });
+      await this.yandexService
+        .addBuildToQueue({
+          commitHash,
+          commitMessage,
+          authorName,
+          branchName: this.mainBranch,
+        })
+        .catch((reason) => {
+          console.log('Cannot add build to queue after pull ', reason.toString());
+        });
     }
-  }
+  };
 
   /**
    * наблюдение за клонированным репозиторием
@@ -121,10 +135,15 @@ class GitService {
     });
 
     this.interval = setInterval(async () => {
-      await this.pullRepo(repoName);
-      await this.sendBuildsForNewCommits();
+      try {
+        await this.pullRepo(repoName);
+        await this.sendBuildsForNewCommits();
+      } catch(e) {
+        console.log('Check repo error', e);
+        this.stop();
+      }
     }, this.intervalTime);
-  }
+  };
 
   /**
    * остановка наблюдения за клонированным репозиторием
@@ -137,7 +156,7 @@ class GitService {
     if (this.interval !== null) {
       clearInterval(this.interval);
     }
-  }
+  };
 
   /**
    * обновление репозитория
@@ -145,7 +164,7 @@ class GitService {
   pullRepo = (repoName) => {
     return new Promise((resolve, reject) => {
       const pullProcess = spawn('git', ['pull'], {
-        cwd: this.getRepoFolder(repoName)
+        cwd: this.getRepoFolder(repoName),
       });
       pullProcess.stdout.on('data', (data) => {
         console.log(`Git pull stdout: ${data}`);
@@ -163,14 +182,14 @@ class GitService {
         console.error(`Git pull stderr: ${data}`);
       });
     });
-  }
+  };
 
   /**
    * получение команды для лога
    */
   getLogCommand = (branchName, untilHash = null) => {
     const format = '--pretty=format:{ "commitHash":"%H", "authorName":"%cn", "commitMessage": "%s" }';
-    const command = ['log']
+    const command = ['log'];
     if (untilHash === null) {
       command.push('-1');
     } else {
@@ -180,7 +199,7 @@ class GitService {
     command.push(format);
 
     return command;
-  }
+  };
 
   /**
    * получение лога в отдельном процессе
@@ -188,17 +207,15 @@ class GitService {
   getLog = (repoName, branchName, untilHash = null) => {
     return new Promise((resolve, reject) => {
       let logData = '';
-      const logProcess = spawn('git', this.getLogCommand(branchName, untilHash),
-        {
-          cwd: this.getRepoFolder(repoName)
-        }
-      );
+      const logProcess = spawn('git', this.getLogCommand(branchName, untilHash), {
+        cwd: this.getRepoFolder(repoName),
+      });
 
       logProcess.stdout.on('data', (data) => {
         const str = data.toString();
         logData += str;
       });
-  
+
       logProcess.on('close', (code) => {
         console.log(`Git log is finished. code=${code}`);
         if (code !== 0) {
@@ -207,23 +224,23 @@ class GitService {
 
         const dataArr = logData.split('\n');
         const result = [];
-        dataArr.forEach((logItem) =>{
+        dataArr.forEach((logItem) => {
           try {
             if (logItem !== '') {
               result.push(JSON.parse(logItem));
             }
-          } catch(e) {
+          } catch (e) {
             console.log(e);
           }
         });
         resolve(result);
       });
-  
+
       logProcess.stderr.on('data', (data) => {
         console.error(`Git log stderr: ${data}`);
       });
     });
-  }
+  };
 }
 
 const instance = new GitService(yandexSvc);
