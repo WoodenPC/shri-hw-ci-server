@@ -39,7 +39,16 @@ class BuildHistoryPage extends React.PureComponent {
     }
   };
 
-  runBuild = () => {};
+  runBuild = async (commitHash) => {
+    const { runBuildAsync } = this.props;
+    try {
+      await runBuildAsync(commitHash);
+    } finally {
+      this.setState({
+        modalVisible: false,
+      });
+    }
+  };
 
   openModal = () => {
     this.setState({ modalVisible: true });
@@ -64,11 +73,11 @@ class BuildHistoryPage extends React.PureComponent {
   };
 
   render() {
-    const { builds } = this.props;
+    const { builds, repoName } = this.props;
     const { modalVisible, isLoading } = this.state;
     return (
       <div className={classes()}>
-        <Header title='philip1967/my-awesome-repo' color='black'>
+        <Header title={repoName} color='black'>
           <Button
             text='Run build'
             icon={<Icon type='play' />}
@@ -130,17 +139,20 @@ class BuildHistoryPage extends React.PureComponent {
 
 const mapStateToProps = (store) => {
   const { builds, offset, limit, buildsLoaded } = store.buildHistory;
+  const { repoName } = store.settings;
   return {
     builds,
     offset,
     limit,
     buildsLoaded,
+    repoName,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     loadBuildsAsync: actionCreators.loadBuildsAsync(dispatch),
+    runBuildAsync: actionCreators.runBuildAsync(dispatch),
   };
 };
 

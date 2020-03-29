@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { Modal } from 'components/Modal';
@@ -7,6 +7,18 @@ import { Input } from 'components/Input';
 import { Button } from 'components/Button';
 
 const RunBuildModal = memo(({ visible, onRunBuild, onCancel }) => {
+  const [hash, setHash] = useState('');
+
+  const onChangeHash = (event) => {
+    setHash(event.target.value);
+  };
+
+  const onSubmit = () => {
+    if (onRunBuild) {
+      onRunBuild(hash);
+    }
+  };
+
   return (
     <Modal visible={visible}>
       <Form>
@@ -16,7 +28,11 @@ const RunBuildModal = memo(({ visible, onRunBuild, onCancel }) => {
         />
         <Form.Fields>
           <Form.Field>
-            <Input placeholder='Commit hash' />
+            <Input
+              placeholder='Commit hash'
+              value={hash}
+              onChange={onChangeHash}
+            />
           </Form.Field>
         </Form.Fields>
         <Form.Footer>
@@ -24,7 +40,7 @@ const RunBuildModal = memo(({ visible, onRunBuild, onCancel }) => {
             text='Run build'
             color='primary'
             size='big'
-            onClick={onRunBuild}
+            onClick={onSubmit}
           />
           <Button
             text='Cancel'

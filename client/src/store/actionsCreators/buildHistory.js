@@ -55,3 +55,17 @@ export const loadBuildsAsync = (dispatch) => {
     }
   };
 };
+
+export const runBuildAsync = (dispatch) => {
+  return async (commitHash) => {
+    try {
+      dispatch({ type: actionTypes.RUN_BUILD });
+      await axios.post(`/api/builds/${commitHash}`);
+      // не меняем стейт, т.к. наверное предполагается
+      // что юзер должен обновить страничку и список билдов
+      // загрузится заного
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};

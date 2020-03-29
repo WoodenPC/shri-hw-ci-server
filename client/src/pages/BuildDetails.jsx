@@ -17,7 +17,7 @@ const classes = cn('Page');
 
 class BuildDetailsPage extends React.PureComponent {
   state = {
-    isLoading: false,
+    isLoading: true,
     id: this.props.location.buildId,
     status: 'waiting',
     buildNumber: 0,
@@ -43,7 +43,8 @@ class BuildDetailsPage extends React.PureComponent {
       commitHash,
     } = this.state;
     try {
-      const newId = await runRebuildAsync({
+      this.setState({ isLoading: true });
+      const data = await runRebuildAsync({
         id,
         branchName,
         authorName,
@@ -51,29 +52,41 @@ class BuildDetailsPage extends React.PureComponent {
         commitHash,
       });
 
-      history.replace(`/buildDetails/${newId}`, {
-        buildId: newId,
+      history.push(`/buildDetails/${data[0].id}`, {
+        buildId: data[0].id,
       });
     } finally {
-      this.setState({ modalVisible: false });
+      this.setState({ modalVisible: false, isLoading: false });
     }
   };
 
-  async componentDidMount() {
-    const { location, loadBuildDetailsAsync, loadBuildLogsAsync } = this.props;
-    const { state } = location;
-    console.log(state);
+  loadBuildInfo = async () => {
+    const { match, loadBuildDetailsAsync, loadBuildLogsAsync } = this.props;
+
+    const { params } = match;
     try {
-      const detailsPromise = loadBuildDetailsAsync(state.buildId);
-      const logsPromise = loadBuildLogsAsync(state.buildId);
+      const detailsPromise = loadBuildDetailsAsync(params.buildId);
+      const logsPromise = loadBuildLogsAsync(params.buildId);
       const [details, logs] = await Promise.all([detailsPromise, logsPromise]);
       this.setState({ logs, ...details });
     } finally {
-      this.setState({ isLoading: true });
+      this.setState({ isLoading: false });
+    }
+  };
+
+  componentDidMount() {
+    this.loadBuildInfo();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      console.log('reload');
+      this.loadBuildInfo();
     }
   }
 
   render() {
+    const { repoName } = this.props;
     const {
       id,
       status,
@@ -89,7 +102,7 @@ class BuildDetailsPage extends React.PureComponent {
     } = this.state;
     return (
       <div className={classes()}>
-        <Header title='philip1967/my-awesome-repo' color='black'>
+        <Header title={repoName} color='black'>
           <Button
             text='Rebuild'
             icon={<Icon type='rebuild' />}
@@ -104,6 +117,8 @@ class BuildDetailsPage extends React.PureComponent {
         </Header>
         <main className={classes('Main')}>
           {isLoading ? (
+            <Spinner />
+          ) : (
             <>
               <Card
                 id={id}
@@ -118,8 +133,6 @@ class BuildDetailsPage extends React.PureComponent {
               />
               <LogDetails log={logs} />
             </>
-          ) : (
-            <Spinner />
           )}
         </main>
         <Footer />
@@ -127,6 +140,13 @@ class BuildDetailsPage extends React.PureComponent {
     );
   }
 }
+
+const mapStateToProps = (store) => {
+  const { settings } = store;
+  return {
+    repoName: settings.repoName,
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -137,6 +157,9 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const PageWithRouter = withRouter(BuildDetailsPage);
-const ConnectedPage = connect(null, mapDispatchToProps)(PageWithRouter);
+const ConnectedPage = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PageWithRouter);
 
 export { ConnectedPage as BuildDetailsPage };

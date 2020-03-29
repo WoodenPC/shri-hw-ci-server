@@ -1,7 +1,6 @@
 import * as actionTypes from 'store/actionTypes/settings';
 
 const initialState = {
-  isLoaded: false,
   repoName: '',
   buildCommand: '',
   mainBranch: '',

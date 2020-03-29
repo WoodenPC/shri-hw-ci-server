@@ -72,7 +72,7 @@ class GitService {
         return false;
       }
     } else {
-      const log = await this.getLog(this.repoName, this.mainBranch);
+      const log = await this.getLog(this.repoName, this.getLogCommand(this.mainBranch));
       if (log) {
         // получаем последний коммит
         this.lastBuildCommitHash = log[0] && log[0].commitHash;
@@ -91,8 +91,11 @@ class GitService {
   sendBuildsForNewCommits = async () => {
     let log;
     try {
-      log = await this.getLog(this.repoName, this.mainBranch, this.lastBuildCommitHash);
-    } catch(e) {
+      log = await this.getLog(
+        this.repoName,
+        this.getLogCommand(this.mainBranch, { untilHash: this.lastBuildCommitHash }),
+      );
+    } catch (e) {
       console.log('cannot get log ', e);
       return;
     }
@@ -138,7 +141,7 @@ class GitService {
       try {
         await this.pullRepo(repoName);
         await this.sendBuildsForNewCommits();
-      } catch(e) {
+      } catch (e) {
         console.log('Check repo error', e);
         this.stop();
       }
@@ -187,27 +190,51 @@ class GitService {
   /**
    * получение команды для лога
    */
-  getLogCommand = (branchName, untilHash = null) => {
+  getLogCommand = (branchName, params = {}) => {
     const format = '--pretty=format:{ "commitHash":"%H", "authorName":"%cn", "commitMessage": "%s" }';
     const command = ['log'];
-    if (untilHash === null) {
+    if (params.untilHash === null) {
       command.push('-1');
     } else {
       command.push(`${untilHash}...HEAD`);
     }
 
     command.push(format);
+    command.push(branchName);
 
     return command;
+  };
+
+  getShowCommand = (commitHash) => {
+    const format = '--pretty=format:{ "commitHash":"%H", "authorName":"%cn", "commitMessage": "%s" }';
+    const command = ['show', '--quiet'];
+
+    command.push(format);
+    command.push(commitHash);
+
+    return command;
+  };
+
+  getCommitInfo = async (commitHash) => {
+    try {
+      const log = await this.getLog(this.repoName, this.getShowCommand(commitHash));
+      if (!log || log.length === 0) {
+        return;
+      }
+
+      return log[0];
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   /**
    * получение лога в отдельном процессе
    */
-  getLog = (repoName, branchName, untilHash = null) => {
+  getLog = (repoName, command) => {
     return new Promise((resolve, reject) => {
       let logData = '';
-      const logProcess = spawn('git', this.getLogCommand(branchName, untilHash), {
+      const logProcess = spawn('git', command, {
         cwd: this.getRepoFolder(repoName),
       });
 

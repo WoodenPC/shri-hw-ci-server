@@ -1,5 +1,6 @@
 const builds = require('express').Router();
 
+const gitSetvice = require('../../services/git-service');
 const yandexService = require('../../services/yandex-service');
 const cacheService = require('../../services/cache-service');
 
@@ -36,19 +37,23 @@ builds.post('/:commitHash', async (req, res) => {
     return res.status(400).send('Commit hash param is required!');
   }
   const { body } = req;
+  //  если каких то параметров нету, то берем инфу из гита
+  //if (!body.commitMessage || !body.branchName || !body.authorName) {
+  //  const info = await gitSetvice.getCommitInfo(commitHash);
+  //} TODO: impl
   let apiResponse;
   try {
     apiResponse = await yandexService.addBuildToQueue({
       commitHash,
-      commitMessage: body.commitMessage,
-      branchName: body.branchName,
-      authorName: body.authorName,
+      commitMessage: body.commitMessage || 'string',
+      branchName: body.branchName || 'string',
+      authorName: body.authorName || 'string',
     });
+
+    res.send(apiResponse.data);
   } catch (e) {
     return res.send(500).send(e);
   }
-
-  res.status(200).send('success');
 });
 
 // получение информации о конкретной сборке

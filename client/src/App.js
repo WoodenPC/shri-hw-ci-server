@@ -13,12 +13,13 @@ import {
 
 class App extends React.PureComponent {
   async componentDidMount() {
-    const { loadSettingsAsync, history, settings } = this.props;
-    console.log(settings.isLoaded);
-    if (!settings.isLoaded && !(await loadSettingsAsync())) {
+    const { loadSettingsAsync, history } = this.props;
+    if (!(await loadSettingsAsync())) {
       history.push('/settings');
     } else {
-      history.push('/buildHistory');
+      if (history.location.pathname === '/') {
+        history.push('/buildHistory');
+      }
     }
   }
   render() {
@@ -33,12 +34,6 @@ class App extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (store) => {
-  return {
-    settings: store.settings,
-  };
-};
-
 const mapDispatchToProps = (dispatch) => {
   return {
     loadSettingsAsync: loadSettingsFromServerAsync(dispatch),
@@ -47,9 +42,6 @@ const mapDispatchToProps = (dispatch) => {
 
 const AppWithRouter = withRouter(App);
 
-const ConnectedApp = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AppWithRouter);
+const ConnectedApp = connect(null, mapDispatchToProps)(AppWithRouter);
 
 export { ConnectedApp as App };

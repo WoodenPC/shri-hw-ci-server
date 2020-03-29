@@ -10,12 +10,17 @@ export const runRebuildAsync = (dispatch) => {
       type: actionTypes.RUN_REBUILD,
     });
 
-    await axios.post(`/api/builds/${commitHash}`, {
-      commitHash,
-      commitMessage,
-      authorName,
-      branchName,
-    });
+    try {
+      const res = await axios.post(`/api/builds/${commitHash}`, {
+        commitHash,
+        commitMessage,
+        authorName,
+        branchName,
+      });
+      return res.data;
+    } catch (e) {
+      console.log(e);
+    }
   };
 };
 
