@@ -5,10 +5,13 @@ const cacheService = require('../../services/cache-service');
 
 // получение списка сборок
 builds.get('/', async (req, res) => {
-  const { params } = req;
+  const { query } = req;
   let apiResponse;
   try {
-    apiResponse = await yandexService.getBuildsList(params);
+    apiResponse = await yandexService.getBuildsList({
+      offset: query.offset,
+      limit: query.limit,
+    });
   } catch (e) {
     return res.status(500).send(e);
   }

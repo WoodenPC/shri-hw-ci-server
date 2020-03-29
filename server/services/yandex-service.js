@@ -14,6 +14,7 @@ class YandexService {
    * получение списка сборок
    */
   getBuildsList = ({ offset, limit }) => {
+    console.log(offset, limit);
     return this.webClient
       .get('/api/build/list', {
         params: {
