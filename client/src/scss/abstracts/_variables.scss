@@ -1,0 +1,64 @@
+:root {
+  --grey-1: #F0F2F3;
+  --grey-2: #F2F2F2;
+  --grey-3: #E5E5E5;
+  --grey-4: #E6E6E6;
+  --grey-5: #D9D9D9;
+  --grey-6: #DBDBDB;
+  --grey-7: #CCCCCC;
+  --grey-8: #B3B3B3;
+  --grey-9: #7F7F7F;
+  --grey-10: #7F8285;
+  --grey-11: #595959;
+
+  --modal-background: rgba(0, 0, 0, 0.6);
+
+  --orange-1: #FFCC00;
+  --orange-2: #F2C200;
+  --orange-3: #FF9A00;
+  --orange-4: #B38F00;
+
+  --red: #FF0000;
+  --black: #000000;
+  --green: #00b341;
+  --white: #FFFFFF;
+
+  --shadow: rgba(67, 68, 69, 0.3);
+
+  // ----------------
+  --font-size-s: 1.3rem;
+  --font-size-m: 1.5rem;
+  --font-size-l: 1.6rem;
+  --font-size-xl: 1.8rem;
+  --font-size-xxl: 2.4rem;
+  // ----------------
+  --line-height-xs: 1.5rem;
+  --line-height-s: 1.6rem;
+  --line-height-m: 1.8rem;
+  --line-height-l: 2rem;
+  --line-height-xl: 2.2rem;
+  --line-height-xxl: 2.8rem;
+  --line-height-xxxl: 3rem;
+  --line-height-xxxxl: 3.6rem;
+  // ----------------
+  --space-xxxxs: 0.2rem;
+  --space-xxxs: 0.3rem;
+  --space-xxs: 0.4rem;
+  --space-xs: 0.6rem;
+  --space-s: 0.8rem;
+  --space-m: 1rem;
+  --space-l: 1.2rem;
+  --space-xl: 1.3rem;
+  --space-xxl: 1.4rem;
+  --space-xxxl: 1.6rem;
+  --space-xxxxl: 2rem;
+  --space-xxxxxl: 2.4rem;
+  --space-xxxxxxl: 3.2rem;
+  // ----------------
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+}
+
+$screen-mobile: 640px;
+$max-content-width: 1024px;

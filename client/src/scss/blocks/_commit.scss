@@ -1,0 +1,12 @@
+.Commit {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  &-BranchName {
+    margin: 0 var(--space-xxs);
+  }
+
+  &-Hash {
+    color: var(--grey-9);
+  }
+}

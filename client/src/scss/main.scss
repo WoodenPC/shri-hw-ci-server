@@ -1,0 +1,39 @@
+// abstracts
+@import 'abstracts/fonts';
+@import 'abstracts/mixins';
+@import 'abstracts/variables';
+
+// blocks
+@import 'blocks/icon';
+@import 'blocks/button';
+@import 'blocks/card';
+@import 'blocks/footer';
+@import 'blocks/form';
+@import 'blocks/header';
+@import 'blocks/input';
+@import 'blocks/list';
+@import 'blocks/logDetails';
+@import 'blocks/modal';
+@import 'blocks/commit';
+@import 'blocks/userName';
+@import 'blocks/page';
+@import 'blocks/formField';
+@import 'blocks/link';
+
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+  font-family: 'YS Text', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+}

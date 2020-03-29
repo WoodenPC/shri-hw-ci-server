@@ -1,0 +1,36 @@
+.List {
+  display: flex;
+  flex-direction: column;
+
+  &-Box {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &-Menu {
+    display: flex;
+    flex-direction: row;
+    margin-top: var(--space-s);
+    @media (max-width: $screen-mobile) {
+      flex-direction: column;
+    }
+  }
+
+  &__menu-item {
+    margin-bottom: var(--space-s);
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    @media (max-width: $screen-mobile) {
+      margin-left: var(--space-s);
+      &:last-child {
+        margin-left: 0;
+      }
+    }
+  }
+
+  &-Item {
+    margin-top: var(--space-s);
+  }
+}

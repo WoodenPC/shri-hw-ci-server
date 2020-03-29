@@ -1,0 +1,15 @@
+.LogDetails {
+  display: flex;
+  flex-direction: column;
+  &-Log {
+    overflow-x: scroll;
+    margin-top: var(--space-l);
+    border-radius: 6px;
+    padding: var(--space-s) var(--space-l);
+    background-color: var(--grey-2);
+
+    @media (max-width: $screen-mobile) {
+      margin-top: var(--space-xxxl);
+    }
+  }
+}

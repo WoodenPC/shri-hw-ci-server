@@ -1,0 +1,28 @@
+.FormField {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--space-s);
+  padding-bottom: var(--space-m);
+
+  &-Label {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--space-xs);
+  }
+
+  &_required {
+    .FormField-Label::after {
+      content: '*';
+      color: red;
+      margin-left: var(--space-xxxxs);
+    }
+  }
+
+  &_row {
+    @include withGridGap(--space-s, column);
+
+    .FormField-Label {
+      margin-bottom: 0;
+    }
+  }
+}

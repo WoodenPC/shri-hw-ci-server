@@ -1,0 +1,24 @@
+@mixin withTextOverflow() {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+@mixin withGridGap($gap, $flow) {
+  display: grid;
+  gap: var(#{$gap});
+  grid-auto-flow: $flow;
+  grid-auto-columns: max-content;
+}
+
+@mixin centered() {
+  margin: 0 auto;
+  max-width: 100%;
+  padding-left: var(--space-xxl);
+  padding-right: var(--space-xxl);
+  @media (min-width: $max-content-width) {
+    max-width: calc(#{$max-content-width} - 2 * 100px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

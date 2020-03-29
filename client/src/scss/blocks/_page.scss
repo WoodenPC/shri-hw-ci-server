@@ -1,0 +1,45 @@
+.Page {
+  min-height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-m);
+
+  &-Main {
+    width: 100%;
+    flex: 1 0 auto;
+    background-color: var(--default-color);
+    padding-bottom: var(--space-xxxxl);
+    padding-top: var(--space-xs);
+    @include centered;
+
+    @media (max-width: $screen-mobile) {
+      padding-bottom: var(--space-xxxl);
+      padding-top: var(--space-s);
+    }
+  }
+
+  &-CenterLogoContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+  }
+
+  &-CenterLogoContainerText {
+    text-align: center;
+    margin-top: var(--space-xxxxxxl);
+    margin-bottom: var(--space-xxxxxl);
+    width: 26.4rem;
+    padding-left: 3rem; //  Костыль, чтобы совпадало с макетом
+    padding-right: 3rem; // Костыль, чтобы совпадало с макетом
+    font-size: var(--font-size-s);
+  }
+}
