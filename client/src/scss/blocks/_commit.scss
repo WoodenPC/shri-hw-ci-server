@@ -4,9 +4,13 @@
   align-items: center;
   &-BranchName {
     margin: 0 var(--space-xxs);
+    max-width: 12rem;
+    @include withTextOverflow();
   }
 
   &-Hash {
     color: var(--grey-9);
+    max-width: 12rem;
+    @include withTextOverflow();
   }
 }

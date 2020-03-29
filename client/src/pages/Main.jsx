@@ -1,9 +1,6 @@
 import React from 'react';
 import { cn } from '@bem-react/classname';
 import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-
-import { loadSettingsFromServerAsync } from 'store/actionsCreators/settings';
 
 import { Header } from 'components/Header';
 import { Footer } from 'components/Footer/Footer';
@@ -17,14 +14,6 @@ class MainPage extends React.PureComponent {
     console.log('openSettings');
     this.props.history.push('/settings');
   };
-
-  async componentDidMount() {
-    const { loadSettingsAsync, history, settings } = this.props;
-    console.log(settings.isLoaded);
-    if (!settings.isLoaded && (await loadSettingsAsync())) {
-      history.push('/settings');
-    }
-  }
 
   render() {
     return (
@@ -56,22 +45,6 @@ class MainPage extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (store) => {
-  return {
-    settings: store.settings,
-  };
-};
+const PageWithRouter = withRouter(MainPage);
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    loadSettingsAsync: loadSettingsFromServerAsync(dispatch),
-  };
-};
-
-const MainPageWithRouter = withRouter(MainPage);
-const ConnectedMainPage = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MainPageWithRouter);
-
-export { ConnectedMainPage as MainPage };
+export { PageWithRouter as MainPage };

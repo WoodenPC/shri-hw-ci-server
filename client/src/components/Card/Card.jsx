@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
 import PropTypes from 'prop-types';
+import { format } from 'date-fns';
 
 import { Icon } from 'components/Icon';
 import { UserName } from 'components/UserName';
@@ -9,16 +10,38 @@ import { Commit } from 'components/Commit';
 const classes = cn('Card');
 
 const Card = memo(
-  ({ status, commitNumber, title, branch, hash, who, time, onClick }) => {
+  ({
+    id,
+    status,
+    buildNumber,
+    title,
+    branch,
+    hash,
+    who,
+    start,
+    duration,
+    onClick,
+  }) => {
+    const date = new Date(start);
+    const utcDate = new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDay())
+    );
+
+    const onClickInner = () => {
+      if (onClick !== undefined) {
+        onClick({ buildId: id, commitHash: hash });
+      }
+    };
+
     return (
-      <div className={classes({ status })} onClick={onClick}>
+      <div className={classes({ status })} onClick={onClickInner}>
         <div>
           <Icon type={status} />
         </div>
         <div className={classes('Content')}>
           <div className={classes('Body')}>
             <div className={classes('Title')}>
-              <span className={classes('Number')}>#{commitNumber}</span>
+              <span className={classes('Number')}>#{buildNumber}</span>
               <span className={classes('Text')}>{title}</span>
             </div>
             <div className={classes('Subtitle')}>
@@ -29,11 +52,11 @@ const Card = memo(
           <div className={classes('Meta')}>
             <div className={classes('BuildStartTime')}>
               <Icon type='calendar' />
-              <span>{time.startTime}</span>
+              <span>{format(utcDate, 'dd MMM, HH:mm')}</span>
             </div>
             <div className={classes('BuildDuration')}>
               <Icon type='timer' />
-              <span>{time.duration}</span>
+              <span>{duration}</span>
             </div>
           </div>
         </div>
@@ -43,25 +66,29 @@ const Card = memo(
 );
 
 Card.propTypes = {
-  status: PropTypes.oneOf(['done', 'fail', 'pending']),
-  commitNumber: PropTypes.number,
+  id: PropTypes.string,
+  status: PropTypes.oneOf(['success', 'fail', 'inprogress', 'waiting']),
+  buildNumber: PropTypes.number,
   hash: PropTypes.string,
   who: PropTypes.string,
-  time: PropTypes.object,
   title: PropTypes.string,
   branch: PropTypes.string,
   onClick: PropTypes.func,
+  start: PropTypes.string,
+  duration: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 Card.defaultProps = {
-  status: 'pending',
-  commitNumber: -1,
+  id: '',
+  status: 'waiting',
+  buildNumber: -1,
   hash: '',
   who: '',
-  time: null,
   title: '',
   branch: '',
   onClick: undefined,
+  start: new Date(2020, 1, 1).toString(),
+  duration: '1h 20m',
 };
 
 export { Card };

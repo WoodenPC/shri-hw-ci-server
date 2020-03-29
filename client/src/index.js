@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
 import './scss/main.scss';
-import App from './App';
+import { App } from './App';
 
 import {
   settingsReducer,

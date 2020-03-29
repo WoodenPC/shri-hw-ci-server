@@ -2,6 +2,15 @@ import * as actionTypes from 'store/actionTypes/buildHistory';
 import { axios } from 'axiosInstance';
 
 /**
+ * дроп билдов
+ */
+export const deleteBuildsHistory = () => {
+  return {
+    type: actionTypes.DELETE_BUILDS_HISTORY,
+  };
+};
+
+/**
  * сохранение билдов в сторе
  */
 export const setBuilds = (builds) => {
@@ -12,25 +21,37 @@ export const setBuilds = (builds) => {
 };
 
 /**
+ * добавление в список билдов
+ */
+export const addMoreBuilds = (builds) => {
+  return {
+    type: actionTypes.ADD_MORE_BUILDS,
+    builds,
+    offset: builds.length,
+  };
+};
+
+/**
  * загрузка чанка билдов с сервера
  */
-export const loadMoreBuildsAsync = (dispatch) => {
-  return async () => {
+export const loadBuildsAsync = (dispatch) => {
+  return async (offset = 0, limit = 10) => {
     dispatch({
-      type: actionTypes.LOAD_MORE_BUILDS_START,
+      type: actionTypes.LOAD_BUILDS_START,
     });
 
     try {
-      const res = await axios.get('/api/builds');
-      // TODO
+      const res = await axios.get('/api/builds', {
+        params: {
+          offset,
+          limit,
+        },
+      });
+
       console.log(res.data);
+      return dispatch(addMoreBuilds(res.data.data));
     } catch (e) {
       console.log(e);
     }
-
-    return dispatch({
-      type: actionTypes.LOAD_MORE_BUILDS_END,
-      builds: [],
-    });
   };
 };

@@ -2,9 +2,9 @@ import * as actionTypes from 'store/actionTypes/settings';
 
 const initialState = {
   isLoaded: false,
-  repoName: null,
-  buildCommand: null,
-  mainBranch: null,
+  repoName: '',
+  buildCommand: '',
+  mainBranch: '',
   period: 10,
 };
 

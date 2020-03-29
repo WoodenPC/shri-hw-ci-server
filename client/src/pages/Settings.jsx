@@ -9,7 +9,8 @@ import { Button } from 'components/Button/Button';
 import { Form } from 'components/Form/Form';
 import { Input } from 'components/Input/Input';
 
-import { setSettings } from 'store/actionsCreators/settings';
+import * as actionsCreators from 'store/actionsCreators/settings';
+import { deleteBuildsHistory } from 'store/actionsCreators/buildHistory';
 
 const classes = cn('Page');
 
@@ -21,6 +22,17 @@ class SettingsPage extends React.PureComponent {
     period: 10,
     isLoading: false,
   };
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.repoName !== this.state.repoName ||
+      nextProps.buildCommand !== this.state.buildCommand ||
+      nextProps.mainBranch !== this.state.mainBranch ||
+      nextProps.period !== this.state.period
+    ) {
+      this.getSettingsFromStore();
+    }
+  }
 
   changeRepoName = (event) => {
     this.setState({ repoName: event.target.value });
@@ -38,13 +50,29 @@ class SettingsPage extends React.PureComponent {
     this.setState({ period: event.target.value });
   };
 
-  componentDidMount() {}
+  getSettingsFromStore = () => {
+    const { settings } = this.props;
+    this.setState({
+      repoName: settings.repoName,
+      buildCommand: settings.buildCommand,
+      mainBranch: settings.mainBranch,
+      period: settings.period,
+    });
+  };
 
-  saveSettings = () => {
+  componentDidMount() {
+    this.getSettingsFromStore();
+  }
+
+  saveSettings = async () => {
+    const { saveSettingsAsync, history } = this.props;
+    const { repoName, buildCommand, mainBranch, period } = this.state;
     this.setState({ isLoading: true });
     try {
-      // TODO
-      this.props.history.push('/buildHistory');
+      await saveSettingsAsync({ repoName, buildCommand, mainBranch, period });
+      // очищаем текущую историю билдов
+      this.props.deleteBuildsHistory();
+      history.push('/buildHistory');
     } finally {
       this.setState({ isLoading: false });
     }
@@ -139,14 +167,16 @@ const mapStateToProps = (store) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setSettings: (settings) => dispatch(setSettings(settings)),
+    setSettings: (settings) => dispatch(actionsCreators.setSettings(settings)),
+    saveSettingsAsync: actionsCreators.saveSettingsAsync(dispatch),
+    deleteBuildsHistory: dispatch(deleteBuildsHistory()),
   };
 };
 
-const SettingsPageWithRouter = withRouter(SettingsPage);
-const ConnectedSettingPage = connect(
+const PageWithRouter = withRouter(SettingsPage);
+const ConnectedPage = connect(
   mapStateToProps,
   mapDispatchToProps
-)(SettingsPageWithRouter);
+)(PageWithRouter);
 
-export { ConnectedSettingPage as SettingsPage };
+export { ConnectedPage as SettingsPage };

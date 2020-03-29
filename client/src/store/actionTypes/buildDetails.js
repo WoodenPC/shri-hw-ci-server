@@ -1,1 +1,3 @@
 export const RUN_REBUILD = 'RUN_REBUILD';
+export const LOAD_BUILD_DETAILS = 'LOAD_BUILD_DETAILS';
+export const LOAD_BUILD_LOGS = 'LOAD_BUILD_LOGS';

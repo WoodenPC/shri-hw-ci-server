@@ -22,18 +22,18 @@
   }
 
   &_status {
-    &_done {
+    &_success {
       .Card-Number {
         color: var(--green);
       }
     }
 
-    &_fail {
+    &_fail, &_canceled {
       .Card-Number {
         color: var(--red);
       }
     }
-    &_pending {
+    &_waiting, &_inprogress {
       .Card-Number {
         color: var(--orange-3);
       }
@@ -84,6 +84,8 @@
     align-items: center;
     font-size: var(--font-size-m);
     line-height: var(--line-height-l);
+    max-width: 40rem;
+    @include withTextOverflow();
   }
 
   &-Subtitle {
@@ -112,11 +114,5 @@
       font-size: var(--font-size-l);
       line-height: var(--line-height-s);
     }
-  }
-
-  &-Hash {
-    color: var(--grey-9);
-    max-width: 12rem;
-    @include withTextOverflow();
   }
 }

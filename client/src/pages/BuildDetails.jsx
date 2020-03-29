@@ -1,6 +1,7 @@
 import React from 'react';
 import { cn } from '@bem-react/classname';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import { Header } from 'components/Header';
 import { Footer } from 'components/Footer';
@@ -8,38 +9,84 @@ import { Button } from 'components/Button';
 import { Icon } from 'components/Icon';
 import { Card } from 'components/Card';
 import { LogDetails } from 'components/LogDetails';
-import { Modal } from 'components/Modal';
-import { Form } from 'components/Form';
-import { Input } from 'components/Input';
+import { Spinner } from 'components/Spinner';
+
+import * as actionCreators from 'store/actionsCreators/buildDetails';
 
 const classes = cn('Page');
 
 class BuildDetailsPage extends React.PureComponent {
   state = {
-    modalVisible: false,
+    isLoading: false,
+    id: this.props.location.buildId,
+    status: 'waiting',
+    buildNumber: 0,
+    branchName: '',
+    commitMessage: '',
+    commitHash: '',
+    authorName: '',
+    start: undefined,
+    duration: 0,
   };
 
   openSettings = () => {
     this.props.history.push('/settings');
   };
 
-  openRebuildModal = () => {
-    this.setState({
-      modalVisible: true,
-    });
+  rebuild = async () => {
+    const { runRebuildAsync, history } = this.props;
+    const {
+      id,
+      branchName,
+      authorName,
+      commitMessage,
+      commitHash,
+    } = this.state;
+    try {
+      const newId = await runRebuildAsync({
+        id,
+        branchName,
+        authorName,
+        commitMessage,
+        commitHash,
+      });
+
+      history.replace(`/buildDetails/${newId}`, {
+        buildId: newId,
+      });
+    } finally {
+      this.setState({ modalVisible: false });
+    }
   };
 
-  runBuild = () => {
-    // todo
-    this.setState({ modalVisible: false });
-  };
-
-  cancel = () => {
-    this.setState({ modalVisible: false });
-  };
+  async componentDidMount() {
+    const { location, loadBuildDetailsAsync, loadBuildLogsAsync } = this.props;
+    const { state } = location;
+    console.log(state);
+    try {
+      const detailsPromise = loadBuildDetailsAsync(state.buildId);
+      const logsPromise = loadBuildLogsAsync(state.buildId);
+      const [details, logs] = await Promise.all([detailsPromise, logsPromise]);
+      this.setState({ logs, ...details });
+    } finally {
+      this.setState({ isLoading: true });
+    }
+  }
 
   render() {
-    const { modalVisible } = this.state;
+    const {
+      id,
+      status,
+      buildNumber,
+      branchName,
+      commitMessage,
+      commitHash,
+      authorName,
+      start,
+      duration,
+      isLoading,
+      logs,
+    } = this.state;
     return (
       <div className={classes()}>
         <Header title='philip1967/my-awesome-repo' color='black'>
@@ -47,7 +94,7 @@ class BuildDetailsPage extends React.PureComponent {
             text='Rebuild'
             icon={<Icon type='rebuild' />}
             color='secondary'
-            onClick={this.openRebuildModal}
+            onClick={this.rebuild}
           />
           <Button
             icon={<Icon type='settings' />}
@@ -56,47 +103,24 @@ class BuildDetailsPage extends React.PureComponent {
           />
         </Header>
         <main className={classes('Main')}>
-          <Modal visible={modalVisible}>
-            <Form>
-              <Form.Header
-                title='New build'
-                description='Enter the commit hash which you want to build.'
+          {isLoading ? (
+            <>
+              <Card
+                id={id}
+                status={status && status.toLowerCase()}
+                buildNumber={buildNumber}
+                title={commitMessage}
+                branch={branchName}
+                hash={commitHash}
+                who={authorName}
+                start={start}
+                duration={duration}
               />
-              <Form.Fields>
-                <Form.Field>
-                  <Input placeholder='Commit hash' />
-                </Form.Field>
-              </Form.Fields>
-              <Form.Footer>
-                <Button
-                  text='Run build'
-                  color='primary'
-                  size='big'
-                  onClick={this.runBuild}
-                />
-                <Button
-                  text='Cancel'
-                  color='default'
-                  variant='outlined'
-                  size='big'
-                  onClick={this.cancel}
-                />
-              </Form.Footer>
-            </Form>
-          </Modal>
-          <Card
-            status='fail'
-            commitNumber={1368}
-            title='add documentation for postgres scaler'
-            branch='master'
-            hash='9c9f0b9'
-            who='Philip Kirkorov'
-            time={{
-              startTime: '21 янв, 03:06',
-              duration: '1 ч 20 мин',
-            }}
-          />
-          <LogDetails log='some log' />
+              <LogDetails log={logs} />
+            </>
+          ) : (
+            <Spinner />
+          )}
         </main>
         <Footer />
       </div>
@@ -104,6 +128,15 @@ class BuildDetailsPage extends React.PureComponent {
   }
 }
 
-const BuildDetailsPageWithRouter = withRouter(BuildDetailsPage);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    runRebuildAsync: actionCreators.runRebuildAsync(dispatch),
+    loadBuildDetailsAsync: actionCreators.loadBuildDetailsAsync(dispatch),
+    loadBuildLogsAsync: actionCreators.loadBuildLogsAsync(dispatch),
+  };
+};
 
-export { BuildDetailsPageWithRouter as BuildDetailsPage };
+const PageWithRouter = withRouter(BuildDetailsPage);
+const ConnectedPage = connect(null, mapDispatchToProps)(PageWithRouter);
+
+export { ConnectedPage as BuildDetailsPage };

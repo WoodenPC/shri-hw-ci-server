@@ -58,21 +58,23 @@
       background-image: url('/assets/timer.svg');
     }
 
-    &_done {
+    &_success {
       background-image: url('/assets/done.svg');
     }
 
-    &_fail {
+    &_fail, &_canceled {
       background-image: url('/assets/fail.svg');
     }
 
-    &_pending {
+    &_waiting, &_inprogress{
       background-image: url('/assets/pending.svg');
     }
 
-    &_done,
+    &_success,
     &_fail,
-    &_pending {
+    &_waiting,
+    &_canceled,
+    &_inProgress {
       width: 2.1rem;
       height: 2.1rem;
 

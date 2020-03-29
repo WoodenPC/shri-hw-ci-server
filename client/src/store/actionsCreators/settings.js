@@ -9,7 +9,6 @@ export const setSettings = (newSettings) => {
   return {
     type: actionTypes.SET_SETTINGS,
     settings: newSettings,
-    isLoaded: true,
   };
 };
 
@@ -22,6 +21,23 @@ export const loadSettingsFromServerAsync = (dispatch) => {
       const isLoaded = Object.keys(data).length > 0;
       dispatch(setSettings({ ...data, isLoaded }));
       return isLoaded;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+
+/**
+ * сохранение настроек и отправка их на сервер
+ */
+export const saveSettingsAsync = (dispatch) => {
+  return async (settings) => {
+    try {
+      dispatch(setSettings({ ...settings }));
+      const res = await axios.post('/api/settings', {
+        ...settings,
+      });
+      console.log(res.data);
     } catch (e) {
       console.log(e);
     }
