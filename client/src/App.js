@@ -27,7 +27,7 @@ class App extends React.PureComponent {
       <Switch>
         <Route path='/settings' component={SettingsPage} />
         <Route path='/buildHistory' component={BuildHistoryPage} />
-        <Route path='/buildDetails/:buildId' component={BuildDetailsPage} />
+        <Route path='/build/:buildId' component={BuildDetailsPage} />
         <Route path='/' component={MainPage} />
       </Switch>
     );

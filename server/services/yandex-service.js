@@ -135,7 +135,7 @@ class YandexService {
     try {
       await this.webClient.post('/api/build/finish', {
         buildId,
-        duration: 1,
+        duration: '1h 20m',
         success: true,
         buildLog: 'some test log',
       });

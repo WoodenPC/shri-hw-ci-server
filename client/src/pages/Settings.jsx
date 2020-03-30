@@ -68,6 +68,20 @@ class SettingsPage extends React.PureComponent {
     const { saveSettingsAsync, history } = this.props;
     const { repoName, buildCommand, mainBranch, period } = this.state;
     this.setState({ isLoading: true });
+    if (repoName === '' || buildCommand === '') {
+      alert('Please fill requird fields');
+      return;
+    }
+
+    if (period <= 0) {
+      alert('Period must be breater than zeor');
+      return;
+    }
+
+    if (mainBranch === '') {
+      mainBranch = 'master';
+    }
+
     try {
       await saveSettingsAsync({ repoName, buildCommand, mainBranch, period });
       // очищаем текущую историю билдов

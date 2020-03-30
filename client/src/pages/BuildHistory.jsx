@@ -31,11 +31,14 @@ class BuildHistoryPage extends React.PureComponent {
 
   loadMoreBuilds = async () => {
     const { offset, limit } = this.props;
+    const pageYOffset = window.pageYOffset;
     this.setState({ isLoading: true });
     try {
       await this.props.loadBuildsAsync(offset, limit);
     } finally {
       this.setState({ isLoading: false });
+      console.log(this.state.scrollY);
+      window.scrollTo(0, pageYOffset);
     }
   };
 
@@ -63,7 +66,7 @@ class BuildHistoryPage extends React.PureComponent {
   };
 
   openBuildDetails = ({ buildId }) => {
-    this.props.history.push(`/buildDetails/${buildId}`, {
+    this.props.history.push(`/build/${buildId}`, {
       buildId,
     });
   };

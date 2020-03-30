@@ -21,11 +21,16 @@ const List = memo(({ children, direction, onShowMore }) => {
 List.propTypes = {
   direction: PropTypes.oneOf(['row', 'col']),
   onShowMore: PropTypes.func,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
 };
 
 List.defaultProps = {
   direction: 'row',
   onShowMore: null,
+  children: null,
 };
 
 List.Item = ListItem;
