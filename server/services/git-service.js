@@ -58,6 +58,32 @@ class GitService {
     });
   };
 
+  // изменение ветки
+  checkout = (repoName, branchName) => {
+    return new Promise((resolve, reject) => {
+      const repoPath = this.getRepoFolder(repoName);
+      const gitCheckoutProcess = spawn('git', ['checkout', branchName], {
+        cwd: repoPath,
+      });
+      gitCheckoutProcess.stdout.on('data', (data) => {
+        console.log(`Git checkout stdout: ${data}`);
+      });
+
+      gitCheckoutProcess.on('close', (code) => {
+        console.log(`Git checkout is finished. code=${code}`);
+        if (code === 0) {
+          resolve(true);
+        } else {
+          reject(`Cannot checkout. Finished this code ${code}`);
+        }
+      });
+
+      gitCheckoutProcess.stderr.on('data', (data) => {
+        console.error(`Git checkout stderr: ${data.toString()}`);
+      });
+    });
+  };
+
   // инициализация севиса
   init = async (settings) => {
     this.repoName = settings.repoName;
