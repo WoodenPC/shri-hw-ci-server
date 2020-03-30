@@ -23,13 +23,8 @@ class SettingsPage extends React.PureComponent {
     isLoading: false,
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (
-      nextProps.repoName !== this.state.repoName ||
-      nextProps.buildCommand !== this.state.buildCommand ||
-      nextProps.mainBranch !== this.state.mainBranch ||
-      nextProps.period !== this.state.period
-    ) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.settings !== this.props.settings) {
       this.getSettingsFromStore();
     }
   }
@@ -65,27 +60,26 @@ class SettingsPage extends React.PureComponent {
   }
 
   saveSettings = async () => {
-    const { saveSettingsAsync, history } = this.props;
+    const { saveSettingsAsync, history, deleteBuildsHistory } = this.props;
     const { repoName, buildCommand, mainBranch, period } = this.state;
     this.setState({ isLoading: true });
-    if (repoName === '' || buildCommand === '') {
-      alert('Please fill requird fields');
-      return;
-    }
-
-    if (period <= 0) {
-      alert('Period must be breater than zeor');
-      return;
-    }
-
-    if (mainBranch === '') {
-      mainBranch = 'master';
-    }
-
     try {
+      if (repoName === '' || buildCommand === '') {
+        alert('Please fill requird fields');
+        return;
+      }
+
+      if (period <= 0) {
+        alert('Period must be greater than zeor');
+        return;
+      }
+
+      if (mainBranch === '') {
+        mainBranch = 'master';
+      }
       await saveSettingsAsync({ repoName, buildCommand, mainBranch, period });
       // очищаем текущую историю билдов
-      this.props.deleteBuildsHistory();
+      deleteBuildsHistory();
       history.push('/buildHistory');
     } finally {
       this.setState({ isLoading: false });
@@ -183,7 +177,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setSettings: (settings) => dispatch(actionsCreators.setSettings(settings)),
     saveSettingsAsync: actionsCreators.saveSettingsAsync(dispatch),
-    deleteBuildsHistory: dispatch(deleteBuildsHistory()),
+    deleteBuildsHistory: () => dispatch(deleteBuildsHistory()),
   };
 };
 
