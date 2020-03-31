@@ -219,10 +219,10 @@ class GitService {
   getLogCommand = (branchName, params = {}) => {
     const format = '--pretty=format:{ "commitHash":"%H", "authorName":"%cn", "commitMessage": "%s" }';
     const command = ['log'];
-    if (params.untilHash === null) {
+    if (!params.untilHash) {
       command.push('-1');
     } else {
-      command.push(`${untilHash}...HEAD`);
+      command.push(`${params.untilHash}...HEAD`);
     }
 
     command.push(format);

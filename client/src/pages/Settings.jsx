@@ -74,10 +74,9 @@ class SettingsPage extends React.PureComponent {
         return;
       }
 
-      if (mainBranch === '') {
-        mainBranch = 'master';
-      }
-      await saveSettingsAsync({ repoName, buildCommand, mainBranch, period });
+      let branch = mainBranch === '' ? 'master' : mainBranch;
+
+      await saveSettingsAsync({ repoName, buildCommand, branch, period });
       // очищаем текущую историю билдов
       deleteBuildsHistory();
       history.push('/buildHistory');
