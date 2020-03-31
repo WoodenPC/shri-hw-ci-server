@@ -38,7 +38,7 @@ export const saveSettingsAsync = (dispatch) => {
       const res = await axios.post('/api/settings', {
         ...settings,
       });
-      console.log(res.data);
+      return res && res.status === 200;
     } catch (e) {
       console.log(e);
     }

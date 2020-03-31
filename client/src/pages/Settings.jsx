@@ -83,7 +83,7 @@ class SettingsPage extends React.PureComponent {
         mainBranch: branch,
         period,
       });
-      if (!res || res.status !== 200) {
+      if (!res) {
         alert('Cannot save settings');
         return;
       }
