@@ -89,6 +89,7 @@ class GitService {
     this.repoName = settings.repoName;
     this.repoUrl = `${BASE_GITHUB_URL}/${this.repoName}`;
     this.mainBranch = settings.mainBranch;
+    this.period = settings.period * 1000 * 60; // делаем минуты
     if (!(await fileExistsAsync(this.getRepoFolder(this.repoName)))) {
       this.lastBuildCommitHash = null;
       try {
@@ -171,7 +172,7 @@ class GitService {
         console.log('Check repo error', e);
         this.stop();
       }
-    }, this.intervalTime);
+    }, this.period);
   };
 
   /**
@@ -226,7 +227,8 @@ class GitService {
     }
 
     command.push(format);
-    command.push(branchName);
+    //command.push(branchName);
+    // не работает, отложить до лучших времен
 
     return command;
   };

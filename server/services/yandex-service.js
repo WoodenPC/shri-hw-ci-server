@@ -102,16 +102,12 @@ class YandexService {
    * сохранение настроек в хранилище
    */
   saveSettings = ({ repoName, buildCommand, mainBranch, period }) => {
-    return this.webClient
-      .post('/api/conf', {
-        repoName: repoName,
-        buildCommand: buildCommand,
-        mainBranch: mainBranch,
-        period: period,
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    return this.webClient.post('/api/conf', {
+      repoName: repoName,
+      buildCommand: buildCommand,
+      mainBranch: mainBranch,
+      period: period,
+    });
   };
 
   /**

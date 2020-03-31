@@ -32,6 +32,7 @@ settings.get('/', async (_, res) => {
 settings.post('/', async (req, res) => {
   const { body } = req;
   let apiResponse;
+  console.log(body);
   try {
     const settings = {
       repoName: body.repoName,
@@ -41,17 +42,20 @@ settings.post('/', async (req, res) => {
     };
 
     apiResponse = await yandexService.saveSettings(settings);
+    if (!apiResponse) {
+      return res.status(500).send('error');
+    }
     const cloneResult = await gitService.init(settings);
     if (cloneResult === false) {
       return res.status(500).send(`Cannot clone repository with settings ${JSON.stringify(settings)}`);
     }
+
+    if (apiResponse.status !== 200) {
+      return res.status(500).send('Cannot save build configuration. Please check request params!');
+    }
   } catch (e) {
     console.log(e);
-    return res.status(500).json(e);
-  }
-
-  if (apiResponse.status !== 200) {
-    return res.status(500).send('Cannot save build configuration. Please check request params!');
+    return res.status(500).send(e);
   }
 
   res.status(200).send('Success');

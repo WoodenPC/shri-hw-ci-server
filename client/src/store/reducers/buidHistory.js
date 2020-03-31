@@ -10,7 +10,7 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.DELETE_BUILDS_HISTORY:
-      return { ...initialState, isLoaded: false };
+      return { ...initialState, buildsLoaded: false, builds: [] };
     case actionTypes.ADD_MORE_BUILDS:
       return {
         ...state,

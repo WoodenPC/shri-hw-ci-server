@@ -42,7 +42,7 @@ class SettingsPage extends React.PureComponent {
   };
 
   changePeriod = (event) => {
-    this.setState({ period: event.target.value });
+    this.setState({ period: +event.target.value });
   };
 
   getSettingsFromStore = () => {
@@ -76,9 +76,18 @@ class SettingsPage extends React.PureComponent {
 
       let branch = mainBranch === '' ? 'master' : mainBranch;
 
-      await saveSettingsAsync({ repoName, buildCommand, branch, period });
-      // очищаем текущую историю билдов
       deleteBuildsHistory();
+      const res = await saveSettingsAsync({
+        repoName,
+        buildCommand,
+        mainBranch: branch,
+        period,
+      });
+      if (!res || res.status !== 200) {
+        alert('Cannot save settings');
+        return;
+      }
+      // очищаем текущую историю билдов
       history.push('/buildHistory');
     } finally {
       this.setState({ isLoading: false });
