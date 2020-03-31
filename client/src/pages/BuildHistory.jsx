@@ -45,7 +45,13 @@ class BuildHistoryPage extends React.PureComponent {
   runBuild = async (commitHash) => {
     const { runBuildAsync } = this.props;
     try {
-      await runBuildAsync(commitHash);
+      const result = await runBuildAsync(commitHash);
+      if (!result) {
+        alert('Cannot create new build. Please check settings');
+      }
+    } catch (e) {
+      console.log(e);
+      alert('Cannot create new build. Please check settings');
     } finally {
       this.setState({
         modalVisible: false,

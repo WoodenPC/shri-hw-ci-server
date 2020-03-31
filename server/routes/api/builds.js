@@ -37,22 +37,25 @@ builds.post('/:commitHash', async (req, res) => {
     return res.status(400).send('Commit hash param is required!');
   }
   const { body } = req;
-  //  если каких то параметров нету, то берем инфу из гита
-  //if (!body.commitMessage || !body.branchName || !body.authorName) {
-  //  const info = await gitSetvice.getCommitInfo(commitHash);
-  //} TODO: impl
+
   let apiResponse;
   try {
-    apiResponse = await yandexService.addBuildToQueue({
-      commitHash,
-      commitMessage: body.commitMessage || 'string',
-      branchName: body.branchName || 'string',
-      authorName: body.authorName || 'string',
-    });
+    //если каких то параметров нету, то берем инфу из гита
+    if (!body.commitMessage || !body.branchName || !body.authorName) {
+      const commitInfo = await gitSetvice.getCommitInfo(commitHash);
+      apiResponse = await yandexService.addBuildToQueue(commitInfo);
+    } else {
+      apiResponse = await yandexService.addBuildToQueue({
+        commitHash,
+        commitMessage: body.commitMessage || 'string',
+        branchName: body.branchName || 'string',
+        authorName: body.authorName || 'string',
+      });
+    }
 
     res.send(apiResponse.data);
   } catch (e) {
-    return res.send(500).send(e);
+    return res.status(500).send(e);
   }
 });
 
@@ -100,7 +103,7 @@ builds.get('/:buildId/logs', async (req, res) => {
 
     const logs = await yandexService.getBuildLogs(buildId);
     if (logs.status !== 200) {
-      return res.send(500);
+      return res.status(500).send('server error');
     }
     const { data } = logs;
     await cacheService.write(buildId, data);

@@ -84,6 +84,20 @@ class GitService {
     });
   };
 
+  loadSettingsFromYandexStorage = async () => {
+    try {
+      const apiResponse = await this.yandexService.getSavedSettings();
+      const { data } = apiResponse;
+      if (!data || !data.data) {
+        return;
+      }
+
+      await this.init(data.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   // инициализация севиса
   init = async (settings) => {
     this.repoName = settings.repoName;
@@ -101,6 +115,7 @@ class GitService {
       }
     } else {
       await this.checkout(this.repoName, this.mainBranch);
+      // ставим билд на последний коммит
       const log = await this.getLog(this.repoName, this.getLogCommand());
       if (log) {
         // получаем последний коммит
@@ -241,12 +256,17 @@ class GitService {
 
   getCommitInfo = async (commitHash) => {
     try {
+      console.log(`getting ${commitHash} info from git service`);
       const log = await this.getLog(this.repoName, this.getShowCommand(commitHash));
       if (!log || log.length === 0) {
         return;
       }
 
-      return log[0];
+      return {
+        ...log[0],
+        branchName: this.mainBranch,
+        commitHash,
+      };
     } catch (e) {
       console.log(e);
     }
@@ -256,6 +276,8 @@ class GitService {
    * получение лога в отдельном процессе
    */
   getLog = (repoName, command) => {
+    console.log('starting getting log, command = ', command);
+    console.log(repoName);
     return new Promise((resolve, reject) => {
       let logData = '';
       const logProcess = spawn('git', command, {

@@ -19,9 +19,8 @@ export const loadSettingsFromServerAsync = (dispatch) => {
       const res = await axios.get('/api/settings');
       console.log(res.data);
       const { data } = res;
-      const isLoaded = Object.keys(data).length > 0;
       dispatch(setSettings({ ...data }));
-      return isLoaded;
+      return data;
     } catch (e) {
       console.log(e);
     }
