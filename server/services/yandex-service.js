@@ -32,25 +32,23 @@ class YandexService {
    */
   addBuildToQueue = async ({ commitHash, commitMessage, branchName, authorName }) => {
     try {
-      await this.webClient.post('/api/build/request', {
+      const apiResponse = await this.webClient.post('/api/build/request', {
         commitHash,
         commitMessage: commitMessage || '',
         branchName: branchName || '',
         authorName: authorName || '',
       });
 
-      const apiResponse = await this.getBuildsList({ limit: 1, offset: 0 });
-
       const { data } = apiResponse;
       if (data === undefined) {
         return;
       }
-      const buildParams = { buildId: data.data[0].id };
+      const buildParams = { buildId: data.data.id };
       await this.startBuildMock(buildParams);
 
       setTimeout(() => {
         this.finishBuildMock(buildParams);
-      }, 2000);
+      }, 10000);
 
       return data;
     } catch (e) {
@@ -131,9 +129,9 @@ class YandexService {
     try {
       await this.webClient.post('/api/build/finish', {
         buildId,
-        duration: '1h 20m',
+        duration: 10,
         success: true,
-        buildLog: 'some test log',
+        buildLog: '81.23 KB [2mbuild/static/js/ [22m [36m2.de162694.chunk.js [39m',
       });
     } catch (e) {
       console.log('Finish build mock failed', e.toString());

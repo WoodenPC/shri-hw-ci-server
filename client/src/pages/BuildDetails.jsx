@@ -43,7 +43,6 @@ class BuildDetailsPage extends React.PureComponent {
       commitHash,
     } = this.state;
     try {
-      this.setState({ isLoading: true });
       const data = await runRebuildAsync({
         id,
         branchName,
@@ -52,36 +51,38 @@ class BuildDetailsPage extends React.PureComponent {
         commitHash,
       });
 
-      history.push(`/buildDetails/${data[0].id}`, {
-        buildId: data[0].id,
+      history.push(`/build/${data.id}`, {
+        buildId: data.id,
       });
-    } finally {
-      this.setState({ modalVisible: false, isLoading: false });
+    } catch (e) {
+      console.log(e);
     }
   };
 
   loadBuildInfo = async () => {
     const { match, loadBuildDetailsAsync, loadBuildLogsAsync } = this.props;
-
+    console.log('Start getting build info');
     const { params } = match;
     try {
+      this.setState({ isLoading: true });
       const detailsPromise = loadBuildDetailsAsync(params.buildId);
       const logsPromise = loadBuildLogsAsync(params.buildId);
       const [details, logs] = await Promise.all([detailsPromise, logsPromise]);
       this.setState({ logs, ...details });
     } finally {
+      console.log('load build info end');
       this.setState({ isLoading: false });
     }
   };
 
-  componentDidMount() {
-    this.loadBuildInfo();
+  async componentDidMount() {
+    await this.loadBuildInfo();
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     if (this.props.location.pathname !== prevProps.location.pathname) {
       console.log('reload');
-      this.loadBuildInfo();
+      await this.loadBuildInfo();
     }
   }
 

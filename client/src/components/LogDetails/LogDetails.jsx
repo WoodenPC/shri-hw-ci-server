@@ -10,6 +10,7 @@ const classes = cn('LogDetails');
 const convert = new Convert({ fg: '#000', bg: '#000' });
 
 const LogDetails = memo(({ log }) => {
+  console.log(log);
   const [testLogs, setTestLogs] = useState('');
   useEffect(() => {
     fetch(webpackLogs)
