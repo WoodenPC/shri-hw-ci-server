@@ -94,12 +94,14 @@ class GitService {
       this.lastBuildCommitHash = null;
       try {
         await this.clone(this.repoUrl, this.repoName);
+        await this.checkout(this.repoName, this.mainBranch);
       } catch (e) {
         console.log(e);
         return false;
       }
     } else {
-      const log = await this.getLog(this.repoName, this.getLogCommand(this.mainBranch));
+      await this.checkout(this.repoName, this.mainBranch);
+      const log = await this.getLog(this.repoName, this.getLogCommand());
       if (log) {
         // получаем последний коммит
         this.lastBuildCommitHash = log[0] && log[0].commitHash;
@@ -118,10 +120,7 @@ class GitService {
   sendBuildsForNewCommits = async () => {
     let log;
     try {
-      log = await this.getLog(
-        this.repoName,
-        this.getLogCommand(this.mainBranch, { untilHash: this.lastBuildCommitHash }),
-      );
+      log = await this.getLog(this.repoName, this.getLogCommand({ untilHash: this.lastBuildCommitHash }));
     } catch (e) {
       console.log('cannot get log ', e);
       return;
@@ -217,7 +216,7 @@ class GitService {
   /**
    * получение команды для лога
    */
-  getLogCommand = (branchName, params = {}) => {
+  getLogCommand = (params = {}) => {
     const format = '--pretty=format:{ "commitHash":"%H", "authorName":"%cn", "commitMessage": "%s" }';
     const command = ['log'];
     if (!params.untilHash) {
@@ -227,9 +226,6 @@ class GitService {
     }
 
     command.push(format);
-    //command.push(branchName);
-    // не работает, отложить до лучших времен
-
     return command;
   };
 
