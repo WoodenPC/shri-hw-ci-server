@@ -59,14 +59,13 @@ class CacheService {
   /**
    * пишет лог в файл через стрим
    */
-  write = (buildId, stream) => {
-    return new Promise(async (resolve, reject) => {
-      const path = this.getBuildCacheLogPath(buildId);
-      const dir = this.getBuildCacheDir(buildId);
-      if (!(await fileExistsAsync(dir))) {
-        await mkDirAsync(dir, { recursive: true });
-      }
-
+  write = async (buildId, stream) => {
+    const path = this.getBuildCacheLogPath(buildId);
+    const dir = this.getBuildCacheDir(buildId);
+    if (!(await fileExistsAsync(dir))) {
+      await mkDirAsync(dir, { recursive: true });
+    }
+    return new Promise((resolve, reject) => {
       console.log(`writing cache to ${path}`);
       const writeStream = createWriteStream(path, { flags: 'w' });
       stream.pipe(writeStream);
@@ -84,14 +83,13 @@ class CacheService {
   /**
    * читает лог из файла через стрим
    */
-  read = (buildId, stream) => {
-    return new Promise(async (resolve, reject) => {
-      const path = this.getBuildCacheLogPath(buildId);
+  read = async (buildId, stream) => {
+    const path = this.getBuildCacheLogPath(buildId);
 
-      if (!(await fileExistsAsync(path))) {
-        resolve(false);
-      }
-
+    if (!(await fileExistsAsync(path))) {
+      resolve(false);
+    }
+    return new Promise((resolve, reject) => {
       const readStream = createReadStream(path);
       readStream.pipe(stream);
       readStream.on('close', () => {

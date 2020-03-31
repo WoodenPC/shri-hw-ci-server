@@ -143,16 +143,16 @@ class GitService {
 
       const { commitHash, commitMessage, authorName } = logData;
       // видимо у хранилища есть таймаут, поэтому приходится дожидаться выполнения добавления
-      await this.yandexService
-        .addBuildToQueue({
+      try {
+        await this.yandexService.addBuildToQueue({
           commitHash,
           commitMessage,
           authorName,
           branchName: this.mainBranch,
-        })
-        .catch((reason) => {
-          console.log('Cannot add build to queue after pull ', reason.toString());
         });
+      } catch (e) {
+        console.log('Cannot add build to queue after pull ', e);
+      }
     }
   };
 
@@ -160,7 +160,7 @@ class GitService {
    * наблюдение за клонированным репозиторием
    */
   watch = (repoName) => {
-    this.fsWatcher = watch(this.getRepoFolder(repoName), async () => {
+    this.fsWatcher = watch(this.getRepoFolder(repoName), () => {
       console.log('repo updated');
     });
 
