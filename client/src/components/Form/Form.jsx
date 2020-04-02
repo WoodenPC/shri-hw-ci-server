@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
+import PropTypes from 'prop-types';
 
 import { FormHeader } from './FormHeader';
 import { FormFooter } from './FormFooter';
@@ -19,9 +20,16 @@ const Form = memo(({ children }) => {
   return <form className={classes()}>{children}</form>;
 });
 
-Form.propTypes = {};
+Form.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+};
 
-Form.defaultProps = {};
+Form.defaultProps = {
+  children: null,
+};
 
 Form.Header = FormHeader;
 Form.Fields = FormFields;

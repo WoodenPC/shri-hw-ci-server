@@ -13,6 +13,8 @@ services:
     restart: always
     build:
       context: ./client
+    environment:
+      - NODE_ENV=production
   nginx:
     restart: always
     build:

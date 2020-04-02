@@ -1,4 +1,4 @@
-import { axios } from 'axiosInstance';
+import { axios } from 'utils/axiosInstance';
 
 import * as actionTypes from 'store/actionTypes/settings';
 

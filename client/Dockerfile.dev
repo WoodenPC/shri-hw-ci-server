@@ -1,7 +1,10 @@
 FROM node:alpine
 WORKDIR '/app'
+RUN apk update && apk upgrade && apk add supervisor
 COPY package.json .
 COPY package-lock.json .
-RUN npm ci
+RUN npm install
 COPY . .
-CMD ["npm", "run", "start"]
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+EXPOSE 3001
+CMD ["/usr/bin/supervisord"]

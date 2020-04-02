@@ -2,6 +2,8 @@ import React from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import './scss/main.scss';
+
 import { loadSettingsFromServerAsync } from 'store/actionsCreators/settings';
 
 import {

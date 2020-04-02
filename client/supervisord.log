@@ -1,0 +1,30 @@
+2020-04-02 13:25:28,984 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2020-04-02 13:25:29,003 INFO supervisord started with pid 1
+2020-04-02 13:25:30,008 INFO spawned: 'client' with pid 8
+2020-04-02 13:25:30,029 INFO spawned: 'server' with pid 9
+2020-04-02 13:25:31,084 INFO success: client entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2020-04-02 13:25:31,109 INFO success: server entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2020-04-02 13:30:47,611 WARN received SIGTERM indicating exit request
+2020-04-02 13:30:47,634 INFO waiting for client, server to die
+2020-04-02 13:30:47,651 INFO stopped: server (terminated by SIGTERM)
+2020-04-02 13:30:48,680 INFO stopped: client (terminated by SIGTERM)
+2020-04-02 13:33:16,021 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2020-04-02 13:33:16,048 INFO supervisord started with pid 1
+2020-04-02 13:33:17,059 INFO spawned: 'client' with pid 8
+2020-04-02 13:33:17,121 INFO spawned: 'server' with pid 9
+2020-04-02 13:33:18,136 INFO success: client entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2020-04-02 13:33:18,138 INFO success: server entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2020-04-02 13:40:50,902 WARN received SIGTERM indicating exit request
+2020-04-02 13:40:50,943 INFO waiting for client, server to die
+2020-04-02 13:40:50,985 INFO stopped: server (terminated by SIGTERM)
+2020-04-02 13:40:52,044 INFO stopped: client (terminated by SIGTERM)
+2020-04-02 13:59:56,398 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2020-04-02 13:59:56,411 INFO supervisord started with pid 1
+2020-04-02 13:59:57,416 INFO spawned: 'client' with pid 8
+2020-04-02 13:59:57,425 INFO spawned: 'server' with pid 9
+2020-04-02 13:59:58,432 INFO success: client entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2020-04-02 13:59:58,435 INFO success: server entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2020-04-02 14:01:34,976 WARN received SIGTERM indicating exit request
+2020-04-02 14:01:34,985 INFO waiting for client, server to die
+2020-04-02 14:01:36,069 INFO stopped: server (exit status 143)
+2020-04-02 14:01:37,077 INFO stopped: client (terminated by SIGTERM)
