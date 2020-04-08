@@ -1,0 +1,118 @@
+.Card {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+  padding: var(--space-l) var(--space-xxxxxl);
+
+  @media (max-width: $screen-mobile) {
+    padding: var(--space-l) var(--space-xxxl);
+  }
+
+  padding: var(--space-l) var(--space-xxxxl);
+  border-radius: 6px;
+  box-shadow: 0px 1px 1px var(--shadow),
+    0px 0px 1px var(--shadow);
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0px 2px 8px var(--shadow),
+      0px 0px 1px var(--shadow);
+  }
+
+  &_status {
+    &_success {
+      .Card-Number {
+        color: var(--green);
+      }
+    }
+
+    &_fail, &_canceled {
+      .Card-Number {
+        color: var(--red);
+      }
+    }
+    &_waiting, &_inprogress {
+      .Card-Number {
+        color: var(--orange-3);
+      }
+    }
+  }
+
+  &-Content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    @media (max-width: $screen-mobile) {
+      flex-direction: column;
+      justify-content: initial;
+    }
+  }
+
+  &-Body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    margin-left: var(--space-m);
+    @media (max-width: $screen-mobile) {
+      margin-bottom: var(--space-s);
+    }
+  }
+
+  &-Meta {
+    @include withGridGap(--space-l, row);
+
+    @media (max-width: $screen-mobile) {
+      border-top: 1px solid var(--grey-1);
+      flex-direction: row;
+      padding-top: var(--space-s);
+      @include withGridGap(--space-m, column);
+    }
+  }
+
+  &-BuildStartTime,
+  &-BuildDuration {
+    color: var(--grey-9);
+    @include withGridGap(--space-xs, column);
+  }
+
+  &-Title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: var(--font-size-m);
+    line-height: var(--line-height-l);
+    max-width: 40rem;
+    @include withTextOverflow();
+  }
+
+  &-Subtitle {
+    line-height: var(--line-height-s);
+    margin-top: var(--space-s);
+    max-width: 100%;
+    @include withTextOverflow();
+    @include withGridGap(--space-m, column);
+
+    @media (max-width: $screen-mobile) {
+      @include withGridGap(--space-s, row);
+    }
+  }
+
+  &-Text {
+    @include withTextOverflow();
+  }
+
+  &-Number {
+    font-size: var(--font-size-xl);
+    margin-right: var(--space-s);
+    line-height: var(--line-height-l);
+    max-width: 100%;
+
+    @media (max-width: $screen-mobile) {
+      font-size: var(--font-size-l);
+      line-height: var(--line-height-s);
+    }
+  }
+}

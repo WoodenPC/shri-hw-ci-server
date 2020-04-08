@@ -1,0 +1,33 @@
+.Footer {
+  flex-shrink: 0;
+  width: 100%;
+  background-color: var(--grey-1);
+  font-size: var(--font-size-s);
+  color: var(--grey-8);
+
+  &-Inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--space-s);
+    padding-bottom: var(--space-s);
+
+    @media (max-width: $screen-mobile) {
+      flex-direction: column;
+      align-items: flex-start;
+      padding-top: var(--space-l);
+      padding-bottom: var(--space-l);
+    }
+
+    @include centered;
+  }
+
+  &-Menu {
+    @include withGridGap(--space-l, column);
+  }
+
+  &-Author {
+    line-height: var(--line-height-m);
+  }
+}

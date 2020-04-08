@@ -1,0 +1,8 @@
+.Link {
+  outline: none;
+  text-decoration: none;
+  color: var(--grey-10);
+  &:hover {
+    color: var(--red);
+  }
+}

@@ -1,0 +1,111 @@
+.Button {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  font-size: var(--font-size-s);
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  vertical-align: middle;
+  outline: none;
+  text-decoration: none;
+  color: var(--black);
+
+  &[disabled], &[disabled]:hover, &[disabled]:focus {
+    background-color: var(--grey-2);
+    color: var(--grey-9);
+  }
+
+  &_variant {
+    &_outlined {
+      border: 1px solid var(--grey-5);
+    }
+
+    &_text {
+      &,
+      &:focus,
+      &:hover {
+        box-shadow: none;
+      }
+    }
+  }
+
+  &_size {
+    &_medium {
+      height: 2.8rem;
+    }
+
+    &_big {
+      height: 3.6rem;
+    }
+  }
+
+  &_color {
+    &_primary {
+      background-color: var(--orange-1);
+      &:hover {
+        background-color: var(--orange-2);
+      }
+    
+      &:focus {
+        background-color: var(--orange-1);
+        box-shadow:
+          0 0 0 2px var(--orange-4),
+          0 0 0 2px var(--orange-4);
+        }
+    }
+
+    &_secondary {
+      background-color: var(--grey-4);
+
+      &:hover {
+        background-color: var(--grey-6);
+      }
+    
+      &:focus {
+        background-color: var(--grey-4);
+        box-shadow:
+          0 0 0 2px var(--grey-8),
+          0 0 0 2px var(--grey-8);
+      }
+    }
+
+    &_default {
+      background-color: var(--white);
+      &:focus {
+        border-width: 2px;
+      }
+    }
+  }
+
+  &_type {
+    &_icon {
+      .Button-Text {
+        margin-left: calc(var(--space-xxxs) * -1);
+        margin-right: var(--space-xl);
+      }
+
+      @media (max-width: $screen-mobile) {
+        .Button-Text {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &-Icon {
+    width: 2.8rem;
+    display: flex;
+    justify-content: center;
+
+    @media (max-width: $screen-mobile) {
+      padding: var(--space-s);
+    }
+  }
+
+  &-Text {
+    margin: auto var(--space-xxxxl);
+    @include withTextOverflow();
+  }
+}

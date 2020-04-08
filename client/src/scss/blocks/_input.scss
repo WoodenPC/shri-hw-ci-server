@@ -1,0 +1,63 @@
+.Input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 4px;
+  border: 2px solid var(--grey-5);
+  padding: 0 var(--space-xl);
+  height: 3.6rem;
+  color: var(--primary-text-color);
+  line-height: var(--line-height-xs);
+
+  &:focus-within {
+    border: 2px solid var(--grey-7);
+  }
+
+  &_short {
+    .Input-Box {
+      text-align: end;
+    }
+    .Input-AddonAfter {
+      display: none;
+    }
+    width: 5.2rem;
+  }
+
+  &_state {
+    &_disabled {
+      .Input-Box {
+        color: var(--grey-6);
+      }
+      pointer-events: none;
+      .Input-AddonAfter {
+        display: none;
+      }
+    }
+  }
+
+  &-Box {
+    width: 100%;
+    text-decoration: none;
+    outline: none;
+    border: none;
+
+    &::placeholder {
+      color: var(--grey-5);
+    }
+
+    &:placeholder-shown {
+      &+.Input-AddonAfter {
+        display: none;
+      }
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      display: none;
+    }
+  }
+
+  &-Label {
+    margin-bottom: var(--space-xs);
+  }
+}

@@ -1,0 +1,37 @@
+
+> shri-hw-react@0.1.0 build /Users/arslanovrasul/Documents/programming/shri/shri-hw-ci-server/client
+> react-scripts build
+
+Creating an optimized production build...
+[32mCompiled successfully.[39m
+[32m[39m
+File sizes after gzip:
+
+  81.23 KB         [2mbuild/static/js/[22m[36m2.de162694.chunk.js[39m
+  5.8 KB ([33m+173 B[39m)  [2mbuild/static/js/[22m[36mmain.18300c87.chunk.js[39m
+  3.44 KB ([32m-1 B[39m)   [2mbuild/static/css/[22m[36mmain.40cf577b.chunk.css[39m
+  775 B            [2mbuild/static/js/[22m[36mruntime-main.d08de9e0.js[39m
+
+The project was built assuming it is hosted at [32m/[39m.
+You can control this with the [32mhomepage[39m field in your [36mpackage.json[39m.
+
+The [36mbuild[39m folder is ready to be deployed.
+You may serve it with a static server:
+
+  [36mnpm[39m install -g serve
+  [36mserve[39m -s build
+
+Find out more about deployment here:
+
+  [33mbit.ly/CRA-deploy[39m
+
+
+[33m[39m
+[33m   ╭────────────────────────────────────────────────────────────────╮[39m
+   [33m│[39m                                                                [33m│[39m
+   [33m│[39m      New [33mminor[39m version of npm available! [31m6.13.4[39m → [32m6.14.4[39m       [33m│[39m
+   [33m│[39m   [33mChangelog:[39m [36mhttps://github.com/npm/cli/releases/tag/v6.14.4[39m   [33m│[39m
+   [33m│[39m               Run [32mnpm install -g npm[39m to update!                [33m│[39m
+   [33m│[39m                                                                [33m│[39m
+[33m   ╰────────────────────────────────────────────────────────────────╯[39m
+[33m[39m

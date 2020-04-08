@@ -1,0 +1,30 @@
+{
+  "name": "shri-hw-ci-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon -L index.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WoodenPC/shri-hw-ci-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "browserslist": [
+    "last 10 versions"
+  ],
+  "bugs": {
+    "url": "https://github.com/WoodenPC/shri-hw-ci-server/issues"
+  },
+  "homepage": "https://github.com/WoodenPC/shri-hw-ci-server#readme",
+  "devDependencies": {
+    "axios": "^0.19.2",
+    "date-fns": "^2.11.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2"
+  }
+}

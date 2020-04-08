@@ -1,0 +1,53 @@
+.Form {
+  display: flex;
+  flex-direction: column;
+  max-width: 47.4rem;
+
+  fieldset {
+    border: none;
+  }
+
+  @media (max-width: $screen-mobile) {
+    max-width: none;
+    width: 100%;
+  }
+
+  &-Header {
+    margin-top: var(--space-s);
+    margin-bottom: var(--space-xxl);
+
+    @media (max-width: $screen-mobile) {
+      margin-bottom: var(--space-xs);
+    }
+  }
+
+  &-Fields {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &-Title {
+    font-size: var(--font-size-m);
+    line-height: var(--line-height-l);
+    font-weight: bold;
+    color: var(--primary-text-color);
+    margin-bottom: var(--space-s);
+  }
+
+  &-Description {
+    color: var(--grey-8);
+    line-height: var(--line-height-m);
+  }
+
+  &-Footer {
+    display: flex;
+    flex-direction: row;
+    margin-top: var(--space-m);
+    @include withGridGap(--space-s, column);
+
+    @media (max-width: $screen-mobile) {
+      @include withGridGap(--space-l, row);
+      grid-auto-columns: auto;
+    }
+  }
+}

@@ -1,13 +1,34 @@
 version: '3'
 services:
-  node-service:
+  ci-node-server:
     restart: always
-    env_file: ./.env
+    env_file: ./server/.env
     build:
-      context: .
+      context: ./server
       dockerfile: Dockerfile.dev
     volumes:
-        - .:/app
+        - ./server:/app
+        - /app/node_modules
     ports:
-        - 3000:3000
+        - 5000:5000
         - 9229:9229
+  ci-client:
+    restart: always
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    environment:
+      - CI=true
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+
+  nginx:
+    restart: always
+    build:
+      context: ./nginx
+    depends_on:
+      - ci-client
+      - ci-node-server
+    ports:
+      - '3000:80'

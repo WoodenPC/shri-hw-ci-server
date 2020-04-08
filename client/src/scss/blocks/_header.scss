@@ -1,0 +1,36 @@
+.Header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: var(--space-m);
+  padding-bottom: var(--space-m);
+  @include centered;
+
+  &-Title {
+    @include withTextOverflow();
+    h1 {
+      font-size: var(--font-size-xxl);
+      line-height: var(--line-height-xxl);
+      font-weight: var(--font-weight-medium);
+      letter-spacing: 0.25px;
+      color: var(--grey-8);
+      max-width: 50rem;
+    }
+
+    &_color {
+      &_black {
+        h1 {
+          color: var(--black);
+        }
+      }
+    }
+  }
+
+  &-Menu {
+    display: flex;
+    flex-direction: row;
+    align-self: baseline;
+    @include withGridGap(--space-s, column);
+  }
+}
