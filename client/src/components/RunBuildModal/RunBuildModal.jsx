@@ -5,19 +5,20 @@ import { Modal } from 'components/Modal';
 import { Form } from 'components/Form';
 import { Input } from 'components/Input';
 import { Button } from 'components/Button';
+import { useCallback } from 'react';
 
 const RunBuildModal = memo(({ visible, onRunBuild, onCancel }) => {
   const [hash, setHash] = useState('');
 
-  const onChangeHash = (event) => {
+  const onChangeHash = useCallback((event) => {
     setHash(event.target.value);
-  };
+  });
 
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
     if (onRunBuild) {
       onRunBuild(hash);
     }
-  };
+  }, [hash]);
 
   return (
     <Modal visible={visible}>

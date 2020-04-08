@@ -3,14 +3,15 @@ import { cn } from '@bem-react/classname';
 import PropTypes from 'prop-types';
 import { Button } from 'components/Button/Button';
 import { Icon } from 'components/Icon/Icon';
+import { useCallback } from 'react';
 
 const classes = cn('Input');
 
 const Input = memo(
   ({ value, onChange, placeholder, type, short, defaultValue }) => {
-    const clearValue = () => {
+    const clearValue = useCallback(() => {
       onChange({ target: { value: '' } });
-    };
+    });
 
     return (
       <div className={classes({ short })}>

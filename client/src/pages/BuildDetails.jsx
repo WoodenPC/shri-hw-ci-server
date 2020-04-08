@@ -61,7 +61,6 @@ class BuildDetailsPage extends React.PureComponent {
 
   loadBuildInfo = async () => {
     const { match, loadBuildDetailsAsync, loadBuildLogsAsync } = this.props;
-    console.log('Start getting build info');
     const { params } = match;
     try {
       this.setState({ isLoading: true });
@@ -70,7 +69,6 @@ class BuildDetailsPage extends React.PureComponent {
       const [details, logs] = await Promise.all([detailsPromise, logsPromise]);
       this.setState({ logs, ...details });
     } finally {
-      console.log('load build info end');
       this.setState({ isLoading: false });
     }
   };
@@ -81,7 +79,6 @@ class BuildDetailsPage extends React.PureComponent {
 
   async componentDidUpdate(prevProps) {
     if (this.props.location.pathname !== prevProps.location.pathname) {
-      console.log('reload');
       await this.loadBuildInfo();
     }
   }

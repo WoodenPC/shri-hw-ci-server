@@ -6,6 +6,8 @@ import { format } from 'date-fns';
 import { Icon } from 'components/Icon';
 import { UserName } from 'components/UserName';
 import { Commit } from 'components/Commit';
+import { useMemo } from 'react';
+import { useCallback } from 'react';
 
 const classes = cn('Card');
 
@@ -22,16 +24,17 @@ const Card = memo(
     duration,
     onClick,
   }) => {
-    const date = new Date(start);
-    const utcDate = new Date(
-      Date.UTC(date.getFullYear(), date.getMonth(), date.getDay())
-    );
+    const utcDate = useMemo(() => {
+      return new Date(
+        Date.UTC(date.getFullYear(), date.getMonth(), date.getDay())
+      );
+    }, [start]);
 
-    const onClickInner = () => {
+    const onClickInner = useCallback(() => {
       if (onClick !== undefined) {
         onClick({ buildId: id, commitHash: hash });
       }
-    };
+    }, [id, hash]);
 
     return (
       <div className={classes({ status })} onClick={onClickInner}>
