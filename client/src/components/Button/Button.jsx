@@ -9,12 +9,7 @@ const Button = memo(
     const type = icon ? 'icon' : null;
     return (
       <button
-        className={`${classes({
-          variant,
-          color,
-          size,
-          type,
-        })} ${classMix}`}
+        className={`${classes({ variant, color, size, type })} ${classMix}`}
         onClick={onClick}
         type='button'
         disabled={disabled}

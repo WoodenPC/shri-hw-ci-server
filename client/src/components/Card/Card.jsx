@@ -24,10 +24,11 @@ const Card = memo(
     duration,
     onClick,
   }) => {
-    const utcDate = useMemo(() => {
-      return new Date(
+    const utcDateString = useMemo(() => {
+      const utcDate = new Date(
         Date.UTC(date.getFullYear(), date.getMonth(), date.getDay())
       );
+      return format(utcDate, 'dd MMM, HH:mm');
     }, [start]);
 
     const onClickInner = useCallback(() => {
@@ -55,7 +56,7 @@ const Card = memo(
           <div className={classes('Meta')}>
             <div className={classes('BuildStartTime')}>
               <Icon type='calendar' />
-              <span>{format(utcDate, 'dd MMM, HH:mm')}</span>
+              <span>{utcDateString}</span>
             </div>
             <div className={classes('BuildDuration')}>
               <Icon type='timer' />
