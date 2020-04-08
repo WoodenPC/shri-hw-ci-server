@@ -25,6 +25,7 @@ const Card = memo(
     onClick,
   }) => {
     const utcDate = useMemo(() => {
+      const date = new Date(start);
       return new Date(
         Date.UTC(date.getFullYear(), date.getMonth(), date.getDay())
       );
