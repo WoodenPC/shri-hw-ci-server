@@ -19,10 +19,10 @@ services:
       dockerfile: Dockerfile.dev
     environment:
       - CI=true
+      - NODE_ENV=development
     volumes:
       - ./client:/app
       - /app/node_modules
-
   nginx:
     restart: always
     build:

@@ -1,5 +1,5 @@
 import * as actionTypes from 'store/actionTypes/buildHistory';
-import { axios } from 'axiosInstance';
+import { axios } from 'utils/axiosInstance';
 
 /**
  * дроп билдов
