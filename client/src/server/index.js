@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 
 import { App } from '../App';
 import { StaticRouter } from 'react-router-dom';
-import { store } from 'store/store';
+import { createServerStore } from 'store/store';
 
 let productionTemplate;
 const getProductionPageTemplate = () => {
@@ -34,6 +34,7 @@ const server = express();
 server.use(express.static('build'));
 
 server.get('/*', (req, res, next) => {
+  const store = createServerStore();
   if (process.env.NODE_ENV === 'production') {
     res.send(
       renderPage(
@@ -56,7 +57,7 @@ server.get('/*', (req, res, next) => {
   ) {
     headers['accept-encoding'] = 'utf8';
   }
-
+  // если в дев режиме, то переводим на сервак cra
   http.get(
     {
       port: 3000,

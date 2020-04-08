@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunk from 'redux-thunk';
 
 import {
@@ -13,6 +13,20 @@ const rootReducer = combineReducers({
   buildDetails: buildDetailsReducer,
 });
 
-const middleWare = applyMiddleware(thunk);
+// создание стора для клиента
+export const createClientStore = () => {
+  const composeEnhancers =
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  const middleWare =
+    process.env.NODE_ENV === 'development'
+      ? composeEnhancers(applyMiddleware(thunk))
+      : applyMiddleware(thunk);
 
-export const store = createStore(rootReducer, middleWare);
+  return createStore(rootReducer, middleWare);
+};
+
+// создание стора для ssr
+export const createServerStore = () => {
+  const middleWare = applyMiddleware(thunk);
+  return createStore(rootReducer, middleWare);
+};
