@@ -27,4 +27,9 @@ describe('Тесты компонента Card', () => {
     fireEvent.click(container.querySelector('.Card'));
     expect(testFunc).toHaveBeenCalled();
   });
+
+  test('У компонента есть модификатор status', () => {
+    const { container } = render(<Card status='success' />);
+    expect(container.classList.contains('Card_status_success'));
+  });
 });
