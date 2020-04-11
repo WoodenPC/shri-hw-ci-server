@@ -30,6 +30,8 @@ describe('Тесты компонента Card', () => {
 
   test('У компонента есть модификатор status', () => {
     const { container } = render(<Card status='success' />);
-    expect(container.classList.contains('Card_status_success'));
+    expect(
+      container.firstChild.classList.contains('Card_status_success')
+    ).toBeTruthy();
   });
 });

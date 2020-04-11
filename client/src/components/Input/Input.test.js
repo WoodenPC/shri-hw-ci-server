@@ -41,6 +41,6 @@ describe('тесты компонента Input', () => {
 
   test('У компонента появляется модификатор short', () => {
     const { container } = render(<Input short />);
-    expect(container.classList.contains('Input_short'));
+    expect(container.firstChild.classList.contains('Input_short')).toBeTruthy();
   });
 });

@@ -17,7 +17,9 @@ describe('Тесты компонента List', () => {
 
   test('У компонента есть модификатор direction', () => {
     const { container } = render(<List direction='row' />);
-    expect(container.classList.contains('List_direction_col'));
+    expect(
+      container.firstChild.classList.contains('List_direction_row')
+    ).toBeTruthy();
   });
 
   test('Эвент onShowMore отрабатывает корректно', () => {

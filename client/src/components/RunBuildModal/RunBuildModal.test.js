@@ -7,7 +7,7 @@ import { RunBuildModal } from './RunBuildModal';
 describe('Тесты компонента RunBuildModal', () => {
   test('Компонент рендерится', () => {
     const { container } = render(<RunBuildModal visible />);
-    expect(container).toBeInTheDocument();
+    expect(container.firstChild).toBeInTheDocument();
   });
 
   test('Событие onRunBuild отрабатывает корректно', () => {

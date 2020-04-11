@@ -20,7 +20,9 @@ describe('Тесты компонента Header', () => {
   test('У Title компонента появляется модификатор color, когда color прилетает в пропсы', () => {
     const { container } = render(<Header color='black' />);
     expect(
-      container.querySelector('div.Header-Title.Header-Title_color_black')
-    ).toBeInTheDocument();
+      container
+        .querySelector('div.Header-Title')
+        .classList.contains('Header-Title_color_black')
+    ).toBeTruthy();
   });
 });

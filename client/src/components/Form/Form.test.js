@@ -39,7 +39,9 @@ describe('Тесты компонента FormField', () => {
 
   test('У FormField есть модификатор required, когда поле обязательно к заполнению', () => {
     const { container } = render(<Form.Field required />);
-    expect(container.classList.contains('FormField_required'));
+    expect(
+      container.firstChild.classList.contains('FormField_required')
+    ).toBeTruthy();
   });
 });
 
