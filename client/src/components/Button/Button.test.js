@@ -15,7 +15,7 @@ describe('Тесты компонента Button', () => {
     const { container } = render(
       <Button type='icon' icon={<Icon type='settings' />} />
     );
-    const iconContainer = container.querySelector('.Icon.Icon_type_settings');
+    const iconContainer = container.querySelector('.Button-Icon');
     expect(iconContainer).not.toBe(null);
   });
 
@@ -24,5 +24,25 @@ describe('Тесты компонента Button', () => {
     const { getByText } = render(<Button text='button' onClick={clickFunc} />);
     fireEvent.click(getByText('button'));
     expect(clickFunc).toHaveBeenCalled();
+  });
+
+  test('У компонента есть модификатор variant', () => {
+    const { container } = render(<Button variant='text' />);
+    expect(container.classList.contains('Button_variant_text'));
+  });
+
+  test('У компонента есть модификатор color', () => {
+    const { container } = render(<Button color='primary' />);
+    expect(container.classList.contains('Button_color_primary'));
+  });
+
+  test('У компонента есть модификатор size', () => {
+    const { container } = render(<Button size='big' />);
+    expect(container.classList.contains('Button_size_big'));
+  });
+
+  test('У компонента есть модификатор type', () => {
+    const { container } = render(<Button type='icon' />);
+    expect(container.classList.contains('Button_type_icon'));
   });
 });

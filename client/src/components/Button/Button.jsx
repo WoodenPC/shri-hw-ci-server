@@ -25,7 +25,7 @@ Button.propTypes = {
   variant: PropTypes.oneOf(['outlined', 'text']),
   text: PropTypes.string,
   icon: PropTypes.element,
-  size: PropTypes.string,
+  size: PropTypes.oneOf(['medium', 'big']),
   onClick: PropTypes.func,
   color: PropTypes.oneOf(['default', 'primary', 'secondary']),
   classMix: PropTypes.string,

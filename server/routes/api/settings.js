@@ -8,24 +8,23 @@ settings.get('/', async (_, res) => {
   let apiResponse;
   try {
     apiResponse = await yandexService.getSavedSettings();
+    const { data } = apiResponse;
+    if (data === undefined) {
+      return res.status(500).send('Cannot get configuration settings from api server!');
+    }
+
+    const settingsData = data.data;
+
+    res.status(200).send({
+      id: settingsData.id,
+      repoName: settingsData.repoName,
+      buildCommand: settingsData.buildCommand,
+      mainBranch: settingsData.mainBranch,
+      period: settingsData.period,
+    });
   } catch (e) {
     return res.status(500).send(e);
   }
-
-  const { data } = apiResponse;
-  if (data === undefined) {
-    return res.status(500).send('Cannot get configuration settings from api server!');
-  }
-
-  const settingsData = data.data;
-
-  res.status(200).send({
-    id: settingsData.id,
-    repoName: settingsData.repoName,
-    buildCommand: settingsData.buildCommand,
-    mainBranch: settingsData.mainBranch,
-    period: settingsData.period,
-  });
 });
 
 // cохранение настроек

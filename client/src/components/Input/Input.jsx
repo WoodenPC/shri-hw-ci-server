@@ -10,7 +10,9 @@ const classes = cn('Input');
 const Input = memo(
   ({ value, onChange, placeholder, type, short, defaultValue }) => {
     const clearValue = useCallback(() => {
-      onChange({ target: { value: '' } });
+      if (onChange !== undefined) {
+        onChange({ target: { value: '' } });
+      }
     });
 
     return (
@@ -23,9 +25,11 @@ const Input = memo(
           placeholder={placeholder}
           defaultValue={defaultValue}
         />
-        <div className={classes('AddonAfter')}>
-          <Button icon={<Icon type='clear' />} onClick={clearValue} />
-        </div>
+        {onChange && (
+          <div className={classes('AddonAfter')}>
+            <Button icon={<Icon type='clear' />} onClick={clearValue} />
+          </div>
+        )}
       </div>
     );
   }
@@ -34,7 +38,7 @@ const Input = memo(
 Input.propTypes = {
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   onChange: PropTypes.func,
-  type: PropTypes.string,
+  type: PropTypes.oneOf(['number', 'text']),
   placeholder: PropTypes.string,
   short: PropTypes.bool,
   defaultValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),

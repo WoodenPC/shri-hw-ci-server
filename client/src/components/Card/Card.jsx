@@ -25,6 +25,7 @@ const Card = memo(
     onClick,
   }) => {
     const utcDateString = useMemo(() => {
+      const date = new Date(start);
       const utcDate = new Date(
         Date.UTC(date.getFullYear(), date.getMonth(), date.getDay())
       );
@@ -79,7 +80,7 @@ Card.propTypes = {
   branch: PropTypes.string,
   onClick: PropTypes.func,
   start: PropTypes.string,
-  duration: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  duration: PropTypes.number,
 };
 
 Card.defaultProps = {
@@ -92,7 +93,7 @@ Card.defaultProps = {
   branch: '',
   onClick: undefined,
   start: new Date(2020, 1, 1).toString(),
-  duration: '1h 20m',
+  duration: 0,
 };
 
 export { Card };

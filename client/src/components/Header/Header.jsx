@@ -17,8 +17,11 @@ const Header = memo(({ title, children, color }) => {
 
 Header.propTypes = {
   title: PropTypes.string,
-  children: PropTypes.arrayOf(PropTypes.element),
-  color: PropTypes.oneOf([null, 'black']),
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+  color: PropTypes.oneOf(['black']),
 };
 
 Header.defaultProps = {
