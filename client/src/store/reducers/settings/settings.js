@@ -1,6 +1,6 @@
 import * as actionTypes from 'store/actionTypes/settings';
 
-const initialState = {
+export const initialState = {
   repoName: '',
   buildCommand: '',
   mainBranch: '',
@@ -19,4 +19,4 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-export { reducer as settingsReducer };
+export { reducer };

@@ -1,3 +1,2 @@
-export { settingsReducer } from "./settings";
-export { buildDetailsReducer } from "./buildDetails";
-export { buildHistoryReducer } from "./buidHistory";
+export { settingsReducer } from './settings/settings';
+export { buildHistoryReducer } from './buildHistory';

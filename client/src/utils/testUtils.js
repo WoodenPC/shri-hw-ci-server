@@ -1,9 +1,11 @@
 import React from 'react';
 import { render as rtlRender } from '@testing-library/react';
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { createClientStore } from 'store/store';
 
+/**
+ * функция рендера для тестов, которая умеет в Redux
+ */
 export function renderWithStore(
   ui,
   { store = createClientStore(), ...renderOptions } = {}

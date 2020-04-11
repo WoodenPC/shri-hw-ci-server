@@ -147,13 +147,12 @@ class BuildHistoryPage extends React.PureComponent {
 }
 
 const mapStateToProps = (store) => {
-  const { builds, offset, limit, buildsLoaded } = store.buildHistory;
+  const { builds, offset, limit } = store.buildHistory;
   const { repoName } = store.settings;
   return {
     builds,
     offset,
     limit,
-    buildsLoaded,
     repoName,
   };
 };
