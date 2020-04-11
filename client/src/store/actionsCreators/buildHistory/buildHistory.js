@@ -48,7 +48,6 @@ export const loadBuildsAsync = (dispatch) => {
         },
       });
 
-      console.log(res.data);
       return dispatch(addMoreBuilds(res.data.data));
     } catch (e) {
       console.log(e);

@@ -17,7 +17,6 @@ export const loadSettingsFromServerAsync = (dispatch) => {
     dispatch({ type: actionTypes.LOAD_SETTINGS_FROM_SERVER_START });
     try {
       const res = await axios.get('/api/settings');
-      console.log(res.data);
       const { data } = res;
       dispatch(setSettings({ ...data }));
       return data;
