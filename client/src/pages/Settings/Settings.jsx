@@ -9,8 +9,7 @@ import { Button } from 'components/Button/Button';
 import { Form } from 'components/Form/Form';
 import { Input } from 'components/Input/Input';
 
-import * as actionsCreators from 'store/actionsCreators/settings';
-import { deleteBuildsHistory } from 'store/actionsCreators/buildHistory';
+import { mapStateToProps, mapDispatchToProps } from './selectors';
 
 const classes = cn('Page');
 
@@ -147,6 +146,7 @@ class SettingsPage extends React.PureComponent {
                   value={period}
                   onChange={this.changePeriod}
                   type='number'
+                  placeholder='timing'
                   short
                 />
               </Form.Field>
@@ -174,20 +174,6 @@ class SettingsPage extends React.PureComponent {
     );
   }
 }
-
-const mapStateToProps = (store) => {
-  return {
-    settings: store.settings,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setSettings: (settings) => dispatch(actionsCreators.setSettings(settings)),
-    saveSettingsAsync: actionsCreators.saveSettingsAsync(dispatch),
-    deleteBuildsHistory: () => dispatch(deleteBuildsHistory()),
-  };
-};
 
 const PageWithRouter = withRouter(SettingsPage);
 const ConnectedPage = connect(

@@ -12,7 +12,7 @@ import { Card } from 'components/Card';
 import { RunBuildModal } from 'components/RunBuildModal';
 import { Spinner } from 'components/Spinner';
 
-import * as actionCreators from 'store/actionsCreators/buildHistory';
+import { mapStateToProps, mapDispatchToProps } from './selectors';
 
 const classes = cn('Page');
 
@@ -23,8 +23,8 @@ class BuildHistoryPage extends React.PureComponent {
   };
 
   async componentDidMount() {
-    const { buildsLoaded } = this.props;
-    if (!buildsLoaded) {
+    const { builds } = this.props;
+    if (builds.length === 0) {
       await this.loadMoreBuilds();
     }
   }
@@ -88,12 +88,14 @@ class BuildHistoryPage extends React.PureComponent {
       <div className={classes()}>
         <Header title={repoName} color='black'>
           <Button
+            dataTestId='openRunBuildModal'
             text='Run build'
             icon={<Icon type='play' />}
             color='secondary'
             onClick={this.openModal}
           />
           <Button
+            dataTestId='goToSettingsPage'
             icon={<Icon type='settings' />}
             color='secondary'
             onClick={this.openSettings}
@@ -124,7 +126,7 @@ class BuildHistoryPage extends React.PureComponent {
                   <List.Item key={id}>
                     <Card
                       id={id}
-                      status={status.toLowerCase()}
+                      status={status}
                       buildNumber={buildNumber}
                       title={commitMessage}
                       branch={branchName}
@@ -145,24 +147,6 @@ class BuildHistoryPage extends React.PureComponent {
     );
   }
 }
-
-const mapStateToProps = (store) => {
-  const { builds, offset, limit } = store.buildHistory;
-  const { repoName } = store.settings;
-  return {
-    builds,
-    offset,
-    limit,
-    repoName,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    loadBuildsAsync: actionCreators.loadBuildsAsync(dispatch),
-    runBuildAsync: actionCreators.runBuildAsync(dispatch),
-  };
-};
 
 const PageWithRouter = withRouter(BuildHistoryPage);
 const ConnectedPage = connect(

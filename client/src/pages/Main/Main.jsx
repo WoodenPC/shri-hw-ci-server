@@ -11,7 +11,6 @@ const classes = cn('Page');
 
 class MainPage extends React.PureComponent {
   openSettings = () => {
-    console.log('openSettings');
     this.props.history.push('/settings');
   };
 

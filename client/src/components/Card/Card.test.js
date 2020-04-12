@@ -9,7 +9,7 @@ describe('Тесты компонента Card', () => {
     const { getByText } = render(
       <Card
         id='123'
-        status='success'
+        status='Success'
         buildNumber={123}
         hash='adscd123'
         who='test'
@@ -29,7 +29,7 @@ describe('Тесты компонента Card', () => {
   });
 
   test('У компонента есть модификатор status', () => {
-    const { container } = render(<Card status='success' />);
+    const { container } = render(<Card status='Success' />);
     expect(
       container.firstChild.classList.contains('Card_status_success')
     ).toBeTruthy();

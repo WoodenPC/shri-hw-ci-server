@@ -11,7 +11,7 @@ import { Card } from 'components/Card';
 import { LogDetails } from 'components/LogDetails';
 import { Spinner } from 'components/Spinner';
 
-import * as actionCreators from 'store/actionsCreators/buildDetails';
+import { mapStateToProps, mapDispatchToProps } from './selectors';
 
 const classes = cn('Page');
 
@@ -19,7 +19,7 @@ class BuildDetailsPage extends React.PureComponent {
   state = {
     isLoading: true,
     id: this.props.location.buildId,
-    status: 'waiting',
+    status: 'Waiting',
     buildNumber: 0,
     branchName: '',
     commitMessage: '',
@@ -27,6 +27,7 @@ class BuildDetailsPage extends React.PureComponent {
     authorName: '',
     start: undefined,
     duration: 0,
+    logs: '',
   };
 
   openSettings = () => {
@@ -102,12 +103,14 @@ class BuildDetailsPage extends React.PureComponent {
       <div className={classes()}>
         <Header title={repoName} color='black'>
           <Button
+            dataTestId='rebuildCurrent'
             text='Rebuild'
             icon={<Icon type='rebuild' />}
             color='secondary'
             onClick={this.rebuild}
           />
           <Button
+            dataTestId='goToSettingsPage'
             icon={<Icon type='settings' />}
             color='secondary'
             onClick={this.openSettings}
@@ -120,7 +123,7 @@ class BuildDetailsPage extends React.PureComponent {
             <>
               <Card
                 id={id}
-                status={status && status.toLowerCase()}
+                status={status}
                 buildNumber={buildNumber}
                 title={commitMessage}
                 branch={branchName}
@@ -138,21 +141,6 @@ class BuildDetailsPage extends React.PureComponent {
     );
   }
 }
-
-const mapStateToProps = (store) => {
-  const { settings } = store;
-  return {
-    repoName: settings.repoName,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    runRebuildAsync: actionCreators.runRebuildAsync(dispatch),
-    loadBuildDetailsAsync: actionCreators.loadBuildDetailsAsync(dispatch),
-    loadBuildLogsAsync: actionCreators.loadBuildLogsAsync(dispatch),
-  };
-};
 
 const PageWithRouter = withRouter(BuildDetailsPage);
 const ConnectedPage = connect(

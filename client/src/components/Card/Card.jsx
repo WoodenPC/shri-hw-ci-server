@@ -11,6 +11,13 @@ import { useCallback } from 'react';
 
 const classes = cn('Card');
 
+const statuses = {
+  Success: 'success',
+  Waiting: 'waiting',
+  InProgress: 'inProgress',
+  Fail: 'fail',
+};
+
 const Card = memo(
   ({
     id,
@@ -39,7 +46,10 @@ const Card = memo(
     }, [id, hash]);
 
     return (
-      <div className={classes({ status })} onClick={onClickInner}>
+      <div
+        className={classes({ status: statuses[status] })}
+        onClick={onClickInner}
+      >
         <div>
           <Icon type={status} />
         </div>
@@ -72,7 +82,7 @@ const Card = memo(
 
 Card.propTypes = {
   id: PropTypes.string,
-  status: PropTypes.oneOf(['success', 'fail', 'inprogress', 'waiting']),
+  status: PropTypes.oneOf(['Success', 'Fail', 'InProgress', 'Waiting']),
   buildNumber: PropTypes.number,
   hash: PropTypes.string,
   who: PropTypes.string,
@@ -85,7 +95,7 @@ Card.propTypes = {
 
 Card.defaultProps = {
   id: '',
-  status: 'waiting',
+  status: 'Waiting',
   buildNumber: -1,
   hash: '',
   who: '',

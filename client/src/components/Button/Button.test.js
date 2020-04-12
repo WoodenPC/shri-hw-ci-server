@@ -7,8 +7,11 @@ import { Button } from './Button';
 
 describe('Тесты компонента Button', () => {
   test('кнопка рендерится вместе с текстом', () => {
-    const { getByText } = render(<Button text='some button' />);
+    const { getByText, getByTestId } = render(
+      <Button dataTestId='someTestId' text='some button' />
+    );
     expect(getByText('some button')).toBeInTheDocument();
+    expect(getByTestId('someTestId')).toBeInTheDocument();
   });
 
   test('кнопка рендерится вместе с иконкой', () => {

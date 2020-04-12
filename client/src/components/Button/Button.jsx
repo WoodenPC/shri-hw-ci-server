@@ -5,10 +5,21 @@ import PropTypes from 'prop-types';
 const classes = cn('Button');
 
 const Button = memo(
-  ({ variant, text, icon, size, color, onClick, classMix, disabled }) => {
+  ({
+    variant,
+    text,
+    icon,
+    size,
+    color,
+    onClick,
+    classMix,
+    disabled,
+    dataTestId,
+  }) => {
     const type = icon ? 'icon' : null;
     return (
       <button
+        data-testid={dataTestId}
         className={`${classes({ variant, color, size, type })} ${classMix}`}
         onClick={onClick}
         type='button'
@@ -30,6 +41,7 @@ Button.propTypes = {
   color: PropTypes.oneOf(['default', 'primary', 'secondary']),
   classMix: PropTypes.string,
   disabled: PropTypes.bool,
+  dataTestId: PropTypes.string,
 };
 
 Button.defaultProps = {
@@ -41,6 +53,7 @@ Button.defaultProps = {
   color: 'default',
   classMix: '',
   disabled: false,
+  dataTestId: '',
 };
 
 export { Button };
