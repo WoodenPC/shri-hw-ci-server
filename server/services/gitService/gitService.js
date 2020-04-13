@@ -2,8 +2,9 @@ const { resolve } = require('path');
 const { watch } = require('fs');
 const { spawn } = require('child_process');
 
-const { fileExistsAsync } = require('../utils/promisified');
-const yandexSvc = require('./yandex-service');
+const { fileExistsAsync } = require('../../utils/promisified');
+
+const serviceContainer = require('../serviceContainer');
 
 const BASE_GITHUB_URL = 'https://github.com';
 
@@ -21,11 +22,6 @@ class GitService {
   fsWatcher = null;
   intervalTime = 10000; // 10c
   lastBuildCommitHash = null;
-  yandexService = null;
-
-  constructor(yandexService) {
-    this.yandexService = yandexService;
-  }
 
   getRepoFolder = (repoName) => {
     const repoFolder = process.env.REPOS_DIR || '/home/repos';
@@ -86,7 +82,8 @@ class GitService {
 
   loadSettingsFromYandexStorage = async () => {
     try {
-      const apiResponse = await this.yandexService.getSavedSettings();
+      const yandexService = serviceContainer.getService('YandexService');
+      const apiResponse = await yandexService.getSavedSettings();
       const { data } = apiResponse;
       if (!data || !data.data) {
         return;
@@ -147,7 +144,7 @@ class GitService {
 
     // 0 - самый последний коммит
     this.lastBuildCommitHash = log[0].commitHash;
-
+    const yandexService = serviceContainer.getService('YandexService');
     // запускаем сборки в порядке истории коммитов
     for (let i = log.length - 1; i >= 0; i--) {
       const logData = log[i];
@@ -158,7 +155,7 @@ class GitService {
       const { commitHash, commitMessage, authorName } = logData;
       // видимо у хранилища есть таймаут, поэтому приходится дожидаться выполнения добавления
       try {
-        await this.yandexService.addBuildToQueue({
+        await yandexService.addBuildToQueue({
           commitHash,
           commitMessage,
           authorName,
@@ -316,6 +313,4 @@ class GitService {
   };
 }
 
-const instance = new GitService(yandexSvc);
-
-module.exports = instance;
+module.exports = GitService;

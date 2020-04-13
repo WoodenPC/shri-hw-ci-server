@@ -1,7 +1,7 @@
 const { join } = require('path');
 const { createReadStream, createWriteStream } = require('fs');
 const { differenceInMinutes } = require('date-fns');
-const { getStatAsync, fileExistsAsync, mkDirAsync } = require('../utils/promisified');
+const { getStatAsync, fileExistsAsync, mkDirAsync } = require('../../utils/promisified');
 
 /**
  * сервис кэширования логов
@@ -102,7 +102,4 @@ class CacheService {
   };
 }
 
-const dir = process.env.CACHE_DIR || '/home/logsCache';
-
-const instance = new CacheService(dir);
-module.exports = instance;
+module.exports = CacheService;

@@ -1,12 +1,12 @@
 const settings = require('express').Router();
 
-const yandexService = require('../../services/yandex-service');
-const gitService = require('../../services/git-service');
+const serviceContainer = require('../../services/serviceContainer');
 
 // получение сохраненных настроек
 settings.get('/', async (_, res) => {
   let apiResponse;
   try {
+    const yandexService = serviceContainer.getService('YandexService');
     apiResponse = await yandexService.getSavedSettings();
     const { data } = apiResponse;
     if (data === undefined) {
@@ -39,6 +39,9 @@ settings.post('/', async (req, res) => {
       mainBranch: body.mainBranch,
       period: body.period,
     };
+
+    const yandexService = serviceContainer.getService('YandexService');
+    const gitService = serviceContainer.getService('GitService');
 
     apiResponse = await yandexService.saveSettings(settings);
     if (!apiResponse) {

@@ -1,20 +1,15 @@
-const axios = require('../axios-instance');
-const cacheSvc = require('./cache-service');
-
 /**
  * сервис для работы с хранилищем яндекса
  */
 class YandexService {
-  constructor(webClient, cacheService) {
+  constructor(webClient) {
     this.webClient = webClient;
-    this.cacheService = cacheService;
   }
 
   /**
    * получение списка сборок
    */
   getBuildsList = ({ offset, limit }) => {
-    console.log(offset, limit);
     return this.webClient
       .get('/api/build/list', {
         params: {
@@ -140,5 +135,4 @@ class YandexService {
   };
 }
 
-const instance = new YandexService(axios, cacheSvc);
-module.exports = instance;
+module.exports = YandexService;
