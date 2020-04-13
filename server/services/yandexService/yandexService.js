@@ -10,16 +10,12 @@ class YandexService {
    * получение списка сборок
    */
   getBuildsList = ({ offset, limit }) => {
-    return this.webClient
-      .get('/api/build/list', {
-        params: {
-          offset: offset || 0,
-          limit: limit || 25,
-        },
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    return this.webClient.get('/api/build/list', {
+      params: {
+        offset: offset || 0,
+        limit: limit || 25,
+      },
+    });
   };
 
   /**
@@ -55,40 +51,30 @@ class YandexService {
    * получение инфо о сборке
    */
   getBuildInfo = (buildId) => {
-    return this.webClient
-      .get('/api/build/details', {
-        params: {
-          buildId,
-        },
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    return this.webClient.get('/api/build/details', {
+      params: {
+        buildId,
+      },
+    });
   };
 
   /**
    * получение логов сборки
    */
   getBuildLogs = (buildId) => {
-    return this.webClient
-      .get('/api/build/log', {
-        params: {
-          buildId,
-        },
-        responseType: 'stream',
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    return this.webClient.get('/api/build/log', {
+      params: {
+        buildId,
+      },
+      responseType: 'stream',
+    });
   };
 
   /**
    * получение сохраненных настроек
    */
   getSavedSettings = () => {
-    return this.webClient.get('/api/conf').catch((e) => {
-      console.log(e);
-    });
+    return this.webClient.get('/api/conf');
   };
 
   /**
@@ -106,32 +92,23 @@ class YandexService {
   /**
    * имитация старта сборки
    */
-  startBuildMock = async ({ buildId }) => {
-    try {
-      await this.webClient.post('/api/build/start', {
-        buildId,
-        dateTime: new Date(Date.now()),
-      });
-    } catch (e) {
-      console.log('Start build mock failed', e.toString());
-    }
+  startBuildMock = ({ buildId }) => {
+    return this.webClient.post('/api/build/start', {
+      buildId,
+      dateTime: new Date(Date.now()),
+    });
   };
 
   /**
    * имитация завершения сборки
    */
-  finishBuildMock = async ({ buildId }) => {
-    try {
-      await this.webClient.post('/api/build/finish', {
-        buildId,
-        duration: 10,
-        success: true,
-        buildLog: '81.23 KB [2mbuild/static/js/ [22m [36m2.de162694.chunk.js [39m',
-      });
-    } catch (e) {
-      console.log('Finish build mock failed', e.toString());
-      return;
-    }
+  finishBuildMock = ({ buildId }) => {
+    return this.webClient.post('/api/build/finish', {
+      buildId,
+      duration: 10,
+      success: true,
+      buildLog: 'test logs',
+    });
   };
 }
 
