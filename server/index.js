@@ -2,7 +2,7 @@ const express = require('express');
 
 const app = express();
 
-const axios = require('./axiosIInstance');
+const axios = require('./axiosInstance');
 
 const GitService = require('./services/gitService');
 const YandexService = require('./services/yandexService');
@@ -34,6 +34,6 @@ app.use(function (req, res, next) {
 });
 
 app.listen(SERVER_PORT, async () => {
-  await gitService.loadSettingsFromYandexStorage();
+  await gitSvc.loadSettingsFromYandexStorage();
   console.log(`listening on port ${SERVER_PORT}`);
 });

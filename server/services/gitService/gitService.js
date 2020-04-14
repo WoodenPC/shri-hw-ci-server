@@ -80,6 +80,7 @@ class GitService {
     });
   };
 
+  /** загружает настройки из сервиса хранилища яндекса и инициализируется с этими настройками */
   loadSettingsFromYandexStorage = async () => {
     try {
       const yandexService = serviceContainer.getService('YandexService');

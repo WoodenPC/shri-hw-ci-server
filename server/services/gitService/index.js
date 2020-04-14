@@ -1,1 +1,1 @@
-module.export = require('./gitService');
+module.exports = require('./gitService');

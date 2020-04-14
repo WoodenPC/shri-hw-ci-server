@@ -52,7 +52,6 @@ class CacheService {
       return differenceInMinutes(now, mtime) <= this.cacheLifetime;
     } catch (e) {
       console.log(e);
-      return false;
     }
   };
 

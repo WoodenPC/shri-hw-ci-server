@@ -49,7 +49,7 @@ settings.post('/', async (req, res) => {
     }
     const cloneResult = await gitService.init(settings);
     if (cloneResult === false) {
-      return res.status(500).send(`Cannot clone repository with settings ${JSON.stringify(settings)}`);
+      return res.status(500).send(`Cannot clone repository with settings ${settings}`);
     }
 
     if (apiResponse.status !== 200) {

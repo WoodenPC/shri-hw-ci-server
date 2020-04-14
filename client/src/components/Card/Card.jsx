@@ -51,7 +51,7 @@ const Card = memo(
         onClick={onClickInner}
       >
         <div>
-          <Icon type={status} />
+          <Icon type={statuses[status]} />
         </div>
         <div className={classes('Content')}>
           <div className={classes('Body')}>

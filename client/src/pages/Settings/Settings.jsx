@@ -107,7 +107,7 @@ class SettingsPage extends React.PureComponent {
     } = this.state;
     return (
       <div className={classes()}>
-        <Header title='Scool CI server' />
+        <Header title='School CI server' />
         <main className={classes('Main')}>
           <Form>
             <Form.Header
@@ -117,6 +117,7 @@ class SettingsPage extends React.PureComponent {
             <Form.Fields>
               <Form.Field name='repository' label='GitHub repository' required>
                 <Input
+                  id='repoField'
                   placeholder='user-name/repo-name'
                   value={repoName}
                   onChange={this.changeRepoName}
@@ -124,6 +125,7 @@ class SettingsPage extends React.PureComponent {
               </Form.Field>
               <Form.Field name='command' label='Build command' required>
                 <Input
+                  id='commandField'
                   placeholder='npm ci && npm run build'
                   value={buildCommand}
                   onChange={this.changeBuildCommand}
@@ -131,6 +133,7 @@ class SettingsPage extends React.PureComponent {
               </Form.Field>
               <Form.Field name='mainBranch' label='Main branch'>
                 <Input
+                  id='branchField'
                   placeholder='master'
                   value={mainBranch}
                   onChange={this.changeMainBranch}
@@ -143,6 +146,7 @@ class SettingsPage extends React.PureComponent {
                 row
               >
                 <Input
+                  id='periodField'
                   value={period}
                   onChange={this.changePeriod}
                   type='number'

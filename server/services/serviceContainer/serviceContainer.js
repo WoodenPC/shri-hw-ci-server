@@ -19,3 +19,4 @@ class ServiceContainer {
 }
 
 const container = new ServiceContainer();
+module.exports = container;

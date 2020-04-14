@@ -8,7 +8,7 @@ import { useCallback } from 'react';
 const classes = cn('Input');
 
 const Input = memo(
-  ({ value, onChange, placeholder, type, short, defaultValue }) => {
+  ({ value, onChange, placeholder, type, short, defaultValue, id }) => {
     const clearValue = useCallback(() => {
       if (onChange !== undefined) {
         onChange({ target: { value: '' } });
@@ -18,6 +18,7 @@ const Input = memo(
     return (
       <div className={classes({ short })}>
         <input
+          id={id}
           className={classes('Box')}
           value={value}
           onChange={onChange}
@@ -36,6 +37,7 @@ const Input = memo(
 );
 
 Input.propTypes = {
+  id: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   onChange: PropTypes.func,
   type: PropTypes.oneOf(['number', 'text']),
@@ -45,6 +47,7 @@ Input.propTypes = {
 };
 
 Input.defaultProps = {
+  id: undefined,
   value: undefined,
   onChange: undefined,
   type: 'text',

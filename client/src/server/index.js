@@ -57,48 +57,52 @@ server.get('/*', (req, res, next) => {
   ) {
     headers['accept-encoding'] = 'utf8';
   }
-  // если в дев режиме, то переводим на сервак cra
-  http.get(
-    {
-      port: 3000,
-      path: req.url,
-      headers: headers,
-    },
-    (proxiedResponse) => {
-      if (
-        req.headers['accept'] &&
-        req.headers['accept'].indexOf('text/html') > -1
-      ) {
-        let responseBody = '';
-        proxiedResponse.setEncoding('utf8');
-        proxiedResponse
-          .on('data', (chunk) => {
-            responseBody += chunk;
-          })
-          .on('end', () => {
-            res.send(
-              renderPage(
-                responseBody,
-                <Provider store={store}>
-                  <Router ssrLocation={req.url}>
-                    <App />
-                  </Router>
-                </Provider>
-              )
-            );
-            next();
-          })
-          .on('error', (e) => {
-            res.status(500);
-            res.send(e);
-          });
-        return;
+  try {
+    // если в дев режиме, то переводим на сервак cra
+    http.get(
+      {
+        port: 3000,
+        path: req.url,
+        headers: headers,
+      },
+      (proxiedResponse) => {
+        if (
+          req.headers['accept'] &&
+          req.headers['accept'].indexOf('text/html') > -1
+        ) {
+          let responseBody = '';
+          proxiedResponse.setEncoding('utf8');
+          proxiedResponse
+            .on('data', (chunk) => {
+              responseBody += chunk;
+            })
+            .on('end', () => {
+              res.send(
+                renderPage(
+                  responseBody,
+                  <Provider store={store}>
+                    <StaticRouter ssrLocation={req.url}>
+                      <App />
+                    </StaticRouter>
+                  </Provider>
+                )
+              );
+              next();
+            })
+            .on('error', (e) => {
+              res.status(500);
+              res.send(e);
+            });
+          return;
+        }
+        res.writeHead(proxiedResponse.statusCode, proxiedResponse.headers);
+        proxiedResponse.pipe(res, { end: true });
+        next();
       }
-      res.writeHead(proxiedResponse.statusCode, proxiedResponse.headers);
-      proxiedResponse.pipe(res, { end: true });
-      next();
-    }
-  );
+    );
+  } catch (e) {
+    res.status(500).send(e.toString());
+  }
 });
 
 server.listen(PORT, () => {
