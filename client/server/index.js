@@ -3,18 +3,20 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import fs from 'fs';
 import http from 'http';
+import path from 'path';
 
 import { Provider } from 'react-redux';
 
-import { App } from '../App';
 import { StaticRouter } from 'react-router-dom';
 import { createServerStore } from 'store/store';
+
+import { App } from '../src/App';
 
 let productionTemplate;
 const getProductionPageTemplate = () => {
   if (!productionTemplate) {
     productionTemplate = fs
-      .readFileSync('../client/build/index.html')
+      .readFileSync(path.resolve('./build/index.html'))
       .toString();
   }
   return productionTemplate;
