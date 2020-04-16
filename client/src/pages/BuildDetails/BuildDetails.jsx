@@ -69,6 +69,8 @@ class BuildDetailsPage extends React.PureComponent {
       const logsPromise = loadBuildLogsAsync(params.buildId);
       const [details, logs] = await Promise.all([detailsPromise, logsPromise]);
       this.setState({ logs, ...details });
+    } catch (e) {
+      console.log('error', e);
     } finally {
       this.setState({ isLoading: false });
     }
