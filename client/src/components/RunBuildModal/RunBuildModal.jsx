@@ -30,6 +30,7 @@ const RunBuildModal = memo(({ visible, onRunBuild, onCancel }) => {
         <Form.Fields>
           <Form.Field>
             <Input
+              id='commitHashField'
               placeholder='Commit hash'
               value={hash}
               onChange={onChangeHash}

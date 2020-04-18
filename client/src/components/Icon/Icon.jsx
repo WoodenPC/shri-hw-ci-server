@@ -13,7 +13,7 @@ Icon.propTypes = {
 };
 
 Icon.defaultProps = {
-  type: '',
+  type: null,
 };
 
 export { Icon };

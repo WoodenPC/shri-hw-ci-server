@@ -12,7 +12,7 @@ const Footer = () => {
           <Link text='Support' classMix={classes('Link')} />
           <Link text='Learning' classMix={classes('Link')} />
         </div>
-        <div className={classes('Author')}>&copy; 2020 Your Name</div>
+        <div className={classes('Author')}>&copy; 2020 Arslanov Rasul</div>
       </div>
     </footer>
   );

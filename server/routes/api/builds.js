@@ -1,14 +1,13 @@
 const builds = require('express').Router();
 
-const gitSetvice = require('../../services/git-service');
-const yandexService = require('../../services/yandex-service');
-const cacheService = require('../../services/cache-service');
+const serviceContainer = require('../../services/serviceContainer');
 
 // получение списка сборок
 builds.get('/', async (req, res) => {
   const { query } = req;
   let apiResponse;
   try {
+    const yandexService = serviceContainer.getService('YandexService');
     apiResponse = await yandexService.getBuildsList({
       offset: query.offset,
       limit: query.limit,
@@ -40,9 +39,11 @@ builds.post('/:commitHash', async (req, res) => {
 
   let apiResponse;
   try {
+    const gitService = serviceContainer.getService('GitService');
+    const yandexService = serviceContainer.getService('YandexService');
     //если каких то параметров нету, то берем инфу из гита
     if (!body.commitMessage || !body.branchName || !body.authorName) {
-      const commitInfo = await gitSetvice.getCommitInfo(commitHash);
+      const commitInfo = await gitService.getCommitInfo(commitHash);
       apiResponse = await yandexService.addBuildToQueue(commitInfo);
     } else {
       apiResponse = await yandexService.addBuildToQueue({
@@ -69,6 +70,7 @@ builds.get('/:buildId', async (req, res) => {
 
   let apiResponse;
   try {
+    const yandexService = serviceContainer.getService('YandexService');
     apiResponse = await yandexService.getBuildInfo(buildId);
   } catch (e) {
     return res.status(500).send(e);
@@ -94,6 +96,8 @@ builds.get('/:buildId/logs', async (req, res) => {
   }
 
   try {
+    const cacheService = serviceContainer.getService('CacheService');
+    const yandexService = serviceContainer.getService('YandexService');
     const isValidLogCache = await cacheService.checkLog(buildId);
     if (isValidLogCache !== false) {
       console.log('cache exists');

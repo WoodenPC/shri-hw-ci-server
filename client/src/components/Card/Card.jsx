@@ -11,6 +11,13 @@ import { useCallback } from 'react';
 
 const classes = cn('Card');
 
+const statuses = {
+  Success: 'success',
+  Waiting: 'waiting',
+  InProgress: 'inProgress',
+  Fail: 'fail',
+};
+
 const Card = memo(
   ({
     id,
@@ -24,11 +31,12 @@ const Card = memo(
     duration,
     onClick,
   }) => {
-    const utcDate = useMemo(() => {
+    const utcDateString = useMemo(() => {
       const date = new Date(start);
-      return new Date(
+      const utcDate = new Date(
         Date.UTC(date.getFullYear(), date.getMonth(), date.getDay())
       );
+      return format(utcDate, 'dd MMM, HH:mm');
     }, [start]);
 
     const onClickInner = useCallback(() => {
@@ -38,9 +46,12 @@ const Card = memo(
     }, [id, hash]);
 
     return (
-      <div className={classes({ status })} onClick={onClickInner}>
+      <div
+        className={classes({ status: statuses[status] })}
+        onClick={onClickInner}
+      >
         <div>
-          <Icon type={status} />
+          <Icon type={statuses[status]} />
         </div>
         <div className={classes('Content')}>
           <div className={classes('Body')}>
@@ -56,7 +67,7 @@ const Card = memo(
           <div className={classes('Meta')}>
             <div className={classes('BuildStartTime')}>
               <Icon type='calendar' />
-              <span>{format(utcDate, 'dd MMM, HH:mm')}</span>
+              <span>{utcDateString}</span>
             </div>
             <div className={classes('BuildDuration')}>
               <Icon type='timer' />
@@ -71,7 +82,7 @@ const Card = memo(
 
 Card.propTypes = {
   id: PropTypes.string,
-  status: PropTypes.oneOf(['success', 'fail', 'inprogress', 'waiting']),
+  status: PropTypes.oneOf(['Success', 'Fail', 'InProgress', 'Waiting']),
   buildNumber: PropTypes.number,
   hash: PropTypes.string,
   who: PropTypes.string,
@@ -79,12 +90,12 @@ Card.propTypes = {
   branch: PropTypes.string,
   onClick: PropTypes.func,
   start: PropTypes.string,
-  duration: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  duration: PropTypes.number,
 };
 
 Card.defaultProps = {
   id: '',
-  status: 'waiting',
+  status: 'Waiting',
   buildNumber: -1,
   hash: '',
   who: '',
@@ -92,7 +103,7 @@ Card.defaultProps = {
   branch: '',
   onClick: undefined,
   start: new Date(2020, 1, 1).toString(),
-  duration: '1h 20m',
+  duration: 0,
 };
 
 export { Card };

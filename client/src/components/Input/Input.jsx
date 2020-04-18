@@ -8,14 +8,17 @@ import { useCallback } from 'react';
 const classes = cn('Input');
 
 const Input = memo(
-  ({ value, onChange, placeholder, type, short, defaultValue }) => {
+  ({ value, onChange, placeholder, type, short, defaultValue, id }) => {
     const clearValue = useCallback(() => {
-      onChange({ target: { value: '' } });
+      if (onChange !== undefined) {
+        onChange({ target: { value: '' } });
+      }
     });
 
     return (
       <div className={classes({ short })}>
         <input
+          id={id}
           className={classes('Box')}
           value={value}
           onChange={onChange}
@@ -23,24 +26,28 @@ const Input = memo(
           placeholder={placeholder}
           defaultValue={defaultValue}
         />
-        <div className={classes('AddonAfter')}>
-          <Button icon={<Icon type='clear' />} onClick={clearValue} />
-        </div>
+        {onChange && (
+          <div className={classes('AddonAfter')}>
+            <Button icon={<Icon type='clear' />} onClick={clearValue} />
+          </div>
+        )}
       </div>
     );
   }
 );
 
 Input.propTypes = {
+  id: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   onChange: PropTypes.func,
-  type: PropTypes.string,
+  type: PropTypes.oneOf(['number', 'text']),
   placeholder: PropTypes.string,
   short: PropTypes.bool,
   defaultValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 Input.defaultProps = {
+  id: undefined,
   value: undefined,
   onChange: undefined,
   type: 'text',

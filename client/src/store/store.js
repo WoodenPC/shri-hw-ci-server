@@ -1,16 +1,11 @@
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunk from 'redux-thunk';
 
-import {
-  settingsReducer,
-  buildHistoryReducer,
-  buildDetailsReducer,
-} from './reducers';
+import { settingsReducer, buildHistoryReducer } from './reducers';
 
 const rootReducer = combineReducers({
   settings: settingsReducer,
   buildHistory: buildHistoryReducer,
-  buildDetails: buildDetailsReducer,
 });
 
 // создание стора для клиента

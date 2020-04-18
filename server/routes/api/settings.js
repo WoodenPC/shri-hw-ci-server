@@ -1,31 +1,30 @@
 const settings = require('express').Router();
 
-const yandexService = require('../../services/yandex-service');
-const gitService = require('../../services/git-service');
+const serviceContainer = require('../../services/serviceContainer');
 
 // получение сохраненных настроек
 settings.get('/', async (_, res) => {
   let apiResponse;
   try {
+    const yandexService = serviceContainer.getService('YandexService');
     apiResponse = await yandexService.getSavedSettings();
+    const { data } = apiResponse;
+    if (data === undefined) {
+      return res.status(500).send('Cannot get configuration settings from api server!');
+    }
+
+    const settingsData = data.data;
+
+    res.status(200).send({
+      id: settingsData.id,
+      repoName: settingsData.repoName,
+      buildCommand: settingsData.buildCommand,
+      mainBranch: settingsData.mainBranch,
+      period: settingsData.period,
+    });
   } catch (e) {
     return res.status(500).send(e);
   }
-
-  const { data } = apiResponse;
-  if (data === undefined) {
-    return res.status(500).send('Cannot get configuration settings from api server!');
-  }
-
-  const settingsData = data.data;
-
-  res.status(200).send({
-    id: settingsData.id,
-    repoName: settingsData.repoName,
-    buildCommand: settingsData.buildCommand,
-    mainBranch: settingsData.mainBranch,
-    period: settingsData.period,
-  });
 });
 
 // cохранение настроек
@@ -41,13 +40,16 @@ settings.post('/', async (req, res) => {
       period: body.period,
     };
 
+    const yandexService = serviceContainer.getService('YandexService');
+    const gitService = serviceContainer.getService('GitService');
+
     apiResponse = await yandexService.saveSettings(settings);
     if (!apiResponse) {
       return res.status(500).send('error');
     }
     const cloneResult = await gitService.init(settings);
     if (cloneResult === false) {
-      return res.status(500).send(`Cannot clone repository with settings ${JSON.stringify(settings)}`);
+      return res.status(500).send(`Cannot clone repository with settings ${settings}`);
     }
 
     if (apiResponse.status !== 200) {
