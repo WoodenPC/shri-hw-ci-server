@@ -3,3 +3,4 @@ server/.env
 repos/
 server-conf.json
 agent-conf.json
+testRepos
