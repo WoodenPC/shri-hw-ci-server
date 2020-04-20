@@ -1,10 +1,14 @@
 const { Socket } = require('net');
 
 class ApiService {
-  constructor(webClient, host, port) {
+  constructor(webClient, { host, port, serverHost, serverPort }) {
     this.webClient = webClient;
     this.host = host;
     this.port = port;
+    this.serverHost = serverHost;
+    this.serverPort = serverPort
+    this.connectedToServer = false;
+    this.interval = setInterval(this.spyOnWebClient, 1000 * 10); //60c
   }
 
   checkWebClientIsAlive = () => {
@@ -16,15 +20,38 @@ class ApiService {
         resolve(false)
       }).on('error', () => {
         resolve(false);
-      }).connect(this.webClient.defaults.baseUrl);
+      }).connect(Number(this.serverPort), this.serverHost);
     })
   }
 
-  notifyAgent = () => {
-    return this.webClient.post('/notify-agent', {
+  spyOnWebClient = async () => {
+    try {
+      const isAlive = await this.checkWebClientIsAlive();
+      if (isAlive && this.connectedToServer) {
+        console.log('server is alive, resume work');
+        return;
+      }
+  
+      if (!isAlive) {
+        this.connectedToServer = false;
+        console.log('server is not alive');
+        return;
+      } else if (!this.connectedToServer) {
+        await this.notifyAgent();
+      }
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
+  notifyAgent = async () => {
+    console.log('notifying server');
+    const apiRes = await this.webClient.post('/notify-agent', {
       host: this.host,
       port: this.port
     });
+
+    this.connectedToServer = apiRes.status === 200;
   }
 
   notifyBuildResult = ({ buildId, buildStatus, buildLog }) => {

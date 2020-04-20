@@ -82,7 +82,7 @@ class ApiService {
             buildId: lastBuildInWaiting.id,
             buildLog: 'Cannot start build',
             duration: 0,
-            buildLog: ''
+            success: false
           });
         }
       }

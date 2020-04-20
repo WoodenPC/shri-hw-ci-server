@@ -22,8 +22,6 @@ router.post('/build', async (req, res) => {
       duration: processResult.duration
     });
 
-    await apiSvc.notifyAgent();
-
   } catch(e) {
     console.log(e);
   }

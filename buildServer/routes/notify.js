@@ -7,7 +7,7 @@ router.post('/notify-agent', (req, res) => {
   const { body } = req;
   const { port, host } = body;
   const agentsSvc = svcContainer.getService('AgentsService');
-  agentsSvc.register({ port, host });
+  agentsSvc.register({ port, host: req.hostname });
   res.sendStatus(200);
 });
 
@@ -16,6 +16,7 @@ router.post('/notify-build-result', async (req, res) => {
   const { body } = req;
   const { buildId, buildStatus, buildLog, duration } = body;
   const apiSvc = svcContainer.getService('ApiService');
+  const agentsSvc = svcContainer.getService('AgentsService');
   try {
     const apiRes = await apiSvc.finishBuildAsync({
       buildId,
@@ -23,6 +24,8 @@ router.post('/notify-build-result', async (req, res) => {
       buildLog,
       duration
     });
+
+    agentsSvc.unBindAgentByBuildId(buildId);
 
     console.log(apiRes.data);
 

@@ -1,6 +1,8 @@
 const express = require('express');
 const { resolve } = require('path');
 const { readFileSync } = require('fs');
+const { hostname } = require('os');
+
 const axios = require('axios');
 
 const svcContainer = require('./services/serviceContainer');
@@ -14,7 +16,14 @@ const axiosApi = axios.create({
   baseURL: `http://${config.serverHost}:${config.serverPort}`
 });
 
-svcContainer.setService('ApiService', new ApiService(axiosApi, config.host, config.port));
+svcContainer.setService('ApiService',
+  new ApiService(axiosApi, {
+    host: '127.0.0.1',
+    port: config.port,
+    serverHost: config.serverHost,
+    serverPort: config.serverPort
+  }
+));
 svcContainer.setService('BuildService', new BuildService(resolve('../testRepos')));
 
 const app = express();
@@ -30,7 +39,6 @@ app.use(require('./routes/build'));
 
 app.listen(config.port, async () => {
   const apiSvc = svcContainer.getService('ApiService');
-  const apiRes = await apiSvc.notifyAgent();
-  console.log(apiRes.data);
+  await apiSvc.notifyAgent();
   console.log(`listening build agent on port ${config.port}`);
 })

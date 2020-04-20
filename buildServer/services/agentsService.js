@@ -1,5 +1,6 @@
 const { Socket } = require('net');
 
+const svcContainer = require('./serviceContainer');
 /**
  * Сервис, который умеет в управление агентами
  */
@@ -24,7 +25,9 @@ class AgentsService {
   // отрегестрировать агента
   unregister = (agentAddress) => {
     console.log(`unregistered agent with address: ${agentAddress}`);
-    delete this.agents[agentAddress];
+    if (this.agents.hasOwnProperty(agentAddress)) {
+      delete this.agents[agentAddress];
+    }
   }
 
   bindAgentAddressToBuild = (agentAddress, buildData) => {
@@ -40,6 +43,15 @@ class AgentsService {
   freeAgentAddress = (agentAddress) => {
     console.log(`agent on address ${agentAddress} is free now`);
     this.agents[agentAddress] = null;
+  }
+
+  unBindAgentByBuildId = (buildId) => {
+    const entries = Object.entries(this.agents);
+    for (let [key, value] of entries) {
+      if (value !== null && value.id === buildId) {
+        this.unBindAgentAddress(key);
+      }
+    }
   }
 
   /** проверка на доступность агента */
@@ -62,13 +74,28 @@ class AgentsService {
 
   /** Проверка агентов на доступность */
   checkAgentsAsync = async () => {
+    const apiService = svcContainer.getService('ApiService');
     console.log('checking agents');
     const agentAddresses = Object.keys(this.agents);
 
     for (let i = 0; i < agentAddresses.length; i++) {
       const agentAddress = agentAddresses[i];
-      const isAlive = await this.checkAgentIsAliveAsync(agentAddress);
-      if (!isAlive) {
+      try {
+        const isAlive = await this.checkAgentIsAliveAsync(agentAddress);
+        if (!isAlive) {
+          const agentData = this.agents[agentAddress] ;
+          if (agentData !== null) {
+            const { id } = agentData;
+            await apiService.finishBuildAsync({
+              buildId: id,
+              buildLog: 'Build agent not responded during build',
+              duration: 0,
+              success: false
+            })
+          }
+          this.unregister(agentAddress);
+        }
+      } catch(e) {
         this.unregister(agentAddress);
       }
     }
