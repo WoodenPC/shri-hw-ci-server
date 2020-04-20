@@ -76,10 +76,16 @@ class ApiService {
           commitHash: lastBuildInWaiting.commitHash,
           buildCommand: savedSettings.buildCommand
         }).then(() => {
-          agentsSvc.undBindAgendAddress(agentAddress);
+          agentsSvc.unBindAgentAddress(agentAddress);
         }).catch((e) => {
-          console.log(e);
-          agentsSvc.undBindAgendAddress(agentAddress);
+          console.log(e.toString());
+          this.finishBuildAsync({
+            buildId: lastBuildInWaiting.id,
+            duration: 0,
+            success: false,
+            buildLog: `Build agent failed to build ${e.toString()}`
+          });
+          agentsSvc.unBindAgentAddress(agentAddress);
         })
       }
     } catch(e) {

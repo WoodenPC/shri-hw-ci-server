@@ -28,11 +28,11 @@ class AgentsService {
   }
 
   bindAgentAddressToBuild = (agentAddress, buildData) => {
-    console.log(`binded agent to build ${JSON.stringify(buildData)}`);
+    console.log(`binded agent to build ${buildData.toString()}`);
     this.agents[agentAddress] = buildData
   }
 
-  undBindAgendAddress = (agentAddress) => {
+  unBindAgentAddress = (agentAddress) => {
     console.log(`unbinded agent with address ${agentAddress}`);
     this.agents[agentAddress] = null;
   }

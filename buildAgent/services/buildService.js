@@ -1,9 +1,12 @@
 const { spawn } = require('child_process');
 const { promisify } = require('util');
-const { exists, rmdir } = require('fs');
+const { exists, rmdir, readFile } = require('fs');
+const { resolve } = require('path');
+const { createInterface } = require('readline');
 
 const existsAsync = promisify(exists);
 const rmdirAsync = promisify(rmdir);
+const readFileAsync = promisify(readFile);
 
 class BuildService {
   constructor(buildPath) {
@@ -20,6 +23,22 @@ class BuildService {
     }
   }
 
+  readLogsFromFile = async () => {
+    const dir = this.getRepoDir();
+    const logsPath = resolve(dir, 'logs.txt');
+    console.log('reading logs from logs.txt, path=', logsPath);
+    try {
+      if (!await existsAsync(logsPath)) {
+        return '';
+      }
+    
+      const logs = await readFileAsync(logsPath, { encoding: 'utf8' });
+      return logs;
+    } catch(e) {
+      return e.toString();
+    }
+  }
+
   runBuildCommand = () => {
     const { buildCommand } = this.buildParams;
     console.log('starting to build command ', buildCommand);
@@ -29,23 +48,32 @@ class BuildService {
       const buildProcess = spawn(buildCommand, {
         shell: true,
         cwd: dir,
-        stdio: 'inherit'
-      })
+      });
 
-      buildProcess.on('data', (data) => {
-        console.log('build command data', data.toString());
-        result.log += data.toString();
-      }).on('close', (code) => {
+      createInterface({
+        input: buildProcess.stdout,
+        terminal: false,
+      }).on('line', (line) => {
+        result.log += `${line}\n`;
+      });
+
+      createInterface({
+        input: buildProcess.stderr,
+        terminal: false,
+      }).on('line', (line) => {
+        result.log += `${line}\n`;
+      });
+
+      buildProcess.on('error', (data) => {
+        console.error('build process error', data);
+        resolve(result);
+      });
+
+      buildProcess.on('close', (code) => {
         result.status = code === 0 ? 'Success' : 'Fail';
         resolve(result);
-      }).on('error', (err) => {
-        result.log += err.toString();
-        resolve(result);
       });
-      buildProcess.stderr.on('data', (data) => {
-        console.log('build command stderr', data.toString());
-        result.log += data.toString();
-      });
+
     }).catch((err) => {
       result.log += err.toString();
       return result;
@@ -123,35 +151,40 @@ class BuildService {
 
   processRepository = async () => {
     const time = Date.now();
-    await this.removeRepoDir();
-    const cloneResult = await this.clone();
-    if (!cloneResult.isCloned) {
+    try {
+      await this.removeRepoDir();
+      const cloneResult = await this.clone();
+      if (!cloneResult.isCloned) {
+        return {
+          status: 'Fail',
+          buildLog: cloneResult.log,
+          duration: Date.now() - time
+        };
+      }
+  
+      const checkoutResult = await this.checkoutToCommit();
+  
+      if (!checkoutResult.isCheckouted) {
+        return {
+          status: 'Fail',
+          buildLog: cloneResult.log + checkoutResult.log,
+          duration: Date.now() - time
+        };
+      }
+  
+      const buildResult = await this.runBuildCommand();
       return {
-        status: 'Fail',
-        buildLog: cloneResult.log,
+        buildStatus: buildResult.status,
+        buildLog: cloneResult.log + checkoutResult.log + buildResult.log,
         duration: Date.now() - time
       };
-    }
-
-    const checkoutResult = await this.checkoutToCommit();
-
-    if (!checkoutResult.isCheckouted) {
+    } catch(e) {
       return {
-        status: 'Fail',
-        buildLog: cloneResult.log + checkoutResult.log,
-        duration: Date.now() - time
+        buildStatus: 'Fail',
+        buildLog: e.toString(),
+        duration: 0
       };
     }
-
-    console.log('checkout result', checkoutResult);
-
-    const buildResult = await this.runBuildCommand();
-    console.log('build result', buildResult);
-    return {
-      status: buildResult.status,
-      buildLog: cloneResult.log + checkoutResult.log + buildResult.log,
-      duration: Date.now() - time
-    };
   }
 
 }

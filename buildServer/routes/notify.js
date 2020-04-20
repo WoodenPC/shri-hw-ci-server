@@ -18,12 +18,15 @@ router.post('/notify-build-result', async (req, res) => {
   const { buildId, buildStatus, buildLog, duration } = body;
   const apiSvc = svcContainer.getService('ApiService');
   try {
+    console.log({ buildId, buildStatus, buildLog });
     const apiRes = await apiSvc.finishBuildAsync({
       buildId,
       success: buildStatus === 'Success',
       buildLog,
       duration
     });
+
+    console.log(apiRes);
 
     console.log(apiRes.data);
 
