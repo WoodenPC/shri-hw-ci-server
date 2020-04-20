@@ -1,8 +1,10 @@
 const { Socket } = require('net');
 
 class ApiService {
-  constructor(webClient) {
+  constructor(webClient, host, port) {
     this.webClient = webClient;
+    this.host = host;
+    this.port = port;
   }
 
   checkWebClientIsAlive = () => {
@@ -18,10 +20,10 @@ class ApiService {
     })
   }
 
-  notifyAgent = ({ host, port }) => {
+  notifyAgent = () => {
     return this.webClient.post('/notify-agent', {
-      host,
-      port
+      host: this.host,
+      port: this.port
     });
   }
 

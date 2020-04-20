@@ -28,7 +28,7 @@ class AgentsService {
   }
 
   bindAgentAddressToBuild = (agentAddress, buildData) => {
-    console.log(`binded agent to build ${buildData.toString()}`);
+    console.log(`binded agent to build ${buildData}`);
     this.agents[agentAddress] = buildData
   }
 

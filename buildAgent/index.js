@@ -14,10 +14,14 @@ const axiosApi = axios.create({
   baseURL: `http://${config.serverHost}:${config.serverPort}`
 });
 
-svcContainer.setService('ApiService', new ApiService(axiosApi));
+svcContainer.setService('ApiService', new ApiService(axiosApi, config.host, config.port));
 svcContainer.setService('BuildService', new BuildService(resolve('../testRepos')));
 
 const app = express();
+
+process.on('uncaughtException', (err) => {
+  console.log(err);
+});
 
 // инициализация сервера
 app.use(express.urlencoded({ extended: true }));
@@ -26,7 +30,7 @@ app.use(require('./routes/build'));
 
 app.listen(config.port, async () => {
   const apiSvc = svcContainer.getService('ApiService');
-  const apiRes = await apiSvc.notifyAgent({ port: config.port, host: '127.0.0.1' });
+  const apiRes = await apiSvc.notifyAgent();
   console.log(apiRes.data);
   console.log(`listening build agent on port ${config.port}`);
 })

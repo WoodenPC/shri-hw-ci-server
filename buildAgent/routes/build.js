@@ -8,30 +8,25 @@ router.post('/build', async (req, res) => {
   const { buildId, repoAddress, commitHash, buildCommand } = body;
   const buildSvc = svcContainer.getService('BuildService');
   buildSvc.setParams({ buildId, repoAddress, commitHash, buildCommand });
+  res.sendStatus(200);
+
   try {
     const processResult = await buildSvc.processRepository();
     console.log('build processing finished');
     const apiSvc = svcContainer.getService('ApiService');
 
-    const notifyRes = await apiSvc.notifyBuildResult({
+    await apiSvc.notifyBuildResult({
       buildId,
       buildStatus: processResult.buildStatus,
       buildLog: processResult.buildLog,
       duration: processResult.duration
     });
 
-    console.log('notify result', notifyRes.data);
+    await apiSvc.notifyAgent();
 
-    if (notifyRes.status !== 200) {
-      res.status(502).send('Build server not responded');
-      return;
-    }
   } catch(e) {
-    res.status(500).send(`Cannot process repository ${e.toString()}`);
-    return;
+    console.log(e);
   }
-
-  return res.sendStatus(200);
 })
 
 module.exports = router;

@@ -28,6 +28,10 @@ axiosApi.interceptors.response.use(null, (error) => {
   return Promise.reject(error);
 });
 
+process.on('uncaughtException', (err) => {
+  console.error('Error!!!!! ', err.toString());
+})
+
 svcContainer.setService('ApiService', new ApiService(axiosApi));
 svcContainer.setService('AgentsService', new AgentsService());
 

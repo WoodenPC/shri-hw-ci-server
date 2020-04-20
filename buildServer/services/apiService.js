@@ -70,23 +70,21 @@ class ApiService {
         const agentAddress = freeAgentsAddresses.pop();
         agentsSvc.bindAgentAddressToBuild(agentAddress, lastBuildInWaiting);
         await this.startBuildAsync({ buildId: lastBuildInWaiting.id });
-        axios.post(`http://${agentAddress}/build`, {
+        const buildRes = await axios.post(`http://${agentAddress}/build`, {
           buildId: lastBuildInWaiting.id,
           repoAddress: `http://github.com/${savedSettings.repoName}`,
           commitHash: lastBuildInWaiting.commitHash,
           buildCommand: savedSettings.buildCommand
-        }).then(() => {
-          agentsSvc.unBindAgentAddress(agentAddress);
-        }).catch((e) => {
-          console.log(e.toString());
+        });
+
+        if (buildRes.status !== 200) {
           this.finishBuildAsync({
             buildId: lastBuildInWaiting.id,
+            buildLog: 'Cannot start build',
             duration: 0,
-            success: false,
-            buildLog: `Build agent failed to build ${e.toString()}`
+            buildLog: ''
           });
-          agentsSvc.unBindAgentAddress(agentAddress);
-        })
+        }
       }
     } catch(e) {
       console.log(e);
