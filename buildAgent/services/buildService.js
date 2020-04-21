@@ -1,12 +1,13 @@
 const { spawn } = require('child_process');
 const { promisify } = require('util');
-const { exists, rmdir, readFile } = require('fs');
+const { exists, rmdir, readFile, mkdir } = require('fs');
 const { resolve } = require('path');
 const { createInterface } = require('readline');
 
 const existsAsync = promisify(exists);
 const rmdirAsync = promisify(rmdir);
 const readFileAsync = promisify(readFile);
+const mkdirAsync = promisify(mkdir);
 
 class BuildService {
   constructor(buildPath) {
@@ -70,6 +71,7 @@ class BuildService {
       });
 
       buildProcess.on('close', (code) => {
+        console.log('Build command code = ', code);
         result.status = code === 0 ? 'Success' : 'Fail';
         resolve(result);
       });
@@ -82,7 +84,7 @@ class BuildService {
 
   /**получение папки где будет лежать репа */
   getRepoDir = () => {
-    return `${this.buildPath}/repo`;
+    return resolve(`${this.buildPath}/repo`);
   }
 
   /** удаление папки с репозиторием  */
@@ -99,6 +101,9 @@ class BuildService {
    * клонирование репозитория
    */
   clone = async () => {
+    if (!await existsAsync(this.buildPath)) {
+      await mkdirAsync(this.buildPath);
+    }
     return new Promise((resolve) => {
       let result = { isCloned: false, log: '' };
       const { repoAddress } = this.buildParams;
@@ -113,6 +118,11 @@ class BuildService {
       gitCloneProcess.on('close', (code) => {
         console.log(`Git clone is finished. code=${code}`);
         result.isCloned = code === 0;
+        resolve(result);
+      });
+
+      gitCloneProcess.on('error', (err) => {
+        result.log += err.toString();
         resolve(result);
       });
 
@@ -139,6 +149,11 @@ class BuildService {
       gitCheckoutProcess.on('close', (code) => {
         console.log(`Git checkout is finished. code=${code}`);
         result.isCheckouted = code === 0;
+        resolve(result);
+      });
+
+      gitCheckoutProcess.on('error', (err) => {
+        result.log += err.toString();
         resolve(result);
       });
 

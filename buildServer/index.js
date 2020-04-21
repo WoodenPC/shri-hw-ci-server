@@ -1,6 +1,4 @@
 const express = require('express');
-const { readFileSync } = require('fs');
-const { resolve } = require('path');
 const https = require('https');
 const axios = require('axios');
 
@@ -8,13 +6,12 @@ const svcContainer = require('./services/serviceContainer');
 const ApiService = require('./services/apiService');
 const AgentsService = require('./services/agentsService');
 
-const configStr = readFileSync(resolve('./server-conf.json'), { encoding: 'utf8' });
-const config = JSON.parse(configStr);
+const { env } = process;
 
 const axiosApi = axios.create({
-  baseURL: config.apiBaseUrl,
+  baseURL: env.apiBaseUrl,
   headers: {
-    Authorization: `Bearer ${config.apiToken}`,
+    Authorization: `Bearer ${env.apiToken}`,
   },
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
@@ -41,6 +38,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(require('./routes/notify'));
 
-app.listen(config.port, () => {
-  console.log(`listening build server on port ${config.port}`);
+app.listen(env.port, () => {
+  console.log(`listening build server on port ${env.port}`);
 })
