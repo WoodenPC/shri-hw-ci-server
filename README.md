@@ -89,7 +89,7 @@
 В связи с тем, что использован докер, билд сервер не использует файл конфигурации, а читает параметры из переменных окружения
 
 ### dockerfile
-1. Билд: `sudo docker build -f ./Dockerfile.dev -t build-server .`
+1. Билд: `npm run build-docker-image` или `npm run build-docker-image:dev`
 2. Запуск: `sudo docker run -e apiBaseUrl=https://hw.shri.yandex/api/ -e port=12345 -e apiToken= -p 12345:12345 build-server`
 
 ## Билд агент
@@ -99,7 +99,7 @@
 В связи с тем, что использован докер, билд агент не использует файл конфигурации, а читает параметры из переменных окружения
 
 ### dockerfile
-1. Билд: `sudo docker build -f ./Dockerfile.dev -t build-agent .`
+1. Билд: `npm run build-docker-image` или `npm run build-docker-image:dev`
 2. Запуск: `sudo docker run -e serverHost=192.168.0.103 -e serverPort=12345 -e port=30000 -p 30000:30000 build-agent`
 
 baseUrl агента я задаю через `host.docker.internal`

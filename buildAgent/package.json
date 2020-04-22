@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "build-docker-image": "sudo docker build -t build-server .",
+    "build-docker-image:dev": "sudo docker build -f ./Dockerfile.dev -t build-server ."
   },
   "keywords": [],
   "author": "",
