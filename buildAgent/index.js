@@ -17,7 +17,7 @@ const axiosApi = axios.create({
 
 svcContainer.setService('ApiService',
   new ApiService(axiosApi, {
-    host: env.host || '127.0.0.1',
+    host: 'host.docker.internal',
     port: port,
     serverHost: serverHost,
     serverPort: serverPort

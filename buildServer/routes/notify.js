@@ -7,7 +7,7 @@ router.post('/notify-agent', (req, res) => {
   const { body } = req;
   const { port, host } = body;
   const agentsSvc = svcContainer.getService('AgentsService');
-  agentsSvc.register({ port, host: req.hostname });
+  agentsSvc.register({ port, host });
   res.sendStatus(200);
 });
 

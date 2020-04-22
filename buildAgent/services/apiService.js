@@ -8,7 +8,7 @@ class ApiService {
     this.serverHost = serverHost;
     this.serverPort = serverPort
     this.connectedToServer = false;
-    this.interval = setInterval(this.spyOnWebClient, 1000 * 10); //60c
+    this.interval = setInterval(this.spyOnWebClient, 1000 * 30); //30c
   }
 
   checkWebClientIsAlive = () => {
