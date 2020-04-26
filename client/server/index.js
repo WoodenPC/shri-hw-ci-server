@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 
 import { StaticRouter } from 'react-router-dom';
 import { createServerStore } from 'store/store';
+
 import { App } from '../src/App';
 
 let productionTemplate;
