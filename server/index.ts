@@ -1,21 +1,20 @@
-const express = require('express');
+import express from 'express';
+
+import { axios } from './axiosInstance';
+import { router } from './routes';
+import { GitService } from 'services/gitService';
+import { YandexService } from 'services/yandexService';
+import { CacheService } from 'services/cacheService';
+import { getServiceContainer } from 'services/serviceContainer';
 
 const app = express();
-
-const axios = require('./axiosInstance');
-
-const GitService = require('./services/gitService');
-const YandexService = require('./services/yandexService');
-const CacheService = require('./services/cacheService');
-const serviceContainer = require('./services/serviceContainer');
-
 // инициализция сервисов и сервис контейнера
 const builLogsDir = process.env.CACHE_DIR || '/home/logsCache';
 
 const gitSvc = new GitService();
 const yandexSvc = new YandexService(axios);
 const cacheSvc = new CacheService(builLogsDir);
-
+const serviceContainer = getServiceContainer();
 serviceContainer.setService('GitService', gitSvc);
 serviceContainer.setService('YandexService', yandexSvc);
 serviceContainer.setService('CacheService', cacheSvc);
@@ -23,7 +22,7 @@ serviceContainer.setService('CacheService', cacheSvc);
 // инициализация сервера
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(require('./routes'));
+app.use(router);
 
 const SERVER_PORT = 5000;
 

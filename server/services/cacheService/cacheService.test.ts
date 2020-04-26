@@ -1,15 +1,15 @@
-const { resolve } = require('path');
-const { Readable, Writable } = require('stream');
-const { readFileSync } = require('fs');
-const { fileExistsAsync, mkDirAsync } = require('../../utils/promisified');
-const CacheService = require('./cacheService');
+import { resolve } from 'path';
+import { Readable, Writable } from 'stream';
+import { readFileSync } from 'fs';
+import { fileExistsAsync, mkDirAsync } from 'utils/promisified';
+import { CacheService } from './cacheService';
 
 describe('Тесты кэш сервиса', () => {
   test('тестовый лог чекается на валидность корректно', async () => {
     const svc = new CacheService('');
     svc.getBuildCacheLogPath = () => resolve('./services/cacheService/testLog');
-    expect(await fileExistsAsync(svc.getBuildCacheLogPath())).toBeTruthy();
-    const result = await svc.checkLog();
+    expect(await fileExistsAsync(svc.getBuildCacheLogPath(''))).toBeTruthy();
+    const result = await svc.checkLog('');
     expect(result).toBeFalsy();
   });
 
@@ -33,7 +33,7 @@ describe('Тесты кэш сервиса', () => {
   test('лог читается из файла через стрим', async () => {
     const svc = new CacheService('');
     svc.getBuildCacheLogPath = () => resolve('./services/cacheService/testLog');
-    expect(await fileExistsAsync(svc.getBuildCacheLogPath())).toBeTruthy();
+    expect(await fileExistsAsync(svc.getBuildCacheLogPath(''))).toBeTruthy();
 
     const ws = new Writable();
     let testStr = '';

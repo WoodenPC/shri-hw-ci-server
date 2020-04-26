@@ -1,6 +1,8 @@
 import { Router } from 'express';
+import { builds } from './builds';
+import { settings } from './settings';
 
 export const router = Router();
 
-router.use('/builds', require('./builds'));
-router.use('/settings', require('./settings'));
+router.use('/builds', builds);
+router.use('/settings', settings);

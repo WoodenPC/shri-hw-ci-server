@@ -1,9 +1,9 @@
-const { EventEmitter } = require('events');
-const GitService = require('./gitService');
+import { EventEmitter } from 'events';
+import { GitService } from './gitService';
 
-const ETALON_FORMAT = '--pretty=format:{ "commitHash":"%H", "authorName":"%cn", "commitMessage": "%s" }';
+const ETALON_FORMAT: string = '--pretty=format:{ "commitHash":"%H", "authorName":"%cn", "commitMessage": "%s" }';
 
-const mockSpawn = new EventEmitter();
+const mockSpawn: any = new EventEmitter();
 mockSpawn.stdout = new EventEmitter();
 mockSpawn.stderr = new EventEmitter();
 
