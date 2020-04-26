@@ -1,6 +1,6 @@
-const router = require('express').Router();
+import { Router } from 'express';
+
+export const router = Router();
 
 router.use('/builds', require('./builds'));
 router.use('/settings', require('./settings'));
-
-module.exports = router;

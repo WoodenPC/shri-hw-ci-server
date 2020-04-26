@@ -1,29 +1,61 @@
-const { resolve } = require('path');
-const { watch } = require('fs');
-const { spawn } = require('child_process');
+import { resolve } from 'path';
+import { watch, FSWatcher } from 'fs';
+import { spawn } from 'child_process';
 
-const { fileExistsAsync } = require('../../utils/promisified');
+import { fileExistsAsync } from 'utils/promisified';
 
-const serviceContainer = require('../serviceContainer');
+import { IServiceContainer, getServiceContainer } from 'services/serviceContainer';
+import { IRepoSettings } from 'interfaces/data.intfs';
+import { IYandexService } from 'services/yandexService';
+import { IService } from 'interfaces/service.intfs';
+import { IBuildInfo } from 'interfaces/data.intfs';
 
-const BASE_GITHUB_URL = 'https://github.com';
+const BASE_GITHUB_URL: string = 'https://github.com';
+
+export interface IGitService extends IService {
+  clone(url: string, repoName: string): Promise<boolean>;
+  checkout(repoName: string, branchName: string): Promise<boolean>;
+  init(settings: IRepoSettings): Promise<boolean>;
+  sendBuildsForNewCommits(): Promise<void>;
+  pullRepo(repoName: string): Promise<boolean>;
+  getCommitInfo(commitHash: string): Promise<IBuildInfo | undefined>;
+}
+
+interface ILogData {
+  commitHash: string;
+  authorName: string;
+  commitMessage: string;
+}
 
 /**
  * сервис для работы с гит репозиториями
  * умеет в клонирование и слежение за текущем репозиторием
  */
-class GitService {
-  repoUrl = '';
-  repoName = '';
-  mainBranch = '';
-  buildCommand = '';
-  period = 0;
-  interval = null;
-  fsWatcher = null;
-  intervalTime = 10000; // 10c
-  lastBuildCommitHash = null;
+export class GitService implements IGitService {
+  private repoUrl: string;
+  private repoSettings: IRepoSettings;
+  private interval: NodeJS.Timeout | null;
+  private fsWatcher: FSWatcher | null;
+  private intervalTime: number;
+  private lastBuildCommitHash: string;
 
-  getRepoFolder = (repoName) => {
+  constructor() {
+    this.repoUrl = '';
+    this.repoSettings = {
+      repoName: '',
+      buildCommand: '',
+      mainBranch: '',
+      period: 0,
+    };
+    this.lastBuildCommitHash = '';
+    this.intervalTime = 10000; // 10c
+    this.interval = null;
+    this.fsWatcher = null;
+  }
+
+  public static getName = (): string => 'GitService';
+
+  getRepoFolder = (repoName: string): string => {
     const repoFolder = process.env.REPOS_DIR || '/home/repos';
     return resolve(repoFolder, repoName);
   };
@@ -31,8 +63,8 @@ class GitService {
   /**
    * клонирование репозитория
    */
-  clone = (url, repoName) => {
-    return new Promise((resolve, reject) => {
+  clone = (url: string, repoName: string) => {
+    return new Promise<boolean>((resolve, reject) => {
       const repoPath = this.getRepoFolder(repoName);
       const gitCloneProcess = spawn('git', ['clone', url, repoPath]);
       gitCloneProcess.stdout.on('data', (data) => {
@@ -59,8 +91,8 @@ class GitService {
   };
 
   // изменение ветки
-  checkout = (repoName, branchName) => {
-    return new Promise((resolve, reject) => {
+  checkout = (repoName: string, branchName: string): Promise<boolean> => {
+    return new Promise<boolean>((resolve, reject) => {
       const repoPath = this.getRepoFolder(repoName);
       const gitCheckoutProcess = spawn('git', ['checkout', branchName], {
         cwd: repoPath,
@@ -91,7 +123,8 @@ class GitService {
   /** загружает настройки из сервиса хранилища яндекса и инициализируется с этими настройками */
   loadSettingsFromYandexStorage = async () => {
     try {
-      const yandexService = serviceContainer.getService('YandexService');
+      const serviceContainer: IServiceContainer = getServiceContainer();
+      const yandexService: IYandexService = serviceContainer.getService('YandexService') as IYandexService;
       const apiResponse = await yandexService.getSavedSettings();
       const { data } = apiResponse;
       if (!data || !data.data) {
@@ -105,43 +138,43 @@ class GitService {
   };
 
   // инициализация севиса
-  init = async (settings) => {
-    this.repoName = settings.repoName;
-    this.repoUrl = `${BASE_GITHUB_URL}/${this.repoName}`;
-    this.mainBranch = settings.mainBranch;
-    this.period = settings.period * 1000 * 60; // делаем минуты
-    if (!(await fileExistsAsync(this.getRepoFolder(this.repoName)))) {
-      this.lastBuildCommitHash = null;
+  init = async (settings: IRepoSettings): Promise<boolean> => {
+    this.repoSettings = settings;
+    this.repoUrl = `${BASE_GITHUB_URL}/${settings.repoName}`;
+    this.intervalTime = settings.period * 1000 * 60; // делаем минуты
+    if (!(await fileExistsAsync(this.getRepoFolder(settings.repoName)))) {
+      this.lastBuildCommitHash = '';
       try {
-        await this.clone(this.repoUrl, this.repoName);
-        await this.checkout(this.repoName, this.mainBranch);
+        await this.clone(this.repoUrl, settings.repoName);
+        await this.checkout(settings.repoName, settings.mainBranch);
       } catch (e) {
         console.log(e.toString());
         return false;
       }
     } else {
-      await this.checkout(this.repoName, this.mainBranch);
+      await this.checkout(settings.repoName, settings.mainBranch);
       // ставим билд на последний коммит
-      const log = await this.getLog(this.repoName, this.getLogCommand());
+      const log = await this.getLog(settings.repoName, this.getLogCommand());
       if (log) {
         // получаем последний коммит
         this.lastBuildCommitHash = log[0] && log[0].commitHash;
       }
-      console.log(`repo ${this.repoName} already cloned. continue`);
+      console.log(`repo ${settings.repoName} already cloned. continue`);
     }
 
     this.stop();
-    this.watch(this.repoName);
+    this.watch(settings.repoName);
     return true;
   };
 
   /**
    * отправка коммитов на сборку
    */
-  sendBuildsForNewCommits = async () => {
+  sendBuildsForNewCommits = async (): Promise<void> => {
     let log;
+    const { mainBranch, repoName } = this.repoSettings;
     try {
-      log = await this.getLog(this.repoName, this.getLogCommand({ untilHash: this.lastBuildCommitHash }));
+      log = await this.getLog(repoName, this.getLogCommand({ untilHash: this.lastBuildCommitHash }));
     } catch (e) {
       console.log('cannot get log ', e);
       return;
@@ -153,7 +186,8 @@ class GitService {
 
     // 0 - самый последний коммит
     this.lastBuildCommitHash = log[0].commitHash;
-    const yandexService = serviceContainer.getService('YandexService');
+    const serviceContainer: IServiceContainer = getServiceContainer();
+    const yandexService: IYandexService = serviceContainer.getService('YandexService') as IYandexService;
     // запускаем сборки в порядке истории коммитов
     for (let i = log.length - 1; i >= 0; i--) {
       const logData = log[i];
@@ -168,7 +202,7 @@ class GitService {
           commitHash,
           commitMessage,
           authorName,
-          branchName: this.mainBranch,
+          branchName: mainBranch,
         });
       } catch (e) {
         console.log('Cannot add build to queue after pull ', e);
@@ -179,7 +213,8 @@ class GitService {
   /**
    * наблюдение за клонированным репозиторием
    */
-  watch = (repoName) => {
+  watch = async (repoName: string): Promise<void> => {
+    const { intervalTime } = this;
     this.fsWatcher = watch(this.getRepoFolder(repoName), () => {
       console.log('repo updated');
     });
@@ -192,7 +227,7 @@ class GitService {
         console.log('Check repo error', e.toString());
         this.stop();
       }
-    }, this.period);
+    }, intervalTime);
   };
 
   /**
@@ -211,7 +246,7 @@ class GitService {
   /**
    * обновление репозитория
    */
-  pullRepo = (repoName) => {
+  pullRepo = (repoName: string): Promise<boolean> => {
     return new Promise((resolve, reject) => {
       const pullProcess = spawn('git', ['pull'], {
         cwd: this.getRepoFolder(repoName),
@@ -241,7 +276,7 @@ class GitService {
   /**
    * получение команды для лога
    */
-  getLogCommand = (params = {}) => {
+  getLogCommand = (params: { untilHash?: string } = {}): Array<string> => {
     const format = '--pretty=format:{ "commitHash":"%H", "authorName":"%cn", "commitMessage": "%s" }';
     const command = ['log'];
     if (!params.untilHash) {
@@ -254,7 +289,7 @@ class GitService {
     return command;
   };
 
-  getShowCommand = (commitHash) => {
+  getShowCommand = (commitHash: string) => {
     const format = '--pretty=format:{ "commitHash":"%H", "authorName":"%cn", "commitMessage": "%s" }';
     const command = ['show', '--quiet'];
 
@@ -264,17 +299,18 @@ class GitService {
     return command;
   };
 
-  getCommitInfo = async (commitHash) => {
+  getCommitInfo = async (commitHash: string): Promise<IBuildInfo | undefined> => {
+    const { repoName, mainBranch } = this.repoSettings;
     try {
       console.log(`getting ${commitHash} info from git service`);
-      const log = await this.getLog(this.repoName, this.getShowCommand(commitHash));
+      const log: Array<ILogData> = await this.getLog(repoName, this.getShowCommand(commitHash));
       if (!log || log.length === 0) {
         return;
       }
 
       return {
         ...log[0],
-        branchName: this.mainBranch,
+        branchName: mainBranch,
         commitHash,
       };
     } catch (e) {
@@ -285,10 +321,9 @@ class GitService {
   /**
    * получение лога в отдельном процессе
    */
-  getLog = (repoName, command) => {
+  getLog = (repoName: string, command: Array<string>): Promise<Array<ILogData>> => {
     console.log('starting getting log, command = ', command);
-    console.log(repoName);
-    return new Promise((resolve, reject) => {
+    return new Promise<Array<ILogData>>((resolve, reject) => {
       let logData = '';
       const logProcess = spawn('git', command, {
         cwd: this.getRepoFolder(repoName),
@@ -306,7 +341,7 @@ class GitService {
         }
 
         const dataArr = logData.split('\n');
-        const result = [];
+        const result: Array<ILogData> = [];
         dataArr.forEach((logItem) => {
           try {
             if (logItem !== '') {
@@ -329,5 +364,3 @@ class GitService {
     });
   };
 }
-
-module.exports = GitService;

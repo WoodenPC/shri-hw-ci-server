@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon -L index.js",
-    "start": "node index.js",
+    "start": "node dist/index.js",
+    "server:build": "tsc -p tsconfig.json",
+    "server:watch": "TS_NODE_FILES=1 nodemon server/index.ts -r ts-node/register",
     "test": "jest"
   },
   "repository": {
@@ -23,12 +25,16 @@
   },
   "homepage": "https://github.com/WoodenPC/shri-hw-ci-server#readme",
   "devDependencies": {
+    "@types/express": "^4.17.6",
+    "@types/node": "^13.13.2",
     "axios": "^0.19.2",
     "axios-mock-adapter": "^1.18.1",
     "date-fns": "^2.11.0",
     "express": "^4.17.1",
     "jest": "^25.3.0",
     "nodemon": "^2.0.2",
-    "prettier": "^2.0.4"
+    "prettier": "^2.0.4",
+    "ts-node": "^8.9.0",
+    "typescript": "^3.8.3"
   }
 }

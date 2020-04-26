@@ -1,30 +1,35 @@
-const builds = require('express').Router();
+import { Router } from 'express';
 
-const serviceContainer = require('../../services/serviceContainer');
+import { getServiceContainer } from 'services/serviceContainer';
+import { IYandexService } from 'services/yandexService';
+import { IGitService } from 'services/gitService';
+import { ICacheService } from 'services/cacheService';
+
+export const builds = Router();
 
 // получение списка сборок
 builds.get('/', async (req, res) => {
-  const { query } = req;
-  let apiResponse;
   try {
-    const yandexService = serviceContainer.getService('YandexService');
-    apiResponse = await yandexService.getBuildsList({
-      offset: query.offset,
-      limit: query.limit,
+    const { query } = req;
+    const serviceContainer = getServiceContainer();
+    const yandexService = serviceContainer.getService('YandexService') as IYandexService;
+    const apiResponse = await yandexService.getBuildList({
+      offset: Number(query.offset),
+      limit: Number(query.limit),
+    });
+
+    const { data } = apiResponse;
+
+    if (data === undefined) {
+      return res.status(500).send('Cannot get builds data from shri server!');
+    }
+
+    res.send({
+      data: data.data,
     });
   } catch (e) {
     return res.status(500).send(e);
   }
-
-  const { data } = apiResponse;
-
-  if (data === undefined) {
-    return res.status(500).send('Cannot get builds data from shri server!');
-  }
-
-  res.send({
-    data: data.data,
-  });
 });
 
 // добавление сборки в очередь
@@ -39,11 +44,15 @@ builds.post('/:commitHash', async (req, res) => {
 
   let apiResponse;
   try {
-    const gitService = serviceContainer.getService('GitService');
-    const yandexService = serviceContainer.getService('YandexService');
+    const serviceContainer = getServiceContainer();
+    const gitService = serviceContainer.getService('GitService') as IGitService;
+    const yandexService = serviceContainer.getService('YandexService') as IYandexService;
     //если каких то параметров нету, то берем инфу из гита
     if (!body.commitMessage || !body.branchName || !body.authorName) {
       const commitInfo = await gitService.getCommitInfo(commitHash);
+      if (commitInfo === undefined) {
+        return res.sendStatus(500); // TODO: допилить типы
+      }
       apiResponse = await yandexService.addBuildToQueue(commitInfo);
     } else {
       apiResponse = await yandexService.addBuildToQueue({
@@ -70,7 +79,8 @@ builds.get('/:buildId', async (req, res) => {
 
   let apiResponse;
   try {
-    const yandexService = serviceContainer.getService('YandexService');
+    const serviceContainer = getServiceContainer();
+    const yandexService = serviceContainer.getService('YandexService') as IYandexService;
     apiResponse = await yandexService.getBuildInfo(buildId);
   } catch (e) {
     return res.status(500).send(e);
@@ -96,12 +106,13 @@ builds.get('/:buildId/logs', async (req, res) => {
   }
 
   try {
-    const cacheService = serviceContainer.getService('CacheService');
-    const yandexService = serviceContainer.getService('YandexService');
+    const serviceContainer = getServiceContainer();
+    const cacheService = serviceContainer.getService('CacheService') as ICacheService;
+    const yandexService = serviceContainer.getService('YandexService') as IYandexService;
     const isValidLogCache = await cacheService.checkLog(buildId);
     if (isValidLogCache !== false) {
       console.log('cache exists');
-      await cacheService.read(buildId, res);
+      await cacheService.read(buildId, res as any); // TODO:
       return;
     }
 
@@ -111,10 +122,8 @@ builds.get('/:buildId/logs', async (req, res) => {
     }
     const { data } = logs;
     await cacheService.write(buildId, data);
-    await cacheService.read(buildId, res);
+    await cacheService.read(buildId, res as any); // TODO:
   } catch (e) {
     return res.status(500).send(e);
   }
 });
-
-module.exports = builds;
