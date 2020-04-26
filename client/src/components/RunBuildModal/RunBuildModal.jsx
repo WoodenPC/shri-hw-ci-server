@@ -10,15 +10,18 @@ import { useCallback } from 'react';
 const RunBuildModal = memo(({ visible, onRunBuild, onCancel }) => {
   const [hash, setHash] = useState('');
 
-  const onChangeHash = useCallback((event) => {
-    setHash(event.target.value);
-  });
+  const onChangeHash = useCallback(
+    (event) => {
+      setHash(event.target.value);
+    },
+    [setHash]
+  );
 
   const onSubmit = useCallback(() => {
     if (onRunBuild) {
       onRunBuild(hash);
     }
-  }, [hash]);
+  }, [hash, onRunBuild]);
 
   return (
     <Modal visible={visible}>

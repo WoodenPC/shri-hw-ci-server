@@ -43,7 +43,7 @@ const Card = memo(
       if (onClick !== undefined) {
         onClick({ buildId: id, commitHash: hash });
       }
-    }, [id, hash]);
+    }, [id, hash, onClick]);
 
     return (
       <div

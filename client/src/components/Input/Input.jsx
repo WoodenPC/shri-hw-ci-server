@@ -13,7 +13,7 @@ const Input = memo(
       if (onChange !== undefined) {
         onChange({ target: { value: '' } });
       }
-    });
+    }, [onChange]);
 
     return (
       <div className={classes({ short })}>

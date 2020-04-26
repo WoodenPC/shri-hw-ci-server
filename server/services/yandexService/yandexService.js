@@ -31,16 +31,6 @@ class YandexService {
       });
 
       const { data } = apiResponse;
-      if (data === undefined) {
-        return;
-      }
-      const buildParams = { buildId: data.data.id };
-      await this.startBuildMock(buildParams);
-
-      setTimeout(() => {
-        this.finishBuildMock(buildParams);
-      }, 10000);
-
       return data;
     } catch (e) {
       console.log('Cannot add build to queue', e.toString());

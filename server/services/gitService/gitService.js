@@ -51,6 +51,10 @@ class GitService {
       gitCloneProcess.stderr.on('data', (data) => {
         console.error(`Git clone stderr: ${data.toString()}`);
       });
+
+      gitCloneProcess.on('error', (err) => {
+        reject(err);
+      });
     });
   };
 
@@ -77,6 +81,10 @@ class GitService {
       gitCheckoutProcess.stderr.on('data', (data) => {
         console.error(`Git checkout stderr: ${data.toString()}`);
       });
+
+      gitCheckoutProcess.on('error', (err) => {
+        reject(err);
+      });
     });
   };
 
@@ -92,7 +100,7 @@ class GitService {
 
       await this.init(data.data);
     } catch (e) {
-      console.log(e);
+      console.log(e.toString());
     }
   };
 
@@ -108,7 +116,7 @@ class GitService {
         await this.clone(this.repoUrl, this.repoName);
         await this.checkout(this.repoName, this.mainBranch);
       } catch (e) {
-        console.log(e);
+        console.log(e.toString());
         return false;
       }
     } else {
@@ -181,7 +189,7 @@ class GitService {
         await this.pullRepo(repoName);
         await this.sendBuildsForNewCommits();
       } catch (e) {
-        console.log('Check repo error', e);
+        console.log('Check repo error', e.toString());
         this.stop();
       }
     }, this.period);
@@ -222,6 +230,10 @@ class GitService {
 
       pullProcess.stderr.on('data', (data) => {
         console.error(`Git pull stderr: ${data}`);
+      });
+
+      pullProcess.on('error', (err) => {
+        reject(err);
       });
     });
   };
@@ -301,7 +313,7 @@ class GitService {
               result.push(JSON.parse(logItem));
             }
           } catch (e) {
-            console.log(e);
+            console.log(e.toString());
           }
         });
         resolve(result);
@@ -309,6 +321,10 @@ class GitService {
 
       logProcess.stderr.on('data', (data) => {
         console.error(`Git log stderr: ${data}`);
+      });
+
+      logProcess.on('error', (err) => {
+        reject(err);
       });
     });
   };

@@ -12,4 +12,11 @@ const instance = axios.create({
   }),
 });
 
+instance.interceptors.response.use(null, (error) => {
+  if (error.config && error.response && error.response.status >= 500) {
+    return instance.request(error.config);
+  }
+  return Promise.reject(error);
+});
+
 module.exports = instance;
