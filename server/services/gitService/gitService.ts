@@ -8,7 +8,7 @@ import { IServiceContainer, getServiceContainer } from 'services/serviceContaine
 import { IRepoSettings } from 'interfaces/data.intfs';
 import { IYandexService } from 'services/yandexService';
 import { IService } from 'interfaces/service.intfs';
-import { IBuildInfo } from 'interfaces/data.intfs';
+import { ICommitInfo } from 'interfaces/data.intfs';
 
 const BASE_GITHUB_URL: string = 'https://github.com';
 
@@ -18,7 +18,7 @@ export interface IGitService extends IService {
   init(settings: IRepoSettings): Promise<boolean>;
   sendBuildsForNewCommits(): Promise<void>;
   pullRepo(repoName: string): Promise<boolean>;
-  getCommitInfo(commitHash: string): Promise<IBuildInfo | undefined>;
+  getCommitInfo(commitHash: string): Promise<ICommitInfo | undefined>;
 }
 
 interface ILogData {
@@ -299,7 +299,7 @@ export class GitService implements IGitService {
     return command;
   };
 
-  getCommitInfo = async (commitHash: string): Promise<IBuildInfo | undefined> => {
+  getCommitInfo = async (commitHash: string): Promise<ICommitInfo | undefined> => {
     const { repoName, mainBranch } = this.repoSettings;
     try {
       console.log(`getting ${commitHash} info from git service`);

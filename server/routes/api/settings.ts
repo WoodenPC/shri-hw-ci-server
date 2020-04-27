@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { IServiceContainer, getServiceContainer } from 'services/serviceContainer';
+import { getServiceContainer } from 'services/serviceContainer';
 import { IYandexService } from 'services/yandexService';
 import { IGitService } from 'services/gitService';
 import { IRepoSettings } from 'interfaces/data.intfs';
@@ -8,17 +8,17 @@ import { IRepoSettings } from 'interfaces/data.intfs';
 export const settings = Router();
 
 // получение сохраненных настроек
-settings.get<{}, IRepoSettings | string>('/', async (_, res) => {
+settings.get('/', async (_, res) => {
   try {
-    const serviceContainer: IServiceContainer = getServiceContainer();
-    const yandexService: IYandexService = serviceContainer.getService('YandexService') as IYandexService;
+    const serviceContainer = getServiceContainer();
+    const yandexService = serviceContainer.getService<IYandexService>('YandexService');
     const apiResponse = await yandexService.getSavedSettings();
     const { data } = apiResponse;
     if (data === undefined) {
       return res.status(500).send('Cannot get configuration settings from api server!');
     }
 
-    const settingsData: IRepoSettings = data.data;
+    const settingsData = data.data;
 
     res.status(200).send({
       repoName: settingsData.repoName,
@@ -32,7 +32,7 @@ settings.get<{}, IRepoSettings | string>('/', async (_, res) => {
 });
 
 // cохранение настроек
-settings.post<{}, string>('/', async (req, res) => {
+settings.post('/', async (req, res) => {
   try {
     const { body } = req;
     const settings = {
@@ -42,9 +42,9 @@ settings.post<{}, string>('/', async (req, res) => {
       period: body.period,
     };
 
-    const serviceContainer: IServiceContainer = getServiceContainer();
-    const yandexService: IYandexService = serviceContainer.getService('YandexService') as IYandexService;
-    const gitService: IGitService = serviceContainer.getService('GitService') as IGitService;
+    const serviceContainer = getServiceContainer();
+    const yandexService = serviceContainer.getService<IYandexService>('YandexService');
+    const gitService = serviceContainer.getService<IGitService>('GitService');
 
     const apiResponse = await yandexService.saveSettings(settings);
     if (apiResponse.status !== 200) {

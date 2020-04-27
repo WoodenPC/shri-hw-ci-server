@@ -1,8 +1,8 @@
 import { IService } from 'interfaces/service.intfs';
 
 export interface IServiceContainer {
-  setService(name: string, instance: IService): void;
-  getService(name: string): IService;
+  setService<T extends IService>(name: string, instance: T): void;
+  getService<T extends IService>(name: string): T;
 }
 
 /** контейнер сервисов */
@@ -21,16 +21,16 @@ class ServiceContainer implements IServiceContainer {
     return ServiceContainer.instance;
   }
 
-  setService(name: string, instance: IService): void {
+  setService<T>(name: string, instance: T): void {
     this.services.set(name, instance);
   }
 
-  getService(name: string): IService {
+  getService<T>(name: string): T {
     const service = this.services.get(name);
     if (service === undefined) {
       throw `Cannot get service with name ${name}`;
     } else {
-      return service;
+      return service as T;
     }
   }
 }

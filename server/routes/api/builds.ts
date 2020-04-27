@@ -1,9 +1,10 @@
 import { Router } from 'express';
 
 import { getServiceContainer } from 'services/serviceContainer';
-import { IYandexService } from 'services/yandexService';
+import { IYandexService, IBuildListParams } from 'services/yandexService';
 import { IGitService } from 'services/gitService';
 import { ICacheService } from 'services/cacheService';
+import { IDataWrapper, IBuildInfo } from 'interfaces/data.intfs';
 
 export const builds = Router();
 
@@ -12,7 +13,7 @@ builds.get('/', async (req, res) => {
   try {
     const { query } = req;
     const serviceContainer = getServiceContainer();
-    const yandexService = serviceContainer.getService('YandexService') as IYandexService;
+    const yandexService = serviceContainer.getService<IYandexService>('YandexService');
     const apiResponse = await yandexService.getBuildList({
       offset: Number(query.offset),
       limit: Number(query.limit),
@@ -41,31 +42,30 @@ builds.post('/:commitHash', async (req, res) => {
     return res.status(400).send('Commit hash param is required!');
   }
   const { body } = req;
-
-  let apiResponse;
   try {
     const serviceContainer = getServiceContainer();
-    const gitService = serviceContainer.getService('GitService') as IGitService;
-    const yandexService = serviceContainer.getService('YandexService') as IYandexService;
+    const gitService = serviceContainer.getService<IGitService>('GitService');
+    const yandexService = serviceContainer.getService<IYandexService>('YandexService');
     //если каких то параметров нету, то берем инфу из гита
     if (!body.commitMessage || !body.branchName || !body.authorName) {
       const commitInfo = await gitService.getCommitInfo(commitHash);
       if (commitInfo === undefined) {
-        return res.sendStatus(500); // TODO: допилить типы
+        return res.sendStatus(500);
       }
-      apiResponse = await yandexService.addBuildToQueue(commitInfo);
+      const apiResponse = await yandexService.addBuildToQueue(commitInfo);
+      res.send(apiResponse.data);
     } else {
-      apiResponse = await yandexService.addBuildToQueue({
+      const apiResponse = await yandexService.addBuildToQueue({
         commitHash,
-        commitMessage: body.commitMessage || 'string',
-        branchName: body.branchName || 'string',
-        authorName: body.authorName || 'string',
+        commitMessage: body.commitMessage,
+        branchName: body.branchName,
+        authorName: body.authorName,
       });
-    }
 
-    res.send(apiResponse.data);
+      res.send(apiResponse.data);
+    }
   } catch (e) {
-    return res.status(500).send(e);
+    return res.status(500).send('Cannot request build');
   }
 });
 
@@ -80,7 +80,7 @@ builds.get('/:buildId', async (req, res) => {
   let apiResponse;
   try {
     const serviceContainer = getServiceContainer();
-    const yandexService = serviceContainer.getService('YandexService') as IYandexService;
+    const yandexService = serviceContainer.getService<IYandexService>('YandexService');
     apiResponse = await yandexService.getBuildInfo(buildId);
   } catch (e) {
     return res.status(500).send(e);
@@ -121,7 +121,7 @@ builds.get('/:buildId/logs', async (req, res) => {
       return res.status(500).send('server error');
     }
     const { data } = logs;
-    await cacheService.write(buildId, data);
+    await cacheService.write(buildId, data as any);
     await cacheService.read(buildId, res as any); // TODO:
   } catch (e) {
     return res.status(500).send(e);

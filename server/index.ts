@@ -2,9 +2,9 @@ import express from 'express';
 
 import { axios } from './axiosInstance';
 import { router } from './routes';
-import { GitService } from 'services/gitService';
-import { YandexService } from 'services/yandexService';
-import { CacheService } from 'services/cacheService';
+import { GitService, IGitService } from 'services/gitService';
+import { YandexService, IYandexService } from 'services/yandexService';
+import { CacheService, ICacheService } from 'services/cacheService';
 import { getServiceContainer } from 'services/serviceContainer';
 
 const app = express();
@@ -15,9 +15,9 @@ const gitSvc = new GitService();
 const yandexSvc = new YandexService(axios);
 const cacheSvc = new CacheService(builLogsDir);
 const serviceContainer = getServiceContainer();
-serviceContainer.setService('GitService', gitSvc);
-serviceContainer.setService('YandexService', yandexSvc);
-serviceContainer.setService('CacheService', cacheSvc);
+serviceContainer.setService<IGitService>('GitService', gitSvc);
+serviceContainer.setService<IYandexService>('YandexService', yandexSvc);
+serviceContainer.setService<ICacheService>('CacheService', cacheSvc);
 
 // инициализация сервера
 app.use(express.urlencoded({ extended: true }));

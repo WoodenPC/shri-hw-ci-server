@@ -1,19 +1,24 @@
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { IService } from 'interfaces/service.intfs';
-import { IRepoSettings, IBuildInfo } from 'interfaces/data.intfs';
+import { IRepoSettings, ICommitInfo, IBuildInfo, IDataWrapper } from 'interfaces/data.intfs';
 
 export interface IBuildListParams {
   offset: number;
   limit: number;
 }
 
+export type BuildListResponse = AxiosResponse<IDataWrapper<Array<IBuildInfo>>>;
+export type BuildRequestResponse = AxiosResponse<IDataWrapper<IBuildInfo>>;
+export type BuildInfoResponse = AxiosResponse<IDataWrapper<IBuildInfo>>;
+export type SavedSettingsResponse = AxiosResponse<IDataWrapper<IRepoSettings>>;
+
 export interface IYandexService extends IService {
-  getBuildList(params: IBuildListParams): Promise<AxiosResponse<any>>;
-  addBuildToQueue(params: IBuildInfo): Promise<AxiosResponse<any>>;
-  getBuildInfo(buildId: string): Promise<AxiosResponse<any>>;
-  getBuildLogs(buildId: string): Promise<AxiosResponse<any>>;
-  getSavedSettings(): Promise<AxiosResponse<{ data: IRepoSettings }>>;
-  saveSettings(params: IRepoSettings): Promise<AxiosResponse<any>>;
+  getBuildList(params: IBuildListParams): Promise<BuildListResponse>;
+  addBuildToQueue(params: ICommitInfo): Promise<BuildRequestResponse>;
+  getBuildInfo(buildId: string): Promise<BuildInfoResponse>;
+  getBuildLogs(buildId: string): Promise<AxiosResponse<string>>;
+  getSavedSettings(): Promise<SavedSettingsResponse>;
+  saveSettings(params: IRepoSettings): Promise<AxiosResponse<string>>;
 }
 
 /**
@@ -32,11 +37,11 @@ export class YandexService implements IYandexService {
   /**
    * получение списка сборок
    */
-  getBuildList = ({ offset, limit }: IBuildListParams) => {
+  getBuildList = (params: IBuildListParams): Promise<BuildListResponse> => {
     return this.webClient.get('/api/build/list', {
       params: {
-        offset: offset || 0,
-        limit: limit || 25,
+        offset: params.offset,
+        limit: params.limit,
       },
     });
   };
@@ -44,19 +49,19 @@ export class YandexService implements IYandexService {
   /**
    * добавление сборки в очередь
    */
-  addBuildToQueue = async ({ commitHash, commitMessage, branchName, authorName }: IBuildInfo) => {
+  addBuildToQueue = async (commitInfo: ICommitInfo): Promise<BuildRequestResponse> => {
     return this.webClient.post('/api/build/request', {
-      commitHash,
-      commitMessage,
-      branchName,
-      authorName,
-    }); // TODO: Проверить где эта функа вызывалась
+      commitHash: commitInfo.commitHash,
+      commitMessage: commitInfo.commitMessage,
+      branchName: commitInfo.branchName,
+      authorName: commitInfo.authorName,
+    });
   };
 
   /**
    * получение инфо о сборке
    */
-  getBuildInfo = (buildId: string) => {
+  getBuildInfo = (buildId: string): Promise<BuildInfoResponse> => {
     return this.webClient.get('/api/build/details', {
       params: {
         buildId,
@@ -67,7 +72,7 @@ export class YandexService implements IYandexService {
   /**
    * получение логов сборки
    */
-  getBuildLogs = (buildId: string) => {
+  getBuildLogs = (buildId: string): Promise<AxiosResponse<string>> => {
     return this.webClient.get('/api/build/log', {
       params: {
         buildId,
@@ -79,19 +84,19 @@ export class YandexService implements IYandexService {
   /**
    * получение сохраненных настроек
    */
-  getSavedSettings = (): Promise<AxiosResponse<{ data: IRepoSettings }>> => {
+  getSavedSettings = (): Promise<SavedSettingsResponse> => {
     return this.webClient.get('/api/conf');
   };
 
   /**
    * сохранение настроек в хранилище
    */
-  saveSettings = ({ repoName, buildCommand, mainBranch, period }: IRepoSettings) => {
+  saveSettings = (settings: IRepoSettings): Promise<AxiosResponse<string>> => {
     return this.webClient.post('/api/conf', {
-      repoName: repoName,
-      buildCommand: buildCommand,
-      mainBranch: mainBranch,
-      period: period,
+      repoName: settings.repoName,
+      buildCommand: settings.buildCommand,
+      mainBranch: settings.mainBranch,
+      period: settings.period,
     });
   };
 }
