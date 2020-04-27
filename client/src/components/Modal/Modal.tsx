@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
 
 interface IModalProps {
-  visible: boolean;
+  visible?: boolean;
 }
 
 const classes = cn('Modal');

@@ -2,9 +2,9 @@ import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
 
 interface ILinkProps {
-  text: string,
-  href: string,
-  classMix: string
+  text?: string,
+  href?: string,
+  classMix?: string
 }
 
 const classes = cn('Link');
