@@ -1,10 +1,13 @@
 import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
-import PropTypes from 'prop-types';
+
+interface IModalProps {
+  visible: boolean;
+}
 
 const classes = cn('Modal');
 
-const Modal = memo(({ visible, children }) => {
+const Modal: React.FunctionComponent<IModalProps> = memo(({ visible, children }) => {
   return (
     <div className={classes({ visible })}>
       <div className={classes('Wrapper')}>
@@ -13,10 +16,6 @@ const Modal = memo(({ visible, children }) => {
     </div>
   );
 });
-
-Modal.propTypes = {
-  visible: PropTypes.bool,
-};
 
 Modal.defaultProps = {
   visible: false,

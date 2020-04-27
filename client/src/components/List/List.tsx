@@ -1,13 +1,17 @@
 import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
-import PropTypes from 'prop-types';
 
 import { Button } from 'components/Button';
 import { ListItem } from './ListItem';
 
+interface IListProps {
+  direction: 'row' | 'col',
+  onShowMore?: (...args: Array<any>) => any;
+}
+
 const classes = cn('List');
 
-const List = memo(({ children, direction, onShowMore }) => {
+const List: React.FunctionComponent<IListProps> = memo(({ children, direction, onShowMore }) => {
   return (
     <div className={classes({ direction })}>
       <div className={classes('Box')}>{children}</div>
@@ -18,21 +22,11 @@ const List = memo(({ children, direction, onShowMore }) => {
   );
 });
 
-List.propTypes = {
-  direction: PropTypes.oneOf(['row', 'col']),
-  onShowMore: PropTypes.func,
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
-};
 
 List.defaultProps = {
   direction: 'row',
-  onShowMore: null,
-  children: null,
 };
 
-List.Item = ListItem;
+// List.Item = ListItem;
 
-export { List };
+export { List, ListItem };

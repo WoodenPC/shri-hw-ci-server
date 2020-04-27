@@ -1,10 +1,9 @@
 import { Router } from 'express';
 
 import { getServiceContainer } from 'services/serviceContainer';
-import { IYandexService, IBuildListParams } from 'services/yandexService';
+import { IYandexService } from 'services/yandexService';
 import { IGitService } from 'services/gitService';
 import { ICacheService } from 'services/cacheService';
-import { IDataWrapper, IBuildInfo } from 'interfaces/data.intfs';
 
 export const builds = Router();
 

@@ -2,9 +2,11 @@ import React from 'react';
 import { cn } from '@bem-react/classname';
 import { Link } from 'components/Link';
 
+interface IFooterProps {}
+
 const classes = cn('Footer');
 
-const Footer = () => {
+const Footer: React.FunctionComponent<IFooterProps> = () => {
   return (
     <footer className={classes()}>
       <div className={classes('Inner')}>

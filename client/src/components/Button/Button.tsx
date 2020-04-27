@@ -1,10 +1,21 @@
-import React, { memo } from 'react';
+import React, { memo, ReactElement } from 'react';
 import { cn } from '@bem-react/classname';
-import PropTypes from 'prop-types';
 
 const classes = cn('Button');
 
-const Button = memo(
+interface IButtonProps {
+  variant?: 'outlined' | 'text',
+  text?: string,
+  icon?: ReactElement,
+  size?: 'medium' | 'big',
+  color?: 'default' | 'primary' | 'secondary',
+  classMix?: string,
+  disabled?: boolean,
+  dataTestId?: string
+  onClick?: (...args: Array<any>) => any;
+}
+
+const Button: React.FunctionComponent<IButtonProps> = memo(
   ({
     variant,
     text,
@@ -16,7 +27,7 @@ const Button = memo(
     disabled,
     dataTestId,
   }) => {
-    const type = icon ? 'icon' : null;
+    const type = icon ? 'icon' : undefined;
     return (
       <button
         data-testid={dataTestId}
@@ -32,22 +43,10 @@ const Button = memo(
   }
 );
 
-Button.propTypes = {
-  variant: PropTypes.oneOf(['outlined', 'text']),
-  text: PropTypes.string,
-  icon: PropTypes.element,
-  size: PropTypes.oneOf(['medium', 'big']),
-  onClick: PropTypes.func,
-  color: PropTypes.oneOf(['default', 'primary', 'secondary']),
-  classMix: PropTypes.string,
-  disabled: PropTypes.bool,
-  dataTestId: PropTypes.string,
-};
-
 Button.defaultProps = {
   variant: 'text',
-  text: null,
-  icon: null,
+  text: undefined,
+  icon: undefined,
   size: 'medium',
   onClick: undefined,
   color: 'default',

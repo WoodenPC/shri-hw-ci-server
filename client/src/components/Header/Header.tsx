@@ -1,10 +1,14 @@
 import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
-import PropTypes from 'prop-types';
+
+interface IHeaderProps {
+  title: string,
+  color?: 'black'
+}
 
 const classes = cn('Header');
 
-const Header = memo(({ title, children, color }) => {
+const Header: React.FunctionComponent<IHeaderProps> = memo(({ title, children, color }) => {
   return (
     <header className={classes()}>
       <div className={classes('Title', { color })}>
@@ -15,19 +19,9 @@ const Header = memo(({ title, children, color }) => {
   );
 });
 
-Header.propTypes = {
-  title: PropTypes.string,
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
-  color: PropTypes.oneOf(['black']),
-};
-
 Header.defaultProps = {
   title: '',
-  children: null,
-  color: null,
+  color: undefined,
 };
 
 export { Header };

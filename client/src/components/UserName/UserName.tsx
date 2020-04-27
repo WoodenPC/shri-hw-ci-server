@@ -1,11 +1,14 @@
 import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
-import PropTypes from 'prop-types';
 import { Icon } from 'components/Icon/Icon';
+
+interface IUserNameProps {
+  name: string
+}
 
 const classes = cn('UserName');
 
-const UserName = memo(({ name }) => {
+const UserName: React.FunctionComponent<IUserNameProps> = memo(({ name }) => {
   return (
     <div className={classes()}>
       <Icon type='person' />
@@ -13,9 +16,5 @@ const UserName = memo(({ name }) => {
     </div>
   );
 });
-
-UserName.propTypes = {
-  name: PropTypes.string.isRequired,
-};
 
 export { UserName };

@@ -1,10 +1,14 @@
 import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
-import PropTypes from 'prop-types';
+
+interface IFormHeaderProps {
+  title?: string,
+  description?: string
+}
 
 const classes = cn('Form');
 
-const FormHeader = memo(({ title, description }) => {
+const FormHeader: React.FunctionComponent<IFormHeaderProps> = memo(({ title, description }) => {
   return (
     <div className={classes('Header')}>
       <h2 className={classes('Title')}>{title}</h2>
@@ -12,11 +16,6 @@ const FormHeader = memo(({ title, description }) => {
     </div>
   );
 });
-
-FormHeader.propTypes = {
-  title: PropTypes.string,
-  description: PropTypes.string,
-};
 
 FormHeader.defaultProps = {
   title: '',

@@ -1,22 +1,21 @@
 import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
-import PropTypes from 'prop-types';
+
+interface ILinkProps {
+  text: string,
+  href: string,
+  classMix: string
+}
 
 const classes = cn('Link');
 
-const Link = memo(({ text, href, classMix }) => {
+const Link: React.FunctionComponent<ILinkProps> = memo(({ text, href, classMix }) => {
   return (
     <a className={`${classes()} ${classMix}`} href={href}>
       {text}
     </a>
   );
 });
-
-Link.propTypes = {
-  text: PropTypes.string,
-  href: PropTypes.string,
-  classMix: PropTypes.string,
-};
 
 Link.defaultProps = {
   text: '',

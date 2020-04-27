@@ -1,12 +1,16 @@
 import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
-import PropTypes from 'prop-types';
 
 import { Icon } from 'components/Icon';
 
+interface ICommitProps {
+  hash?: string,
+  branchName?: string
+}
+
 const classes = cn('Commit');
 
-const Commit = memo(({ hash, branchName }) => {
+const Commit: React.FunctionComponent<ICommitProps> = memo(({ hash, branchName }) => {
   return (
     <div className={classes()}>
       <div className={classes('Branch')}>
@@ -17,10 +21,5 @@ const Commit = memo(({ hash, branchName }) => {
     </div>
   );
 });
-
-Commit.propTypes = {
-  hash: PropTypes.string.isRequired,
-  branchName: PropTypes.string.isRequired,
-};
 
 export { Commit };

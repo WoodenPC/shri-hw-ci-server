@@ -3,7 +3,6 @@ import { Router } from 'express';
 import { getServiceContainer } from 'services/serviceContainer';
 import { IYandexService } from 'services/yandexService';
 import { IGitService } from 'services/gitService';
-import { IRepoSettings } from 'interfaces/data.intfs';
 
 export const settings = Router();
 

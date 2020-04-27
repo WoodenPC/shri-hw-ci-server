@@ -1,13 +1,14 @@
 import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
 
+interface IListItemProps {}
+
 const classes = cn('List', 'Item');
 
-const ListItem = memo(({ children }) => {
+const ListItem: React.FunctionComponent<IListItemProps> = memo(({ children }) => {
   return <div className={classes()}>{children}</div>;
 });
 
-ListItem.propTypes = {};
 ListItem.defaultProps = {};
 
 export { ListItem };
