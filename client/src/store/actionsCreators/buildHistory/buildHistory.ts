@@ -1,10 +1,13 @@
 import * as actionTypes from 'store/actionTypes/buildHistory';
+import { BuildHistoryAction } from 'store/actionTypes/buildHistory';
 import { axios } from 'utils/axiosInstance';
+import { Dispatch } from 'redux';
+import { IBuildInfo } from 'interfaces/data.intfs';
 
 /**
  * дроп билдов
  */
-export const deleteBuildsHistory = () => {
+export const deleteBuildsHistory = (): BuildHistoryAction => {
   return {
     type: actionTypes.DELETE_BUILDS_HISTORY,
   };
@@ -13,7 +16,7 @@ export const deleteBuildsHistory = () => {
 /**
  * сохранение билдов в сторе
  */
-export const setBuilds = (builds) => {
+export const setBuilds = (builds: Array<IBuildInfo>): BuildHistoryAction => {
   return {
     type: actionTypes.SET_BUILDS,
     builds,
@@ -23,7 +26,9 @@ export const setBuilds = (builds) => {
 /**
  * добавление в список билдов
  */
-export const addMoreBuilds = (builds) => {
+export const addMoreBuilds = (
+  builds: Array<IBuildInfo>
+): BuildHistoryAction => {
   return {
     type: actionTypes.ADD_MORE_BUILDS,
     builds,
@@ -34,7 +39,7 @@ export const addMoreBuilds = (builds) => {
 /**
  * загрузка чанка билдов с сервера
  */
-export const loadBuildsAsync = (dispatch) => {
+export const loadBuildsAsync = (dispatch: Dispatch) => {
   return async (offset = 0, limit = 10) => {
     dispatch({
       type: actionTypes.LOAD_BUILDS_START,
@@ -55,8 +60,8 @@ export const loadBuildsAsync = (dispatch) => {
   };
 };
 
-export const runBuildAsync = (dispatch) => {
-  return async (commitHash) => {
+export const runBuildAsync = (dispatch: Dispatch) => {
+  return async (commitHash: string) => {
     try {
       dispatch({ type: actionTypes.RUN_BUILD });
       const res = await axios.post(`/api/builds/${commitHash}`);
@@ -66,6 +71,7 @@ export const runBuildAsync = (dispatch) => {
       // загрузится заного
     } catch (e) {
       console.log(e);
+      return false;
     }
   };
 };

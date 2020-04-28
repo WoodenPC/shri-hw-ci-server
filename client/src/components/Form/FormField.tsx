@@ -6,7 +6,7 @@ interface IFormFieldProps {
   label?: string;
   required?: boolean;
   row?: boolean;
-  suffix?: ReactElement;
+  suffix?: string;
 }
 
 const classes = cn('FormField');

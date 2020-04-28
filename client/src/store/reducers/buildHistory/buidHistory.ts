@@ -1,12 +1,20 @@
 import * as actionTypes from 'store/actionTypes/buildHistory';
+import { BuildHistoryAction } from 'store/actionTypes/buildHistory';
+import { IBuildInfo } from 'interfaces/data.intfs';
 
-export const initialState = {
+interface IBuildHistoryState {
+  offset: number;
+  limit: number;
+  builds: Array<IBuildInfo>;
+}
+
+export const initialState: IBuildHistoryState = {
   offset: 0,
   limit: 10,
   builds: [],
 };
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = initialState, action: BuildHistoryAction) => {
   switch (action.type) {
     case actionTypes.DELETE_BUILDS_HISTORY:
       return { ...initialState };

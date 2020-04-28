@@ -11,7 +11,7 @@ const rootReducer = combineReducers({
 // создание стора для клиента
 export const createClientStore = () => {
   const composeEnhancers =
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+    (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   const middleWare =
     process.env.NODE_ENV === 'development'
       ? composeEnhancers(applyMiddleware(thunk))
@@ -25,3 +25,5 @@ export const createServerStore = () => {
   const middleWare = applyMiddleware(thunk);
   return createStore(rootReducer, middleWare);
 };
+
+export type RootState = ReturnType<typeof rootReducer>;

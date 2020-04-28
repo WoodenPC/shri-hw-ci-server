@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '@bem-react/classname';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { connect, ConnectedProps } from 'react-redux';
 
 import { Header } from 'components/Header';
 import { Footer } from 'components/Footer';
@@ -12,20 +12,24 @@ import { LogDetails } from 'components/LogDetails';
 import { Spinner } from 'components/Spinner';
 
 import { mapStateToProps, mapDispatchToProps } from './selectors';
+import { BuildStatus } from 'interfaces/data.intfs';
 
+const connector = connect(mapStateToProps, mapDispatchToProps);
 const classes = cn('Page');
 
-class BuildDetailsPage extends React.PureComponent {
+type BuildDetailsProps = ConnectedProps<typeof connector> & RouteComponentProps;
+
+class BuildDetailsPage extends React.PureComponent<BuildDetailsProps> {
   state = {
     isLoading: true,
     id: this.props.location.buildId,
-    status: 'Waiting',
+    status: BuildStatus.Waiting,
     buildNumber: 0,
     branchName: '',
     commitMessage: '',
     commitHash: '',
     authorName: '',
-    start: undefined,
+    start: '',
     duration: 0,
     logs: '',
   };
@@ -45,7 +49,6 @@ class BuildDetailsPage extends React.PureComponent {
     } = this.state;
     try {
       const data = await runRebuildAsync({
-        id,
         branchName,
         authorName,
         commitMessage,
@@ -80,7 +83,7 @@ class BuildDetailsPage extends React.PureComponent {
     await this.loadBuildInfo();
   }
 
-  async componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps: BuildDetailsProps) {
     if (this.props.location.pathname !== prevProps.location.pathname) {
       await this.loadBuildInfo();
     }
@@ -145,9 +148,6 @@ class BuildDetailsPage extends React.PureComponent {
 }
 
 const PageWithRouter = withRouter(BuildDetailsPage);
-const ConnectedPage = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PageWithRouter);
+const ConnectedPage = connector(PageWithRouter);
 
 export { ConnectedPage as BuildDetailsPage };

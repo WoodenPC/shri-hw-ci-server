@@ -1,19 +1,23 @@
 import React from 'react';
 import { cn } from '@bem-react/classname';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { connect, ConnectedProps } from 'react-redux';
 
-import { Header } from 'components/Header/Header';
-import { Footer } from 'components/Footer/Footer';
-import { Button } from 'components/Button/Button';
-import { Form } from 'components/Form/Form';
-import { Input } from 'components/Input/Input';
+import { Header } from 'components/Header';
+import { Footer } from 'components/Footer';
+import { Button } from 'components/Button';
+import { Form, FormHeader, FormFields, FormField, FormFooter } from 'components/Form';
+import { Input } from 'components/Input';
 
 import { mapStateToProps, mapDispatchToProps } from './selectors';
 
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type SettingsPageProps = ConnectedProps<typeof connector> & RouteComponentProps;
+
 const classes = cn('Page');
 
-class SettingsPage extends React.PureComponent {
+class SettingsPage extends React.PureComponent<SettingsPageProps> {
   state = {
     repoName: '',
     buildCommand: '',
@@ -22,25 +26,25 @@ class SettingsPage extends React.PureComponent {
     isLoading: false,
   };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: SettingsPageProps) {
     if (prevProps.settings !== this.props.settings) {
       this.getSettingsFromStore();
     }
   }
 
-  changeRepoName = (event) => {
+  changeRepoName = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ repoName: event.target.value });
   };
 
-  changeBuildCommand = (event) => {
+  changeBuildCommand = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ buildCommand: event.target.value });
   };
 
-  changeMainBranch = (event) => {
+  changeMainBranch = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ mainBranch: event.target.value });
   };
 
-  changePeriod = (event) => {
+  changePeriod = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ period: +event.target.value });
   };
 
@@ -110,36 +114,36 @@ class SettingsPage extends React.PureComponent {
         <Header title='School CI server' />
         <main className={classes('Main')}>
           <Form>
-            <Form.Header
+            <FormHeader
               title='Settings'
               description='Configure repository connection and synchronization settings.'
             />
-            <Form.Fields>
-              <Form.Field name='repository' label='GitHub repository' required>
+            <FormFields>
+              <FormField name='repository' label='GitHub repository' required>
                 <Input
                   id='repoField'
                   placeholder='user-name/repo-name'
                   value={repoName}
                   onChange={this.changeRepoName}
                 />
-              </Form.Field>
-              <Form.Field name='command' label='Build command' required>
+              </FormField>
+              <FormField name='command' label='Build command' required>
                 <Input
                   id='commandField'
                   placeholder='npm ci && npm run build'
                   value={buildCommand}
                   onChange={this.changeBuildCommand}
                 />
-              </Form.Field>
-              <Form.Field name='mainBranch' label='Main branch'>
+              </FormField>
+              <FormField name='mainBranch' label='Main branch'>
                 <Input
                   id='branchField'
                   placeholder='master'
                   value={mainBranch}
                   onChange={this.changeMainBranch}
                 />
-              </Form.Field>
-              <Form.Field
+              </FormField>
+              <FormField
                 name='timing'
                 label='Synchronize every'
                 suffix='minutes'
@@ -153,9 +157,9 @@ class SettingsPage extends React.PureComponent {
                   placeholder='timing'
                   short
                 />
-              </Form.Field>
-            </Form.Fields>
-            <Form.Footer>
+              </FormField>
+            </FormFields>
+            <FormFooter>
               <Button
                 text='Save'
                 color='primary'
@@ -170,7 +174,7 @@ class SettingsPage extends React.PureComponent {
                 onClick={this.cancel}
                 disabled={isLoading}
               />
-            </Form.Footer>
+            </FormFooter>
           </Form>
         </main>
         <Footer />
@@ -180,9 +184,6 @@ class SettingsPage extends React.PureComponent {
 }
 
 const PageWithRouter = withRouter(SettingsPage);
-const ConnectedPage = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PageWithRouter);
+const ConnectedPage = connector(PageWithRouter);
 
 export { ConnectedPage as SettingsPage };

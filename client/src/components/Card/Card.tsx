@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo, useCallback } from 'react';
 import { cn } from '@bem-react/classname';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
@@ -6,19 +6,32 @@ import { format } from 'date-fns';
 import { Icon } from 'components/Icon';
 import { UserName } from 'components/UserName';
 import { Commit } from 'components/Commit';
-import { useMemo } from 'react';
-import { useCallback } from 'react';
+import { BuildStatus } from 'interfaces/data.intfs';
+
+interface ICardProps {
+  id?: string,
+  status: BuildStatus,
+  buildNumber?: number,
+  title?: string,
+  branch?: string,
+  hash?: string,
+  who: string,
+  start: string | number | Date,
+  duration?: number,
+  onClick?: (...args: Array<any>) => any;
+}
+
+const statuses = {
+  [BuildStatus.Success]: 'success',
+  [BuildStatus.Waiting]: 'waiting',
+  [BuildStatus.InProgress]: 'inProgress',
+  [BuildStatus.Fail]: 'fail',
+  [BuildStatus.Canceled]: 'canceled'
+};
 
 const classes = cn('Card');
 
-const statuses = {
-  Success: 'success',
-  Waiting: 'waiting',
-  InProgress: 'inProgress',
-  Fail: 'fail',
-};
-
-const Card = memo(
+const Card: React.FunctionComponent<ICardProps> = memo(
   ({
     id,
     status,
@@ -80,22 +93,9 @@ const Card = memo(
   }
 );
 
-Card.propTypes = {
-  id: PropTypes.string,
-  status: PropTypes.oneOf(['Success', 'Fail', 'InProgress', 'Waiting']),
-  buildNumber: PropTypes.number,
-  hash: PropTypes.string,
-  who: PropTypes.string,
-  title: PropTypes.string,
-  branch: PropTypes.string,
-  onClick: PropTypes.func,
-  start: PropTypes.string,
-  duration: PropTypes.number,
-};
-
 Card.defaultProps = {
   id: '',
-  status: 'Waiting',
+  status: BuildStatus.InProgress,
   buildNumber: -1,
   hash: '',
   who: '',

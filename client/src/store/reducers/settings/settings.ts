@@ -1,4 +1,5 @@
 import * as actionTypes from 'store/actionTypes/settings';
+import { SettingsAction } from 'store/actionTypes/settings';
 
 export const initialState = {
   repoName: '',
@@ -7,7 +8,7 @@ export const initialState = {
   period: 10,
 };
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = initialState, action: SettingsAction) => {
   switch (action.type) {
     case actionTypes.SET_SETTINGS:
       return {

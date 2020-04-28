@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '@bem-react/classname';
-import { withRouter } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import { Header } from 'components/Header';
 import { Footer } from 'components/Footer/Footer';
@@ -9,7 +9,7 @@ import { Icon } from 'components/Icon/Icon';
 
 const classes = cn('Page');
 
-class MainPage extends React.PureComponent {
+class MainPage extends React.PureComponent<RouteComponentProps> {
   openSettings = () => {
     this.props.history.push('/settings');
   };

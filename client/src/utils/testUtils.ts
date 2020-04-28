@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { render as rtlRender } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
@@ -10,7 +10,7 @@ import { createClientStore } from 'store/store';
  * функция рендера для тестов, которая умеет в Redux
  */
 export const renderWithStore = (
-  ui,
+  ui: ReactElement,
   { store = createClientStore(), ...renderOptions } = {}
 ) => {
   function Wrapper({ children }) {

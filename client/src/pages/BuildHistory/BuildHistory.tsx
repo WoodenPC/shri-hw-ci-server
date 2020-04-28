@@ -1,11 +1,11 @@
 import React from 'react';
 import { cn } from '@bem-react/classname';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { connect, ConnectedProps } from 'react-redux';
 
 import { Header } from 'components/Header';
 import { Footer } from 'components/Footer';
-import { List } from 'components/List';
+import { List, ListItem } from 'components/List';
 import { Button } from 'components/Button';
 import { Icon } from 'components/Icon';
 import { Card } from 'components/Card';
@@ -14,9 +14,13 @@ import { Spinner } from 'components/Spinner';
 
 import { mapStateToProps, mapDispatchToProps } from './selectors';
 
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type BuildHistoryPageProps = ConnectedProps<typeof connector> & RouteComponentProps;
+
 const classes = cn('Page');
 
-class BuildHistoryPage extends React.PureComponent {
+class BuildHistoryPage extends React.PureComponent<BuildHistoryPageProps> {
   state = {
     modalVisible: false,
     isLoading: false,
@@ -37,12 +41,11 @@ class BuildHistoryPage extends React.PureComponent {
       await this.props.loadBuildsAsync(offset, limit);
     } finally {
       this.setState({ isLoading: false });
-      console.log(this.state.scrollY);
       window.scrollTo(0, pageYOffset);
     }
   };
 
-  runBuild = async (commitHash) => {
+  runBuild = async (commitHash: string) => {
     const { runBuildAsync } = this.props;
     try {
       const result = await runBuildAsync(commitHash);
@@ -71,7 +74,7 @@ class BuildHistoryPage extends React.PureComponent {
     await this.loadMoreBuilds();
   };
 
-  openBuildDetails = ({ buildId }) => {
+  openBuildDetails = ({ buildId }: { buildId: string }) => {
     this.props.history.push(`/build/${buildId}`, {
       buildId,
     });
@@ -123,7 +126,7 @@ class BuildHistoryPage extends React.PureComponent {
                   start,
                   duration,
                 }) => (
-                  <List.Item key={id}>
+                  <ListItem key={id}>
                     <Card
                       id={id}
                       status={status}
@@ -136,7 +139,7 @@ class BuildHistoryPage extends React.PureComponent {
                       start={start}
                       duration={duration}
                     />
-                  </List.Item>
+                  </ListItem>
                 )
               )
             )}
@@ -149,9 +152,6 @@ class BuildHistoryPage extends React.PureComponent {
 }
 
 const PageWithRouter = withRouter(BuildHistoryPage);
-const ConnectedPage = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PageWithRouter);
+const ConnectedPage = connector(PageWithRouter);
 
 export { ConnectedPage as BuildHistoryPage };

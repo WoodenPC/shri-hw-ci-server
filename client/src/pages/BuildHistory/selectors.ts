@@ -1,6 +1,8 @@
 import * as actionCreators from 'store/actionsCreators/buildHistory';
+import { RootState } from 'store/store';
+import { Dispatch } from 'redux';
 
-export const mapStateToProps = (store) => {
+export const mapStateToProps = (store: RootState) => {
   const { builds, offset, limit } = store.buildHistory;
   const { repoName } = store.settings;
   return {
@@ -11,7 +13,7 @@ export const mapStateToProps = (store) => {
   };
 };
 
-export const mapDispatchToProps = (dispatch) => {
+export const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     loadBuildsAsync: actionCreators.loadBuildsAsync(dispatch),
     runBuildAsync: actionCreators.runBuildAsync(dispatch),

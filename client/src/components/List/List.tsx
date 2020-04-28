@@ -5,7 +5,7 @@ import { Button } from 'components/Button';
 import { ListItem } from './ListItem';
 
 interface IListProps {
-  direction: 'row' | 'col',
+  direction?: 'row' | 'col',
   onShowMore?: (...args: Array<any>) => any;
 }
 
