@@ -3,7 +3,7 @@ import * as actionCreators from 'store/actionsCreators/buildHistory';
 
 describe('тесты редьюсера BuildHistory', () => {
   test('DELETE_BUILDS_HISTORY', () => {
-    const initialStateWithBuilds = {
+    const initialStateWithBuilds: any = {
       ...initialState,
       offset: 3,
       limit: 10,
@@ -17,7 +17,7 @@ describe('тесты редьюсера BuildHistory', () => {
   });
 
   test('SET_BUILDS', () => {
-    const testBuilds = [{ id: '1' }, { id: '321' }];
+    const testBuilds: any = [{ id: '1' }, { id: '321' }];
     const action = actionCreators.setBuilds(testBuilds);
     expect(reducer(initialState, action)).toEqual({
       ...initialState,
@@ -27,7 +27,7 @@ describe('тесты редьюсера BuildHistory', () => {
   });
 
   test('ADD_MORE_BUILDS', () => {
-    const testBuilds = [{ id: '223' }, { id: '321' }];
+    const testBuilds: any = [{ id: '223' }, { id: '321' }];
     const action = actionCreators.addMoreBuilds(testBuilds);
     const initialStateWithBuilds = {
       ...initialState,
@@ -35,6 +35,7 @@ describe('тесты редьюсера BuildHistory', () => {
       offset: 3,
     };
 
+    // @ts-ignore
     expect(reducer(initialStateWithBuilds, action)).toEqual({
       ...initialStateWithBuilds,
       builds: initialStateWithBuilds.builds.concat(testBuilds),

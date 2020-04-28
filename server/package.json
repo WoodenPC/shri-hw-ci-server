@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/index.ts",
+    "start": "node -r tsconfig-paths/register index.js",
     "build": "tsc -p tsconfig.json",
     "dev": "TS_NODE_FILES=1 nodemon -r tsconfig-paths/register index.ts",
     "test": "jest"
