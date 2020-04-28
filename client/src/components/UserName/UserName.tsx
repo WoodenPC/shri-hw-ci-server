@@ -3,7 +3,7 @@ import { cn } from '@bem-react/classname';
 import { Icon } from 'components/Icon/Icon';
 
 interface IUserNameProps {
-  name: string
+  name?: string
 }
 
 const classes = cn('UserName');
@@ -16,5 +16,9 @@ const UserName: React.FunctionComponent<IUserNameProps> = memo(({ name }) => {
     </div>
   );
 });
+
+UserName.defaultProps = {
+  name: ''
+}
 
 export { UserName };

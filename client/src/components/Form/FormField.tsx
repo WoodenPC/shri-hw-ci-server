@@ -1,4 +1,4 @@
-import React, { memo, ReactElement } from 'react';
+import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
 
 interface IFormFieldProps {

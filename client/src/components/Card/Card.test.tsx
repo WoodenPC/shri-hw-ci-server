@@ -3,13 +3,14 @@ import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import { Card } from './Card';
+import { BuildStatus } from 'interfaces/data.intfs';
 
 describe('Тесты компонента Card', () => {
   test('Компонент рендерится', () => {
     const { getByText } = render(
       <Card
         id='123'
-        status='Success'
+        status={BuildStatus.Success}
         buildNumber={123}
         hash='adscd123'
         who='test'
@@ -24,14 +25,16 @@ describe('Тесты компонента Card', () => {
   test('Клик по компоненту отрабатывает корректно', () => {
     const testFunc = jest.fn();
     const { container } = render(<Card id='123' onClick={testFunc} />);
-    fireEvent.click(container.querySelector('.Card'));
+    const card = container.querySelector('.Card') as HTMLElement;
+    fireEvent.click(card);
     expect(testFunc).toHaveBeenCalled();
   });
 
   test('У компонента есть модификатор status', () => {
-    const { container } = render(<Card status='Success' />);
+    const { container } = render(<Card status={BuildStatus.Success} />);
+    const firstChild = container.firstChild as HTMLElement;
     expect(
-      container.firstChild.classList.contains('Card_status_success')
+      firstChild.classList.contains('Card_status_success')
     ).toBeTruthy();
   });
 });

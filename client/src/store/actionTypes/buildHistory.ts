@@ -7,16 +7,16 @@ export const DELETE_BUILDS_HISTORY = 'DELETE_BUILDS_HISTORY';
 export const RUN_BUILD = 'RUN_BUILD';
 
 interface IDeleteBuildsHistoryAction {
-  type: string;
+  type: typeof DELETE_BUILDS_HISTORY;
 }
 
 interface ISetBuildsAction {
-  type: string;
+  type: typeof SET_BUILDS;
   builds: Array<IBuildInfo>;
 }
 
 interface IAddMoreBuildsAction {
-  type: string;
+  type: typeof ADD_MORE_BUILDS;
   builds: Array<IBuildInfo>;
   offset: number;
 }

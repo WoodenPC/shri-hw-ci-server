@@ -1,6 +1,5 @@
 import React, { memo, useMemo, useCallback } from 'react';
 import { cn } from '@bem-react/classname';
-import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 
 import { Icon } from 'components/Icon';
@@ -10,13 +9,13 @@ import { BuildStatus } from 'interfaces/data.intfs';
 
 interface ICardProps {
   id?: string,
-  status: BuildStatus,
+  status?: BuildStatus,
   buildNumber?: number,
   title?: string,
   branch?: string,
   hash?: string,
-  who: string,
-  start: string | number | Date,
+  who?: string,
+  start?: string | number | Date,
   duration?: number,
   onClick?: (...args: Array<any>) => any;
 }
@@ -45,7 +44,7 @@ const Card: React.FunctionComponent<ICardProps> = memo(
     onClick,
   }) => {
     const utcDateString = useMemo(() => {
-      const date = new Date(start);
+      const date = new Date(start as string);
       const utcDate = new Date(
         Date.UTC(date.getFullYear(), date.getMonth(), date.getDay())
       );
@@ -60,11 +59,11 @@ const Card: React.FunctionComponent<ICardProps> = memo(
 
     return (
       <div
-        className={classes({ status: statuses[status] })}
+        className={classes({ status: statuses[status as BuildStatus] })}
         onClick={onClickInner}
       >
         <div>
-          <Icon type={statuses[status]} />
+          <Icon type={statuses[status as BuildStatus]} />
         </div>
         <div className={classes('Content')}>
           <div className={classes('Body')}>

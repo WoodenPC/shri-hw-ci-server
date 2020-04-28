@@ -13,27 +13,27 @@ describe('тесты компонента Input', () => {
 
   test('Событие  onChange отрабатывает корректно', () => {
     let testValue = '0';
-    const onChange = (e) => {
+    const onChange = (e: any) => {
       testValue = e.target.value;
     };
     const { container } = render(
       <Input value={testValue} onChange={onChange} />
     );
-    const input = container.querySelector('input');
+    const input = container.querySelector('input') as HTMLElement;
     fireEvent.change(input, { target: { value: '333222111' } });
     expect(testValue).toBe('333222111');
   });
 
   test('Сброс значения инпута отрабатывает корректно', () => {
     let testValue = 'some test value';
-    const onChange = (e) => {
+    const onChange = (e: any) => {
       testValue = e.target.value;
     };
     const { container } = render(
       <Input value={testValue} onChange={onChange} />
     );
 
-    const clearButton = container.querySelector('.Input-AddonAfter button');
+    const clearButton = container.querySelector('.Input-AddonAfter button') as HTMLElement;
     expect(clearButton).toBeInTheDocument();
     fireEvent.click(clearButton);
     expect(testValue).toBe('');
@@ -41,6 +41,7 @@ describe('тесты компонента Input', () => {
 
   test('У компонента появляется модификатор short', () => {
     const { container } = render(<Input short />);
-    expect(container.firstChild.classList.contains('Input_short')).toBeTruthy();
+    const firstChild = container.firstChild as HTMLElement;
+    expect(firstChild.classList.contains('Input_short')).toBeTruthy();
   });
 });

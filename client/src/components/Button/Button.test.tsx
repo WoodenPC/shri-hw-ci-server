@@ -16,7 +16,7 @@ describe('Тесты компонента Button', () => {
 
   test('кнопка рендерится вместе с иконкой', () => {
     const { container } = render(
-      <Button type='icon' icon={<Icon type='settings' />} />
+      <Button icon={<Icon type='settings' />} />
     );
     const icon = container.querySelector('.Button-Icon');
     expect(icon).toBeInTheDocument();
@@ -31,29 +31,33 @@ describe('Тесты компонента Button', () => {
 
   test('У компонента есть модификатор variant', () => {
     const { container } = render(<Button variant='text' />);
+    const firstChild = container.firstChild as HTMLElement;
     expect(
-      container.firstChild.classList.contains('Button_variant_text')
+      firstChild!.classList.contains('Button_variant_text')
     ).toBeTruthy();
   });
 
   test('У компонента есть модификатор color', () => {
     const { container } = render(<Button color='primary' />);
+    const firstChild = container.firstChild as HTMLElement;
     expect(
-      container.firstChild.classList.contains('Button_color_primary')
+      firstChild.classList.contains('Button_color_primary')
     ).toBeTruthy();
   });
 
   test('У компонента есть модификатор size', () => {
     const { container } = render(<Button size='big' />);
+    const firstChild = container.firstChild as HTMLElement;
     expect(
-      container.firstChild.classList.contains('Button_size_big')
+      firstChild.classList.contains('Button_size_big')
     ).toBeTruthy();
   });
 
   test('У компонента есть модификатор type', () => {
     const { container } = render(<Button icon={<Icon />} />);
+    const firstChild = container.firstChild as HTMLElement;
     expect(
-      container.firstChild.classList.contains('Button_type_icon')
+      firstChild.classList.contains('Button_type_icon')
     ).toBeTruthy();
   });
 });

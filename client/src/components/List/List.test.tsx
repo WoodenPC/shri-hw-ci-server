@@ -3,6 +3,7 @@ import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import { List } from './List';
+import { ListItem } from './ListItem';
 
 describe('Тесты компонента List', () => {
   test('Компонент рендерится', () => {
@@ -17,8 +18,9 @@ describe('Тесты компонента List', () => {
 
   test('У компонента есть модификатор direction', () => {
     const { container } = render(<List direction='row' />);
+    const firstChild = container.firstChild as HTMLElement;
     expect(
-      container.firstChild.classList.contains('List_direction_row')
+      firstChild.classList.contains('List_direction_row')
     ).toBeTruthy();
   });
 
@@ -34,9 +36,9 @@ describe('Тесты компонента List', () => {
 describe('Тесты компонента ListItem', () => {
   test('Компонент рендерится', () => {
     const { container } = render(
-      <List.Item>
+      <ListItem>
         <div id='testId'></div>
-      </List.Item>
+      </ListItem>
     );
     expect(container.querySelector('div.List-Item')).toBeInTheDocument();
     expect(container.querySelector('div#testId')).toBeInTheDocument();

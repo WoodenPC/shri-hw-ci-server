@@ -1,5 +1,5 @@
 import express from 'express';
-import React from 'react';
+import React, { ReactNode, ReactElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import fs from 'fs';
 import http from 'http';
@@ -11,7 +11,7 @@ import { StaticRouter } from 'react-router-dom';
 import { createServerStore } from 'store/store';
 import { App } from '../src/App';
 
-let productionTemplate;
+let productionTemplate: string;
 const getProductionPageTemplate = () => {
   if (!productionTemplate) {
     productionTemplate = fs
@@ -21,7 +21,7 @@ const getProductionPageTemplate = () => {
   return productionTemplate;
 };
 
-const renderPage = (pageTemplate, reactComponent) => {
+const renderPage = (pageTemplate: string, reactComponent: ReactElement) => {
   const renderedComponent = renderToString(reactComponent);
   return pageTemplate.replace(
     '<div id="root"></div>',
@@ -82,7 +82,7 @@ server.get('*', (req, res, next) => {
                 renderPage(
                   responseBody,
                   <Provider store={store}>
-                    <StaticRouter ssrLocation={req.url}>
+                    <StaticRouter location={req.url}>
                       <App />
                     </StaticRouter>
                   </Provider>
@@ -96,7 +96,7 @@ server.get('*', (req, res, next) => {
             });
           return;
         }
-        res.writeHead(proxiedResponse.statusCode, proxiedResponse.headers);
+        res.writeHead(proxiedResponse.statusCode as number, proxiedResponse.headers);
         proxiedResponse.pipe(res, { end: true });
         next();
       }

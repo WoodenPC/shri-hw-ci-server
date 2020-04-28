@@ -1,6 +1,5 @@
 import React, { memo, ReactElement } from 'react';
 import { cn } from '@bem-react/classname';
-import PropTypes, { ReactElementLike } from 'prop-types';
 
 import { FormHeader } from './FormHeader';
 import { FormFooter } from './FormFooter';

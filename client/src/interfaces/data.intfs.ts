@@ -21,13 +21,14 @@ export interface ICommitInfo {
 }
 
 export interface IBuildInfo {
+  id: string;
   buildNumber: number;
   commitMessage: string;
   commitHash: string;
   branchName: string;
   authorName: string;
   status: BuildStatus;
-  start: Date;
+  start: string;
   duration: number;
 }
 

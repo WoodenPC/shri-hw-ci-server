@@ -6,9 +6,10 @@ import '@testing-library/jest-dom/extend-expect';
 
 import { renderWithStore } from 'utils/testUtils';
 import { SettingsPage } from './Settings';
+import { IRepoSettings } from 'interfaces/data.intfs';
 
 describe('Тесты странички Settings', () => {
-  const testSettings = {
+  const testSettings: IRepoSettings = {
     repoName: 'testRepo',
     buildCommand: 'testCommand',
     mainBranch: 'testBranch',
@@ -34,6 +35,7 @@ describe('Тесты странички Settings', () => {
         <SettingsPage />
       </Router>,
       {
+        //@ts-ignore
         settings: {
           ...testSettings,
         },

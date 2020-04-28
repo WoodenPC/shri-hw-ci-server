@@ -17,8 +17,9 @@ describe('Тесты компонента Modal', () => {
 
   test('У компонента есть модификатор visible', () => {
     const { container } = render(<Modal visible />);
+    const firstChild = container.firstChild as HTMLElement;
     expect(
-      container.firstChild.classList.contains('Modal_visible')
+      firstChild.classList.contains('Modal_visible')
     ).toBeTruthy();
   });
 });

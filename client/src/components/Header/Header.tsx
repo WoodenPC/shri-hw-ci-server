@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
 
 interface IHeaderProps {
-  title: string,
+  title?: string,
   color?: 'black'
 }
 

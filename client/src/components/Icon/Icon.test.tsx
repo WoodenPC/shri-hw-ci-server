@@ -12,8 +12,9 @@ describe('Тесты компонента Icon', () => {
 
   test('У компонента появляется модификатор type', () => {
     const { container } = render(<Icon type='settings' />);
+    const firstChild = container.firstChild as HTMLElement;
     expect(
-      container.firstChild.classList.contains('Icon_type_settings')
+      firstChild.classList.contains('Icon_type_settings')
     ).toBeTruthy();
   });
 });

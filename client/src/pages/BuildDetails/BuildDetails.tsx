@@ -17,12 +17,16 @@ import { BuildStatus } from 'interfaces/data.intfs';
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const classes = cn('Page');
 
-type BuildDetailsProps = ConnectedProps<typeof connector> & RouteComponentProps;
+interface IMatchParams {
+  buildId: string;
+}
+
+type BuildDetailsProps = ConnectedProps<typeof connector> & RouteComponentProps<IMatchParams, {}, IMatchParams>;
 
 class BuildDetailsPage extends React.PureComponent<BuildDetailsProps> {
   state = {
     isLoading: true,
-    id: this.props.location.buildId,
+    id: this.props.location.state.buildId,
     status: BuildStatus.Waiting,
     buildNumber: 0,
     branchName: '',
@@ -41,7 +45,6 @@ class BuildDetailsPage extends React.PureComponent<BuildDetailsProps> {
   rebuild = async () => {
     const { runRebuildAsync, history } = this.props;
     const {
-      id,
       branchName,
       authorName,
       commitMessage,
