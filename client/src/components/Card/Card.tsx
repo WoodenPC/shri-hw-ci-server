@@ -44,6 +44,9 @@ const Card: React.FunctionComponent<ICardProps> = memo(
     onClick,
   }) => {
     const utcDateString = useMemo(() => {
+      if (start === '') {
+        return '';
+      }
       const date = new Date(start as string);
       const utcDate = new Date(
         Date.UTC(date.getFullYear(), date.getMonth(), date.getDay())
