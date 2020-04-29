@@ -15,7 +15,7 @@ interface ICardProps {
   branch?: string,
   hash?: string,
   who?: string,
-  start?: string | number | Date,
+  start?: string,
   duration?: number,
   onClick?: (...args: Array<any>) => any;
 }

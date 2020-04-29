@@ -21,6 +21,7 @@ jest.mock('./selectors', () => ({
         commitMessage: 'test commit',
         commitHash: '123qwe',
         authorName: 'test Author',
+        start: new Date(2020, 1, 1).toString(),
       }),
     loadBuildLogsAsync: () => Promise.resolve('test logs 123'),
   }),

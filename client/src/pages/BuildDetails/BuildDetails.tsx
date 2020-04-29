@@ -21,12 +21,12 @@ interface IMatchParams {
   buildId: string;
 }
 
-type BuildDetailsProps = ConnectedProps<typeof connector> & RouteComponentProps<IMatchParams, {}, IMatchParams>;
+type BuildDetailsProps = ConnectedProps<typeof connector> & RouteComponentProps<IMatchParams>;
 
 class BuildDetailsPage extends React.PureComponent<BuildDetailsProps> {
   state = {
     isLoading: true,
-    id: this.props.location.state.buildId,
+    id: this.props.match.params.buildId,
     status: BuildStatus.Waiting,
     buildNumber: 0,
     branchName: '',
