@@ -8,7 +8,7 @@ import path from 'path';
 import { Provider } from 'react-redux';
 
 import { StaticRouter } from 'react-router-dom';
-import { createServerStore } from 'store/store';
+import { createServerStore } from '../src/store/store';
 import { App } from '../src/App';
 
 let productionTemplate: string;
