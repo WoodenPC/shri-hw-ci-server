@@ -51,7 +51,7 @@ builds.post('/:commitHash', async (req, res) => {
         return res.sendStatus(500);
       }
       const apiResponse = await yandexService.addBuildToQueue(commitInfo);
-      res.send(apiResponse.data);
+      res.send(apiResponse.data.data);
     } else {
       const apiResponse = await yandexService.addBuildToQueue({
         commitHash,
@@ -60,7 +60,7 @@ builds.post('/:commitHash', async (req, res) => {
         authorName: body.authorName,
       });
 
-      res.send(apiResponse.data);
+      res.send(apiResponse.data.data);
     }
   } catch (e) {
     return res.status(500).send('Cannot request build');

@@ -14,7 +14,7 @@ export const runRebuildAsync = (dispatch: Dispatch) => {
     });
 
     try {
-      const res: AxiosResponse<IDataWrapper<IBuildInfo>> = await axios.post(
+      const res: AxiosResponse<IBuildInfo> = await axios.post(
         `/api/builds/${commitInfo.commitHash}`,
         {
           commitHash: commitInfo.commitHash,
@@ -23,7 +23,7 @@ export const runRebuildAsync = (dispatch: Dispatch) => {
           branchName: commitInfo.branchName,
         }
       );
-      return res.data.data;
+      return res.data;
     } catch (e) {
       console.log(e);
     }
