@@ -35,8 +35,7 @@ describe('тесты редьюсера BuildHistory', () => {
       offset: 3,
     };
 
-    // @ts-ignore
-    expect(reducer(initialStateWithBuilds, action)).toEqual({
+    expect(reducer(initialStateWithBuilds as any, action)).toEqual({
       ...initialStateWithBuilds,
       builds: initialStateWithBuilds.builds.concat(testBuilds),
       offset: 5,

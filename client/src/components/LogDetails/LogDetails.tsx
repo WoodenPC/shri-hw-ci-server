@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
-// @ts-ignore
 import Convert from 'ansi-to-html';
 
 interface ILogDetailsProps {

@@ -35,11 +35,10 @@ describe('Тесты странички Settings', () => {
         <SettingsPage />
       </Router>,
       {
-        //@ts-ignore
         settings: {
           ...testSettings,
         },
-      }
+      } as any
     );
 
     expect(getByPlaceholderText('user-name/repo-name')).toHaveTextContent('');
