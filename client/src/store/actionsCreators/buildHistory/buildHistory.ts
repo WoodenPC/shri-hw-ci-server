@@ -1,8 +1,10 @@
+import { Dispatch } from 'redux';
+import { AxiosResponse } from 'axios';
+
 import * as actionTypes from 'store/actionTypes/buildHistory';
 import { BuildHistoryAction } from 'store/actionTypes/buildHistory';
 import { axios } from 'utils/axiosInstance';
-import { Dispatch } from 'redux';
-import { IBuildInfo } from 'interfaces/data.intfs';
+import { IBuildInfo, IDataWrapper } from 'interfaces/data.intfs';
 
 /**
  * дроп билдов
@@ -46,7 +48,9 @@ export const loadBuildsAsync = (dispatch: Dispatch) => {
     });
 
     try {
-      const res = await axios.get('/api/builds', {
+      const res: AxiosResponse<IDataWrapper<
+        Array<IBuildInfo>
+      >> = await axios.get('/api/builds', {
         params: {
           offset,
           limit,

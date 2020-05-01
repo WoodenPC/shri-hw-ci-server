@@ -19,12 +19,7 @@ settings.get('/', async (_, res) => {
 
     const settingsData = data.data;
 
-    res.status(200).send({
-      repoName: settingsData.repoName,
-      buildCommand: settingsData.buildCommand,
-      mainBranch: settingsData.mainBranch,
-      period: settingsData.period,
-    });
+    res.status(200).send(settingsData);
   } catch (e) {
     return res.status(500).send(e);
   }

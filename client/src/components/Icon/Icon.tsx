@@ -12,7 +12,6 @@ const Icon: React.FunctionComponent<IIconProps> = memo(({ type }) => {
 });
 
 Icon.defaultProps = {
-  type: undefined,
 };
 
 export { Icon };

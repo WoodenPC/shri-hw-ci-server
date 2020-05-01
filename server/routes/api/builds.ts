@@ -19,7 +19,6 @@ builds.get('/', async (req, res) => {
     });
 
     const { data } = apiResponse;
-
     if (data === undefined) {
       return res.status(500).send('Cannot get builds data from shri server!');
     }

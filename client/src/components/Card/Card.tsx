@@ -103,7 +103,6 @@ Card.defaultProps = {
   who: '',
   title: '',
   branch: '',
-  onClick: undefined,
   start: new Date(2020, 1, 1).toString(),
   duration: 0,
 };

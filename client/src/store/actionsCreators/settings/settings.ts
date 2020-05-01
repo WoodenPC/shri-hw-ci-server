@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-
+import { AxiosResponse } from 'axios';
 import { axios } from 'utils/axiosInstance';
 import * as actionTypes from 'store/actionTypes/settings';
 import { IRepoSettings } from 'interfaces/data.intfs';
@@ -19,7 +19,9 @@ export const loadSettingsFromServerAsync = (dispatch: Dispatch) => {
   return async () => {
     dispatch({ type: actionTypes.LOAD_SETTINGS_FROM_SERVER_START });
     try {
-      const res = await axios.get('/api/settings');
+      const res: AxiosResponse<IRepoSettings> = await axios.get(
+        '/api/settings'
+      );
       const { data } = res;
       dispatch(setSettings({ ...data }));
       return data;

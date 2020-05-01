@@ -1,4 +1,4 @@
-import React, { memo, ReactElement } from 'react';
+import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
 
 import { FormHeader } from './FormHeader';
@@ -18,12 +18,12 @@ const FormFields: React.FunctionComponent<IFormFieldsProps> = memo(({ children }
 });
 
 interface IFormProps {}
-interface IForm<T> extends React.FunctionComponent<T> {
-  Header: ReactElement,
-  Fields: ReactElement,
-  Footer: ReactElement,
-  Field: ReactElement
-}
+// interface IForm<T> extends React.FunctionComponent<T> {
+//   Header: ReactElement,
+//   Fields: ReactElement,
+//   Footer: ReactElement,
+//   Field: ReactElement
+// }
 
 const Form: React.FunctionComponent<IFormProps> = memo(({ children }) => {
   return <form className={classes()}>{children}</form>;

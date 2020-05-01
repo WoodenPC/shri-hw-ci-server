@@ -1,15 +1,15 @@
 import axios from 'axios';
+import axiosRetry from 'axios-retry';
 
 const instance = axios.create({
   baseURL: 'http://localhost:3000/backend',
-  timeout: 20000,
+  timeout: 40000,
 });
 
-instance.interceptors.response.use(undefined, (error) => {
-  if (error.config && error.response && error.response.status >= 500) {
-    return instance.request(error.config);
-  }
-  return Promise.reject(error);
+axiosRetry(instance, {
+  retries: 5,
+  retryCondition: () => true,
+  retryDelay: axiosRetry.exponentialDelay,
 });
 
 export { instance as axios };

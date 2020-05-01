@@ -58,7 +58,6 @@ server.get('*', (req, res, next) => {
   ) {
     headers['accept-encoding'] = 'utf8';
   }
-  try {
     // если в дев режиме, то переводим на сервак cra
     http.get(
       {
@@ -91,19 +90,19 @@ server.get('*', (req, res, next) => {
               next();
             })
             .on('error', (e) => {
-              res.status(500);
-              res.send(e);
+              res.sendStatus(500);
+              console.log(e.toString());
             });
-          return;
+            return;
         }
         res.writeHead(proxiedResponse.statusCode as number, proxiedResponse.headers);
         proxiedResponse.pipe(res, { end: true });
         next();
       }
-    );
-  } catch (e) {
-    res.status(500).send(e.toString());
-  }
+    ).on('error', (err) => {
+      res.sendStatus(500);
+      console.log(err.toString());
+    });
 });
 
 server.listen(PORT, () => {

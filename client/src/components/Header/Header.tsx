@@ -21,7 +21,6 @@ const Header: React.FunctionComponent<IHeaderProps> = memo(({ title, children, c
 
 Header.defaultProps = {
   title: '',
-  color: undefined,
 };
 
 export { Header };

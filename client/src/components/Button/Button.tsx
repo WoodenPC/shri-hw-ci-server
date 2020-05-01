@@ -45,10 +45,7 @@ const Button: React.FunctionComponent<IButtonProps> = memo(
 
 Button.defaultProps = {
   variant: 'text',
-  text: undefined,
-  icon: undefined,
   size: 'medium',
-  onClick: undefined,
   color: 'default',
   classMix: '',
   disabled: false,

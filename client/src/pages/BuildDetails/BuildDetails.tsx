@@ -58,6 +58,11 @@ class BuildDetailsPage extends React.PureComponent<BuildDetailsProps> {
         commitHash,
       });
 
+      if (data === undefined) {
+        alert('Rebuild failed');
+        return;
+      }
+
       history.push(`/build/${data.id}`, {
         buildId: data.id,
       });

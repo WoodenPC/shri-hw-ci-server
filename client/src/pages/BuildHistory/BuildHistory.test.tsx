@@ -46,7 +46,8 @@ describe('Тесты странички BuildHistory', () => {
     );
 
     fireEvent.click(getByTestId('openRunBuildModal'));
-    expect(container.querySelector('div.Modal')).toBeVisible();
+    const modal = container.querySelector('div.Modal') as HTMLElement;
+    expect(modal.classList.contains('Modal_visible')).toBeTruthy();
   });
 
   test('При клике на настройки, урл переходит на /settings', () => {

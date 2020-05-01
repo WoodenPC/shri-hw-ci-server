@@ -46,13 +46,9 @@ const Input: React.FunctionComponent<IInputProps> = memo(
 );
 
 Input.defaultProps = {
-  id: undefined,
-  value: undefined,
-  onChange: undefined,
   type: 'text',
   placeholder: '',
   short: false,
-  defaultValue: undefined,
 };
 
 export { Input };
