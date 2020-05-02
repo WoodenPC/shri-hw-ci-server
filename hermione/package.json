@@ -1,0 +1,22 @@
+{
+  "name": "hermione",
+  "version": "1.0.0",
+  "description": "",
+  "main": ".hermione.conf.js",
+  "dependencies": {
+    "hermione": "^3.1.0",
+    "selenium-standalone": "^6.17.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "html-reporter": "^5.15.2",
+    "mocha": "^7.1.1"
+  },
+  "scripts": {
+    "test": "mocha",
+    "hermione": "./node_modules/.bin/hermione gui"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

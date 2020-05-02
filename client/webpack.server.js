@@ -3,7 +3,7 @@ const webpackNodeExternals = require('webpack-node-externals');
 
 module.exports = {
   target: 'node',
-  entry: './server/index.js',
+  entry: './server/index.tsx',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'build-server'),
@@ -11,6 +11,16 @@ module.exports = {
   externals: [webpackNodeExternals()],
   module: {
     rules: [
+      {
+        test: /\.(ts|tsx)$/,
+        use: {
+          loader: 'ts-loader',
+          options: {
+            configFile: 'tsconfig.server.json',
+          },
+        },
+        exclude: /node_modules/,
+      },
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
@@ -69,11 +79,12 @@ module.exports = {
     nodeEnv: process.env.NODE_ENV || 'development',
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.tsx', '.ts'],
     alias: {
       components: path.resolve(__dirname, 'src/components'),
       store: path.resolve(__dirname, 'src/store'),
       utils: path.resolve(__dirname, 'src/utils'),
+      types: path.resolve(__dirname, 'src/types'),
     },
   },
 };

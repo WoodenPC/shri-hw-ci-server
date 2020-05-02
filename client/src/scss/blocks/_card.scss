@@ -33,7 +33,7 @@
         color: var(--red);
       }
     }
-    &_waiting, &_inprogress {
+    &_waiting, &_inProgress {
       .Card-Number {
         color: var(--orange-3);
       }
