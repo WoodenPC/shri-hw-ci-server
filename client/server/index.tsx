@@ -1,6 +1,6 @@
 import express from 'express';
 import React from 'react';
-import type { ReactElement } from 'react'; 
+import type { ReactElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import fs from 'fs';
 import http from 'http';
@@ -59,8 +59,9 @@ server.get('*', (req, res, next) => {
   ) {
     headers['accept-encoding'] = 'utf8';
   }
-    // если в дев режиме, то переводим на сервак cra
-    http.get(
+  // если в дев режиме, то переводим на сервак cra
+  http
+    .get(
       {
         port: 3000,
         path: req.url,
@@ -94,13 +95,17 @@ server.get('*', (req, res, next) => {
               res.sendStatus(500);
               console.log(e.toString());
             });
-            return;
+          return;
         }
-        res.writeHead(proxiedResponse.statusCode as number, proxiedResponse.headers);
+        res.writeHead(
+          proxiedResponse.statusCode as number,
+          proxiedResponse.headers
+        );
         proxiedResponse.pipe(res, { end: true });
         next();
       }
-    ).on('error', (err) => {
+    )
+    .on('error', (err) => {
       res.sendStatus(500);
       console.log(err.toString());
     });

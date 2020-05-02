@@ -3,4 +3,8 @@ server/.env
 repos/
 server-conf.json
 agent-conf.json
+<<<<<<< HEAD
 testRepos
+=======
+testRepos
+>>>>>>> 46228ff792d2ec9d8edb674dc088d60de5ccc3a1
