@@ -3,14 +3,14 @@ import { cn } from '@bem-react/classname';
 
 import { Icon } from 'components/Icon';
 
-interface ICommitProps {
-  hash?: string,
-  branchName?: string
-}
+type CommitProps = {
+  hash?: string;
+  branchName?: string;
+};
 
 const classes = cn('Commit');
 
-const Commit: React.FunctionComponent<ICommitProps> = memo(({ hash, branchName }) => {
+const Commit: React.FC<CommitProps> = memo(({ hash, branchName }) => {
   return (
     <div className={classes()}>
       <div className={classes('Branch')}>

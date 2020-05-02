@@ -1,13 +1,13 @@
-import { IRepoSettings } from 'interfaces/data.intfs';
+import type { RepoSettings } from 'types/data.types';
 
 export const SET_SETTINGS = 'SET_SETTINGS';
 export const LOAD_SETTINGS_FROM_SERVER_START =
   'LOAD_SETTINGS_FROM_SERVER_START';
 export const LOAD_SETTINGS_FROM_SERVER_END = 'LOAD_SETTINGS_FROM_SERVER_END';
 
-interface ISetSettingsAction {
+interface SetSettingsAction {
   type: string;
-  settings: IRepoSettings;
+  settings: RepoSettings;
 }
 
-export type SettingsAction = ISetSettingsAction;
+export type SettingsAction = SetSettingsAction;

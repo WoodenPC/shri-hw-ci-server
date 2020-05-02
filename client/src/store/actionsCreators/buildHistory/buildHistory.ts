@@ -1,10 +1,10 @@
 import { Dispatch } from 'redux';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 
 import * as actionTypes from 'store/actionTypes/buildHistory';
-import { BuildHistoryAction } from 'store/actionTypes/buildHistory';
+import type { BuildHistoryAction } from 'store/actionTypes/buildHistory';
 import { axios } from 'utils/axiosInstance';
-import { IBuildInfo, IDataWrapper } from 'interfaces/data.intfs';
+import type { BuildInfo, DataWrapper } from 'types/data.types';
 
 /**
  * дроп билдов
@@ -18,7 +18,7 @@ export const deleteBuildsHistory = (): BuildHistoryAction => {
 /**
  * сохранение билдов в сторе
  */
-export const setBuilds = (builds: Array<IBuildInfo>): BuildHistoryAction => {
+export const setBuilds = (builds: Array<BuildInfo>): BuildHistoryAction => {
   return {
     type: actionTypes.SET_BUILDS,
     builds,
@@ -28,9 +28,7 @@ export const setBuilds = (builds: Array<IBuildInfo>): BuildHistoryAction => {
 /**
  * добавление в список билдов
  */
-export const addMoreBuilds = (
-  builds: Array<IBuildInfo>
-): BuildHistoryAction => {
+export const addMoreBuilds = (builds: Array<BuildInfo>): BuildHistoryAction => {
   return {
     type: actionTypes.ADD_MORE_BUILDS,
     builds,
@@ -48,14 +46,15 @@ export const loadBuildsAsync = (dispatch: Dispatch) => {
     });
 
     try {
-      const res: AxiosResponse<IDataWrapper<
-        Array<IBuildInfo>
-      >> = await axios.get('/api/builds', {
-        params: {
-          offset,
-          limit,
-        },
-      });
+      const res: AxiosResponse<DataWrapper<Array<BuildInfo>>> = await axios.get(
+        '/api/builds',
+        {
+          params: {
+            offset,
+            limit,
+          },
+        }
+      );
 
       return dispatch(addMoreBuilds(res.data.data));
     } catch (e) {

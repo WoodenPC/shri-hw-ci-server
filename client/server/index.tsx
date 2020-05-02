@@ -1,5 +1,6 @@
 import express from 'express';
-import React, { ReactElement } from 'react';
+import React from 'react';
+import type { ReactElement } from 'react'; 
 import { renderToString } from 'react-dom/server';
 import fs from 'fs';
 import http from 'http';

@@ -16,7 +16,8 @@ import { mapStateToProps, mapDispatchToProps } from './selectors';
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
-type BuildHistoryPageProps = ConnectedProps<typeof connector> & RouteComponentProps;
+type BuildHistoryPageProps = ConnectedProps<typeof connector> &
+  RouteComponentProps;
 
 const classes = cn('Page');
 
@@ -74,7 +75,7 @@ class BuildHistoryPage extends React.PureComponent<BuildHistoryPageProps> {
     await this.loadMoreBuilds();
   };
 
-  openBuildDetails = ({ buildId }: { buildId: string }) => {
+  openBuildDetails = (buildId: string) => {
     this.props.history.push(`/build/${buildId}`, {
       buildId,
     });

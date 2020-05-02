@@ -3,19 +3,19 @@ import { cn } from '@bem-react/classname';
 
 const classes = cn('Button');
 
-interface IButtonProps {
-  variant?: 'outlined' | 'text',
-  text?: string,
-  icon?: ReactElement,
-  size?: 'medium' | 'big',
-  color?: 'default' | 'primary' | 'secondary',
-  classMix?: string,
-  disabled?: boolean,
-  dataTestId?: string
-  onClick?: (...args: Array<any>) => any;
-}
+type ButtonProps = {
+  variant?: 'outlined' | 'text';
+  text?: string;
+  icon?: ReactElement;
+  size?: 'medium' | 'big';
+  color?: 'default' | 'primary' | 'secondary';
+  classMix?: string;
+  disabled?: boolean;
+  dataTestId?: string;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+};
 
-const Button: React.FunctionComponent<IButtonProps> = memo(
+const Button: React.FC<ButtonProps> = memo(
   ({
     variant,
     text,

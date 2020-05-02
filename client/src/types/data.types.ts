@@ -6,21 +6,21 @@ export enum BuildStatus {
   Canceled = 'Canceled',
 }
 
-export interface IRepoSettings {
+export type RepoSettings = {
   repoName: string;
   buildCommand: string;
   mainBranch: string;
   period: number;
-}
+};
 
-export interface ICommitInfo {
+export type CommitInfo = {
   commitHash: string;
   commitMessage: string;
   branchName: string;
   authorName: string;
-}
+};
 
-export interface IBuildInfo {
+export type BuildInfo = {
   id: string;
   buildNumber: number;
   commitMessage: string;
@@ -30,8 +30,8 @@ export interface IBuildInfo {
   status: BuildStatus;
   start: string;
   duration: number;
-}
+};
 
-export interface IDataWrapper<T> {
+export type DataWrapper<T> = {
   data: T;
-}
+};

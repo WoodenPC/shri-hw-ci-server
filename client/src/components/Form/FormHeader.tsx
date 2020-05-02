@@ -1,14 +1,14 @@
 import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
 
-interface IFormHeaderProps {
-  title?: string,
-  description?: string
-}
+type FormHeaderProps = {
+  title?: string;
+  description?: string;
+};
 
 const classes = cn('Form');
 
-const FormHeader: React.FunctionComponent<IFormHeaderProps> = memo(({ title, description }) => {
+const FormHeader: React.FC<FormHeaderProps> = memo(({ title, description }) => {
   return (
     <div className={classes('Header')}>
       <h2 className={classes('Title')}>{title}</h2>

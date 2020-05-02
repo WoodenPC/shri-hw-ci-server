@@ -1,8 +1,8 @@
 import * as actionsCreators from 'store/actionsCreators/settings';
 import { deleteBuildsHistory } from 'store/actionsCreators/buildHistory';
-import { Dispatch } from 'redux';
-import { IRepoSettings } from 'interfaces/data.intfs';
-import { RootState } from 'store/store';
+import type { Dispatch } from 'redux';
+import type { RepoSettings } from 'types/data.types';
+import type { RootState } from 'store/store';
 
 export const mapStateToProps = (store: RootState) => {
   return {
@@ -12,7 +12,7 @@ export const mapStateToProps = (store: RootState) => {
 
 export const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    setSettings: (settings: IRepoSettings) =>
+    setSettings: (settings: RepoSettings) =>
       dispatch(actionsCreators.setSettings(settings)),
     saveSettingsAsync: actionsCreators.saveSettingsAsync(dispatch),
     deleteBuildsHistory: () => dispatch(deleteBuildsHistory()),

@@ -4,24 +4,25 @@ import { cn } from '@bem-react/classname';
 import { Button } from 'components/Button';
 import { ListItem } from './ListItem';
 
-interface IListProps {
-  direction?: 'row' | 'col',
+type ListProps = {
+  direction?: 'row' | 'col';
   onShowMore?: (...args: Array<any>) => any;
-}
+};
 
 const classes = cn('List');
 
-const List: React.FunctionComponent<IListProps> = memo(({ children, direction, onShowMore }) => {
-  return (
-    <div className={classes({ direction })}>
-      <div className={classes('Box')}>{children}</div>
-      <div className={classes('Menu')}>
-        <Button text='Show more' onClick={onShowMore} color='secondary' />
+const List: React.FC<ListProps> = memo(
+  ({ children, direction, onShowMore }) => {
+    return (
+      <div className={classes({ direction })}>
+        <div className={classes('Box')}>{children}</div>
+        <div className={classes('Menu')}>
+          <Button text='Show more' onClick={onShowMore} color='secondary' />
+        </div>
       </div>
-    </div>
-  );
-});
-
+    );
+  }
+);
 
 List.defaultProps = {
   direction: 'row',

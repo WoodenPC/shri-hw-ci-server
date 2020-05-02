@@ -1,18 +1,24 @@
 import React, { memo, useState } from 'react';
 
 import { Modal } from 'components/Modal';
-import { Form, FormHeader, FormFields, FormField, FormFooter } from 'components/Form';
+import {
+  Form,
+  FormHeader,
+  FormFields,
+  FormField,
+  FormFooter,
+} from 'components/Form';
 import { Input } from 'components/Input';
 import { Button } from 'components/Button';
 import { useCallback } from 'react';
 
-interface IRunBuildModalProps {
+type RunBuildModalProps = {
   visible?: boolean;
-  onRunBuild?: (...args: Array<any>) => any;
-  onCancel?: (...args: Array<any>) => any;
-}
+  onRunBuild?: (hash: string) => void;
+  onCancel?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+};
 
-const RunBuildModal: React.FunctionComponent<IRunBuildModalProps> = memo(
+const RunBuildModal: React.FC<RunBuildModalProps> = memo(
   ({ visible, onRunBuild, onCancel }) => {
     const [hash, setHash] = useState('');
 

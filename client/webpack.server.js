@@ -84,7 +84,7 @@ module.exports = {
       components: path.resolve(__dirname, 'src/components'),
       store: path.resolve(__dirname, 'src/store'),
       utils: path.resolve(__dirname, 'src/utils'),
-      interfaces: path.resolve(__dirname, 'src/interfaces'),
+      types: path.resolve(__dirname, 'src/types'),
     },
   },
 };

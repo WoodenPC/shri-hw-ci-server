@@ -5,11 +5,9 @@ import { FormHeader } from './FormHeader';
 import { FormFooter } from './FormFooter';
 import { FormField } from './FormField';
 
-interface IFormFieldsProps {}
-
 const classes = cn('Form');
 
-const FormFields: React.FunctionComponent<IFormFieldsProps> = memo(({ children }) => {
+const FormFields: React.FC = memo(({ children }) => {
   return (
     <div className={classes('Body')}>
       <fieldset>{children}</fieldset>
@@ -17,7 +15,6 @@ const FormFields: React.FunctionComponent<IFormFieldsProps> = memo(({ children }
   );
 });
 
-interface IFormProps {}
 // interface IForm<T> extends React.FunctionComponent<T> {
 //   Header: ReactElement,
 //   Fields: ReactElement,
@@ -25,13 +22,9 @@ interface IFormProps {}
 //   Field: ReactElement
 // }
 
-const Form: React.FunctionComponent<IFormProps> = memo(({ children }) => {
+const Form: React.FC = memo(({ children }) => {
   return <form className={classes()}>{children}</form>;
 });
-
-Form.defaultProps = {
-  children: null,
-};
 
 // Form.Header = FormHeader;
 // Form.Fields = FormFields;

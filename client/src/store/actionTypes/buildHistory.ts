@@ -1,4 +1,4 @@
-import { IBuildInfo } from 'interfaces/data.intfs';
+import type { BuildInfo } from 'types/data.types';
 export const LOAD_BUILDS_START = 'LOAD_BUILDS_START';
 export const LOAD_BUILDS_END = 'LOAD_BUILDS_END';
 export const SET_BUILDS = 'SET_BUILDS';
@@ -6,22 +6,22 @@ export const ADD_MORE_BUILDS = 'ADD_MORE_BUILDS';
 export const DELETE_BUILDS_HISTORY = 'DELETE_BUILDS_HISTORY';
 export const RUN_BUILD = 'RUN_BUILD';
 
-interface IDeleteBuildsHistoryAction {
+type DeleteBuildsHistoryAction = {
   type: typeof DELETE_BUILDS_HISTORY;
-}
+};
 
-interface ISetBuildsAction {
+type SetBuildsAction = {
   type: typeof SET_BUILDS;
-  builds: Array<IBuildInfo>;
-}
+  builds: Array<BuildInfo>;
+};
 
-interface IAddMoreBuildsAction {
+type AddMoreBuildsAction = {
   type: typeof ADD_MORE_BUILDS;
-  builds: Array<IBuildInfo>;
+  builds: Array<BuildInfo>;
   offset: number;
-}
+};
 
 export type BuildHistoryAction =
-  | IDeleteBuildsHistoryAction
-  | ISetBuildsAction
-  | IAddMoreBuildsAction;
+  | DeleteBuildsHistoryAction
+  | SetBuildsAction
+  | AddMoreBuildsAction;

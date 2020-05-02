@@ -12,7 +12,7 @@ import { LogDetails } from 'components/LogDetails';
 import { Spinner } from 'components/Spinner';
 
 import { mapStateToProps, mapDispatchToProps } from './selectors';
-import { BuildStatus } from 'interfaces/data.intfs';
+import { BuildStatus } from 'types/data.types';
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const classes = cn('Page');
@@ -21,7 +21,8 @@ interface IMatchParams {
   buildId: string;
 }
 
-type BuildDetailsProps = ConnectedProps<typeof connector> & RouteComponentProps<IMatchParams>;
+type BuildDetailsProps = ConnectedProps<typeof connector> &
+  RouteComponentProps<IMatchParams>;
 
 class BuildDetailsPage extends React.PureComponent<BuildDetailsProps> {
   state = {
@@ -44,12 +45,7 @@ class BuildDetailsPage extends React.PureComponent<BuildDetailsProps> {
 
   rebuild = async () => {
     const { runRebuildAsync, history } = this.props;
-    const {
-      branchName,
-      authorName,
-      commitMessage,
-      commitHash,
-    } = this.state;
+    const { branchName, authorName, commitMessage, commitHash } = this.state;
     try {
       const data = await runRebuildAsync({
         branchName,

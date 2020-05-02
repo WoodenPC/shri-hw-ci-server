@@ -6,10 +6,10 @@ import '@testing-library/jest-dom/extend-expect';
 
 import { renderWithStore } from 'utils/testUtils';
 import { SettingsPage } from './Settings';
-import { IRepoSettings } from 'interfaces/data.intfs';
+import type { RepoSettings } from 'types/data.types';
 
 describe('Тесты странички Settings', () => {
-  const testSettings: IRepoSettings = {
+  const testSettings: RepoSettings = {
     repoName: 'testRepo',
     buildCommand: 'testCommand',
     mainBranch: 'testBranch',

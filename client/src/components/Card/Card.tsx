@@ -5,32 +5,32 @@ import { format } from 'date-fns';
 import { Icon } from 'components/Icon';
 import { UserName } from 'components/UserName';
 import { Commit } from 'components/Commit';
-import { BuildStatus } from 'interfaces/data.intfs';
+import { BuildStatus } from 'types/data.types';
 
-interface ICardProps {
-  id?: string,
-  status?: BuildStatus,
-  buildNumber?: number,
-  title?: string,
-  branch?: string,
-  hash?: string,
-  who?: string,
-  start?: string,
-  duration?: number,
-  onClick?: (...args: Array<any>) => any;
-}
+type CardProps = {
+  id?: string;
+  status?: BuildStatus;
+  buildNumber?: number;
+  title?: string;
+  branch?: string;
+  hash?: string;
+  who?: string;
+  start?: string;
+  duration?: number;
+  onClick?: (id: string, hash: string) => void;
+};
 
 const statuses = {
   [BuildStatus.Success]: 'success',
   [BuildStatus.Waiting]: 'waiting',
   [BuildStatus.InProgress]: 'inProgress',
   [BuildStatus.Fail]: 'fail',
-  [BuildStatus.Canceled]: 'canceled'
+  [BuildStatus.Canceled]: 'canceled',
 };
 
 const classes = cn('Card');
 
-const Card: React.FunctionComponent<ICardProps> = memo(
+const Card: React.FC<CardProps> = memo(
   ({
     id,
     status,
@@ -56,7 +56,7 @@ const Card: React.FunctionComponent<ICardProps> = memo(
 
     const onClickInner = useCallback(() => {
       if (onClick !== undefined) {
-        onClick({ buildId: id, commitHash: hash });
+        onClick(id as string, hash as string);
       }
     }, [id, hash, onClick]);
 

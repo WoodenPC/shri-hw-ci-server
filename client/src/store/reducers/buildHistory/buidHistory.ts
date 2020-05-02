@@ -1,11 +1,11 @@
 import * as actionTypes from 'store/actionTypes/buildHistory';
-import { BuildHistoryAction } from 'store/actionTypes/buildHistory';
-import { IBuildInfo } from 'interfaces/data.intfs';
+import type { BuildHistoryAction } from 'store/actionTypes/buildHistory';
+import type { BuildInfo } from 'types/data.types';
 
 interface IBuildHistoryState {
   offset: number;
   limit: number;
-  builds: Array<IBuildInfo>;
+  builds: Array<BuildInfo>;
 }
 
 export const initialState: IBuildHistoryState = {

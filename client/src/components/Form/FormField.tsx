@@ -1,17 +1,17 @@
 import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
 
-interface IFormFieldProps {
+type FormFieldProps = {
   name?: string;
   label?: string;
   required?: boolean;
   row?: boolean;
   suffix?: string;
-}
+};
 
 const classes = cn('FormField');
 
-const FormField: React.FunctionComponent<IFormFieldProps> = memo(
+const FormField: React.FC<FormFieldProps> = memo(
   ({ name, label, required, row, suffix, children }) => {
     return (
       <div className={classes({ required, row })}>

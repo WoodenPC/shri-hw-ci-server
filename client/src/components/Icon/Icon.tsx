@@ -1,17 +1,16 @@
 import React, { memo } from 'react';
 import { cn } from '@bem-react/classname';
 
-interface IIconProps {
-  type?: string
-}
+type IconProps = {
+  type?: string;
+};
 
 const classes = cn('Icon');
 
-const Icon: React.FunctionComponent<IIconProps> = memo(({ type }) => {
+const Icon: React.FC<IconProps> = memo(({ type }) => {
   return <span className={classes({ type })}></span>;
 });
 
-Icon.defaultProps = {
-};
+Icon.defaultProps = {};
 
 export { Icon };

@@ -5,7 +5,7 @@ module.exports = {
     '^utils(.*)$': '<rootDir>/src/utils$1',
     '^components(.*)$': '<rootDir>/src/components$1',
     '^store(.*)$': '<rootDir>/src/store$1',
-    '^interfaces(.*)$': '<rootDir>/src/interfaces$1',
+    '^types(.*)$': '<rootDir>/src/types$1',
   },
   transform: {
     '^.+\\.tsx?$': 'ts-jest',

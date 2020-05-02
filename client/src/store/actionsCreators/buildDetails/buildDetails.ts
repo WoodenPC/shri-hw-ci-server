@@ -1,20 +1,20 @@
 import { Dispatch } from 'redux';
 import { axios } from 'utils/axiosInstance';
 import * as actionTypes from 'store/actionTypes/buildDetails';
-import { ICommitInfo, IBuildInfo, IDataWrapper } from 'interfaces/data.intfs';
-import { AxiosResponse } from 'axios';
+import type { CommitInfo, BuildInfo, DataWrapper } from 'types/data.types';
+import type { AxiosResponse } from 'axios';
 
 /**
  * запустить билд снова по выбранному хэшу
  */
 export const runRebuildAsync = (dispatch: Dispatch) => {
-  return async (commitInfo: ICommitInfo) => {
+  return async (commitInfo: CommitInfo) => {
     dispatch({
       type: actionTypes.RUN_REBUILD,
     });
 
     try {
-      const res: AxiosResponse<IBuildInfo> = await axios.post(
+      const res: AxiosResponse<BuildInfo> = await axios.post(
         `/api/builds/${commitInfo.commitHash}`,
         {
           commitHash: commitInfo.commitHash,
@@ -35,7 +35,7 @@ export const loadBuildDetailsAsync = (dispatch: Dispatch) => {
   return async (buildId: string) => {
     dispatch({ type: actionTypes.LOAD_BUILD_DETAILS });
     try {
-      const res: AxiosResponse<IDataWrapper<IBuildInfo>> = await axios.get(
+      const res: AxiosResponse<DataWrapper<BuildInfo>> = await axios.get(
         `/api/builds/${buildId}`
       );
       return res.data.data;

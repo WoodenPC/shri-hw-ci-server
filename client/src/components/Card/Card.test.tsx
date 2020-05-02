@@ -3,7 +3,7 @@ import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import { Card } from './Card';
-import { BuildStatus } from 'interfaces/data.intfs';
+import { BuildStatus } from 'types/data.types';
 
 describe('Тесты компонента Card', () => {
   test('Компонент рендерится', () => {
@@ -33,8 +33,6 @@ describe('Тесты компонента Card', () => {
   test('У компонента есть модификатор status', () => {
     const { container } = render(<Card status={BuildStatus.Success} />);
     const firstChild = container.firstChild as HTMLElement;
-    expect(
-      firstChild.classList.contains('Card_status_success')
-    ).toBeTruthy();
+    expect(firstChild.classList.contains('Card_status_success')).toBeTruthy();
   });
 });
