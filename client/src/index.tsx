@@ -6,6 +6,8 @@ import { Provider } from 'react-redux';
 import { App } from './App';
 import { createClientStore } from './store/store';
 
+import * as serviceWorker from './workers/sw';
+
 const store = createClientStore();
 
 ReactDOM.hydrate(
@@ -18,3 +20,5 @@ ReactDOM.hydrate(
   </React.StrictMode>,
   document.getElementById('root')
 );
+
+serviceWorker.register();
