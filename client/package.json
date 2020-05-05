@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && npm run build-sw",
     "test": "jest",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
@@ -23,7 +23,7 @@
     "run-server": "node ./build-server/bundle.js",
     "dev-server": "nodemon ./build-server/bundle.js",
     "clean-build-folders": "rm -rf ./build/ && rm -rf ./build-server/",
-    "build-sw": "tsc --build ./src/workers/cache && node workers/cache/swBuild.js"
+    "build-sw": "tsc --build ./src/workers/cacheWorkbox && node workers/cache/swBuild.js"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -55,6 +55,7 @@
     "@types/react-redux": "^7.1.7",
     "@types/react-router-dom": "^5.1.5",
     "@types/redux-mock-store": "^1.0.2",
+    "@types/service-worker-mock": "^2.0.1",
     "@types/workbox-build": "^5.0.0",
     "@types/workbox-sw": "^4.3.0",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
@@ -87,6 +88,7 @@
     "redux-mock-store": "^1.5.4",
     "redux-thunk": "^2.3.0",
     "sass-loader": "^8.0.2",
+    "service-worker-mock": "^2.0.5",
     "style-loader": "^1.1.3",
     "ts-jest": "^25.4.0",
     "ts-loader": "^7.0.1",

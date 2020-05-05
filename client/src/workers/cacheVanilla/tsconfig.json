@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNEXT",
-    "module": "CommonJS",
+    "module": "amd",
     "jsx": "react",
     "strict": true,
     "esModuleInterop": true,
@@ -10,10 +10,10 @@
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "composite": true,
     "lib": ["esnext", "webworker"],
-    "outDir": "../../../workers/cache",
+    "outDir": "../../../build",
   },
   "include": ["."]
 }
