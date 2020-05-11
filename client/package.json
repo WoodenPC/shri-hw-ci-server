@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && npm run build-sw",
+    "build": "react-scripts build && npm run build-sw && npm run build-push-sw",
     "test": "jest",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
@@ -23,7 +23,8 @@
     "run-server": "node ./build-server/bundle.js",
     "dev-server": "nodemon ./build-server/bundle.js",
     "clean-build-folders": "rm -rf ./build/ && rm -rf ./build-server/",
-    "build-sw": "tsc --build ./src/workers/cacheWorkbox && node workers/cache/swBuild.js"
+    "build-sw": "tsc --build ./src/workers/cacheWorkbox && node workers/cache/swBuild.js",
+    "build-push-sw": "tsc --build ./src/workers/push"
   },
   "eslintConfig": {
     "extends": "react-app"

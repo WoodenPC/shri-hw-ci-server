@@ -1,5 +1,5 @@
 const router = require('express').Router();
-
+const axios = require('axios');
 const svcContainer = require('../services/serviceContainer');
 
 // зарегистрировать агента
@@ -25,13 +25,19 @@ router.post('/notify-build-result', async (req, res) => {
       duration
     });
 
-    agentsSvc.unBindAgentByBuildId(buildId);
+    const buildData = agentsSvc.getBuildDataById(buildId);
+    await axios.post('host.docker.internal:9999/push', {
+      buildNumber: buildData.buildNumber,
+      buildStatus
+    });
 
     console.log(apiRes.data);
 
     res.sendStatus(200);
   } catch(e) {
     res.status(500).send(`Cannot finish build ${e.toString()}`);
+  } finally {
+    agentsSvc.unBindAgentByBuildId(buildId);
   }
 });
 
