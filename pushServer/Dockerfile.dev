@@ -1,5 +1,5 @@
 FROM node:alpine
-RUN apk update && apk upgrade && apk add bash && apk add inotify-tools && apk add --no-cache git
+RUN apk update && apk upgrade && apk add bash
 WORKDIR '/app'
 COPY package.json .
 COPY package-lock.json .
