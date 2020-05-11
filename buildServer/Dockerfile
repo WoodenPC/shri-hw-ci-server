@@ -6,6 +6,7 @@ COPY package-lock.json .
 RUN npm ci
 COPY . .
 
+EXPOSE 9999
 ENV NODE_ENV=production
 RUN git config --global user.email "test-mail@mail.com"
 RUN git config --global user.name "robot"

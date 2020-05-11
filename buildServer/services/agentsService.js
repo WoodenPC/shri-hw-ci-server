@@ -47,6 +47,7 @@ class AgentsService {
 
   getBuildDataById = (buildId) => {
     const builds = Object.values(this.agents);
+    console.log(buildId, JSON.stringify(this.agents));
     for (let build in builds) {
       if (build !== null && build.id === buildId) {
         return build;

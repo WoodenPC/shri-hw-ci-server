@@ -26,10 +26,12 @@ router.post('/notify-build-result', async (req, res) => {
     });
 
     const buildData = agentsSvc.getBuildDataById(buildId);
-    await axios.post('host.docker.internal:9999/push', {
-      buildNumber: buildData.buildNumber,
-      buildStatus
-    });
+    if (buildData) {
+      await axios.post('http://host.docker.internal:9999/push', {
+        buildNumber: buildData.buildNumber,
+        buildStatus
+      });
+    }
 
     console.log(apiRes.data);
 
