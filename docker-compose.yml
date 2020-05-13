@@ -13,12 +13,8 @@ services:
     restart: always
     build:
       context: ./client
-      args:
-        - PUSH_SERVER_URL=host.docker.internal
-        - PUSH_SERVER_PORT=9999
     environment:
       - NODE_ENV=production
-    env_file: ./client/.env
   nginx:
     restart: always
     build:
