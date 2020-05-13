@@ -32,3 +32,9 @@ services:
       - ci-node-server
     ports:
       - '3000:80'
+  push-server:
+    restart: always
+    build:
+      context: ./pushServer
+    ports:
+      - '9999:9999'

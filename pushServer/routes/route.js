@@ -4,6 +4,7 @@ const { getPushService } = require('../services/pushService');
 
 route.post('/push', (req, res) => {
   const { buildNumber, status } = req.body;
+  console.log(`Push recieved ${buildNumber} - ${status}`);
   const pushService = getPushService();
   try {
     pushService.push(buildNumber, status);

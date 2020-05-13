@@ -13,8 +13,12 @@ services:
     restart: always
     build:
       context: ./client
+      args:
+        - PUSH_SERVER_URL=host.docker.internal
+        - PUSH_SERVER_PORT=9999
     environment:
       - NODE_ENV=production
+    env_file: ./client/.env
   nginx:
     restart: always
     build:
@@ -24,3 +28,9 @@ services:
       - ci-node-server
     ports:
       - '3000:80'
+  push-server:
+    restart: always
+    build:
+      context: ./pushServer
+    ports:
+      - '9999:9999'
