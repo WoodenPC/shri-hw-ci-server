@@ -1,6 +1,7 @@
 import React, { memo, useMemo, useCallback } from 'react';
 import { cn } from '@bem-react/classname';
 import { format } from 'date-fns';
+import prettyMs from 'pretty-ms';
 
 import { Icon } from 'components/Icon';
 import { UserName } from 'components/UserName';
@@ -16,7 +17,7 @@ type CardProps = {
   hash?: string;
   who?: string;
   start?: string;
-  duration?: number;
+  duration: number;
   onClick?: (id: string, hash: string) => void;
 };
 
@@ -86,7 +87,7 @@ const Card: React.FC<CardProps> = memo(
             </div>
             <div className={classes('BuildDuration')}>
               <Icon type='timer' />
-              <span>{duration}</span>
+              <span>{prettyMs(duration)}</span>
             </div>
           </div>
         </div>
