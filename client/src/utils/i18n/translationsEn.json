@@ -1,0 +1,33 @@
+{
+  "runBuild": "Run build",
+  "cancel": "Cancel",
+  "newBuild": "New build",
+  "settings": "Settings",
+  "header": {
+    "ciServer": "School CI server",
+    "rebuild": "Rebuild"
+  },
+  "footer": {
+    "support": "Support",
+    "learning": "Learning",
+    "language": "Russian version"
+  },
+  "runBuildModal": {
+    "description": "Enter the commit hash which you want to build.",
+    "commitHash": "Commit hash"
+  },
+  "list": {
+    "showMore": "Show more"
+  },
+  "mainPage": {
+    "description": "Configure repository connection and synchronization settings",
+    "openSettings": "Open settings"
+  },
+  "settingsPage": {
+    "githubRepo": "GitHub repository",
+    "buildCommand": "Build command",
+    "mainBranch": "Main branch",
+    "syncEvery": "Synchronize every",
+    "minutes": "minutes"
+  }
+}

@@ -6,14 +6,23 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Header } from 'components/Header';
 import { Footer } from 'components/Footer';
 import { Button } from 'components/Button';
-import { Form, FormHeader, FormFields, FormField, FormFooter } from 'components/Form';
+import {
+  Form,
+  FormHeader,
+  FormFields,
+  FormField,
+  FormFooter,
+} from 'components/Form';
 import { Input } from 'components/Input';
 
 import { mapStateToProps, mapDispatchToProps } from './selectors';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
-type SettingsPageProps = ConnectedProps<typeof connector> & RouteComponentProps;
+type SettingsPageProps = ConnectedProps<typeof connector> &
+  RouteComponentProps &
+  WithTranslation;
 
 const classes = cn('Page');
 
@@ -109,17 +118,22 @@ class SettingsPage extends React.PureComponent<SettingsPageProps> {
       period,
       isLoading,
     } = this.state;
+    const { t } = this.props;
     return (
       <div className={classes()}>
-        <Header title='School CI server' />
+        <Header title={t('header.ciServer')} />
         <main className={classes('Main')}>
           <Form>
             <FormHeader
-              title='Settings'
-              description='Configure repository connection and synchronization settings.'
+              title={t('settings')}
+              description={t('mainPage.description')}
             />
             <FormFields>
-              <FormField name='repository' label='GitHub repository' required>
+              <FormField
+                name='repository'
+                label={t('settingsPage.githubRepo')}
+                required
+              >
                 <Input
                   id='repoField'
                   placeholder='user-name/repo-name'
@@ -127,7 +141,11 @@ class SettingsPage extends React.PureComponent<SettingsPageProps> {
                   onChange={this.changeRepoName}
                 />
               </FormField>
-              <FormField name='command' label='Build command' required>
+              <FormField
+                name='command'
+                label={t('settingsPage.buildCommand')}
+                required
+              >
                 <Input
                   id='commandField'
                   placeholder='npm ci && npm run build'
@@ -135,7 +153,7 @@ class SettingsPage extends React.PureComponent<SettingsPageProps> {
                   onChange={this.changeBuildCommand}
                 />
               </FormField>
-              <FormField name='mainBranch' label='Main branch'>
+              <FormField name='mainBranch' label={t('settingsPage.mainBranch')}>
                 <Input
                   id='branchField'
                   placeholder='master'
@@ -145,8 +163,8 @@ class SettingsPage extends React.PureComponent<SettingsPageProps> {
               </FormField>
               <FormField
                 name='timing'
-                label='Synchronize every'
-                suffix='minutes'
+                label={t('settingsPage.syncEvery')}
+                suffix={t('settingsPage.minutes')}
                 row
               >
                 <Input
@@ -161,14 +179,14 @@ class SettingsPage extends React.PureComponent<SettingsPageProps> {
             </FormFields>
             <FormFooter>
               <Button
-                text='Save'
+                text={t('Save')}
                 color='primary'
                 size='big'
                 onClick={this.saveSettings}
                 disabled={isLoading}
               />
               <Button
-                text='Cancel'
+                text={t('Cancel')}
                 color='secondary'
                 size='big'
                 onClick={this.cancel}
@@ -183,7 +201,8 @@ class SettingsPage extends React.PureComponent<SettingsPageProps> {
   }
 }
 
-const PageWithRouter = withRouter(SettingsPage);
+const PageWithTranslation = withTranslation()(SettingsPage);
+const PageWithRouter = withRouter(PageWithTranslation);
 const ConnectedPage = connector(PageWithRouter);
 
 export { ConnectedPage as SettingsPage };

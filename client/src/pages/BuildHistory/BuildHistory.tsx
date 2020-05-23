@@ -13,11 +13,13 @@ import { RunBuildModal } from 'components/RunBuildModal';
 import { Spinner } from 'components/Spinner';
 
 import { mapStateToProps, mapDispatchToProps } from './selectors';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type BuildHistoryPageProps = ConnectedProps<typeof connector> &
-  RouteComponentProps;
+  RouteComponentProps &
+  WithTranslation;
 
 const classes = cn('Page');
 
@@ -86,14 +88,14 @@ class BuildHistoryPage extends React.PureComponent<BuildHistoryPageProps> {
   };
 
   render() {
-    const { builds, repoName } = this.props;
+    const { builds, repoName, t } = this.props;
     const { modalVisible, isLoading } = this.state;
     return (
       <div className={classes()}>
         <Header title={repoName} color='black'>
           <Button
             dataTestId='openRunBuildModal'
-            text='Run build'
+            text={t('Run build')}
             icon={<Icon type='play' />}
             color='secondary'
             onClick={this.openModal}
@@ -152,7 +154,8 @@ class BuildHistoryPage extends React.PureComponent<BuildHistoryPageProps> {
   }
 }
 
-const PageWithRouter = withRouter(BuildHistoryPage);
+const PageWithTranslation = withTranslation()(BuildHistoryPage);
+const PageWithRouter = withRouter(PageWithTranslation);
 const ConnectedPage = connector(PageWithRouter);
 
 export { ConnectedPage as BuildHistoryPage };

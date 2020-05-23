@@ -13,16 +13,18 @@ import { Spinner } from 'components/Spinner';
 
 import { mapStateToProps, mapDispatchToProps } from './selectors';
 import { BuildStatus } from 'types/data.types';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const classes = cn('Page');
 
-interface IMatchParams {
+type MatchParams = {
   buildId: string;
-}
+};
 
 type BuildDetailsProps = ConnectedProps<typeof connector> &
-  RouteComponentProps<IMatchParams>;
+  RouteComponentProps<MatchParams> &
+  WithTranslation;
 
 class BuildDetailsPage extends React.PureComponent<BuildDetailsProps> {
   state = {
@@ -94,7 +96,7 @@ class BuildDetailsPage extends React.PureComponent<BuildDetailsProps> {
   }
 
   render() {
-    const { repoName } = this.props;
+    const { repoName, t } = this.props;
     const {
       id,
       status,
@@ -113,7 +115,7 @@ class BuildDetailsPage extends React.PureComponent<BuildDetailsProps> {
         <Header title={repoName} color='black'>
           <Button
             dataTestId='rebuildCurrent'
-            text='Rebuild'
+            text={t('header.rebuild')}
             icon={<Icon type='rebuild' />}
             color='secondary'
             onClick={this.rebuild}
@@ -151,7 +153,8 @@ class BuildDetailsPage extends React.PureComponent<BuildDetailsProps> {
   }
 }
 
-const PageWithRouter = withRouter(BuildDetailsPage);
+const PageWithTranslation = withTranslation()(BuildDetailsPage);
+const PageWithRouter = withRouter(PageWithTranslation);
 const ConnectedPage = connector(PageWithRouter);
 
 export { ConnectedPage as BuildDetailsPage };

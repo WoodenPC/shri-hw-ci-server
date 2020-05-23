@@ -4,6 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
 import { App } from './App';
+
+import './utils/i18n/i18n';
 import { createClientStore } from './store/store';
 
 import * as serviceWorker from './workers/initCache';
