@@ -3,6 +3,7 @@
   "cancel": "Отмена",
   "newBuild": "Новая сборка",
   "settings": "Настройки",
+  "save": "Сохранить",
   "header": {
     "ciServer": "CI сервер ШРИ",
     "rebuild": "Пересобрать"

@@ -7,6 +7,7 @@ import { Icon } from 'components/Icon';
 import { UserName } from 'components/UserName';
 import { Commit } from 'components/Commit';
 import { BuildStatus } from 'types/data.types';
+import { useTranslation } from 'react-i18next';
 
 type CardProps = {
   id?: string;
@@ -44,6 +45,7 @@ const Card: React.FC<CardProps> = memo(
     duration,
     onClick,
   }) => {
+    const { i18n } = useTranslation();
     const utcDateString = useMemo(() => {
       if (start === '') {
         return '';
@@ -52,7 +54,10 @@ const Card: React.FC<CardProps> = memo(
       const utcDate = new Date(
         Date.UTC(date.getFullYear(), date.getMonth(), date.getDay())
       );
-      return format(utcDate, 'dd MMM, HH:mm');
+      return format(
+        utcDate,
+        i18n.language === 'ru' ? 'dd MMM, HH:mm' : 'MMM dd, HH:mm'
+      );
     }, [start]);
 
     const onClickInner = useCallback(() => {

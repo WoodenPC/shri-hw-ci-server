@@ -3,7 +3,7 @@ import React from 'react';
 import type { ReactElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import fs from 'fs';
-import { join } from 'path';
+import { resolve } from 'path';
 import http from 'http';
 import path from 'path';
 import i18next from 'i18next';
@@ -15,8 +15,13 @@ import { Provider } from 'react-redux';
 import { StaticRouter } from 'react-router-dom';
 import { createServerStore } from '../src/store/store';
 import { App } from '../src/App';
+import { initReactI18next, I18nextProvider } from 'react-i18next';
+
+import translationsEn from '../src/utils/i18n/translations/en.json';
+import translationsRu from '../src/utils/i18n/translations/ru.json';
 
 i18next
+  .use(initReactI18next)
   .use(Backend)
   .use(middleware.LanguageDetector)
   .init({
@@ -24,9 +29,20 @@ i18next
     initImmediate: false,
     fallbackLng: 'en',
     lng: 'en',
-    backend: {
-      loadPath: join(__dirname, '../src/i18n/translations/{{lng}}.json'),
+    resources: {
+      en: {
+        translations: translationsEn,
+      },
+      ru: {
+        translations: translationsRu,
+      },
     },
+    // backend: {
+    //   loadPath: resolve(
+    //     __dirname,
+    //     '../src/utils/i18n/translations/{{lng}}.json'
+    //   ),
+    // },
     react: {
       useSuspense: false,
     },
@@ -62,9 +78,11 @@ server.get('*', (req, res, next) => {
       renderPage(
         getProductionPageTemplate(),
         <Provider store={store}>
-          <StaticRouter location={req.url}>
-            <App />
-          </StaticRouter>
+          <I18nextProvider i18n={i18next}>
+            <StaticRouter location={req.url}>
+              <App />
+            </StaticRouter>
+          </I18nextProvider>
         </Provider>
       )
     );

@@ -3,6 +3,7 @@
   "cancel": "Cancel",
   "newBuild": "New build",
   "settings": "Settings",
+  "save": "Save",
   "header": {
     "ciServer": "School CI server",
     "rebuild": "Rebuild"
