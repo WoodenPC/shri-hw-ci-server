@@ -179,14 +179,14 @@ class SettingsPage extends React.PureComponent<SettingsPageProps> {
             </FormFields>
             <FormFooter>
               <Button
-                text={t('Save')}
+                text={t('save')}
                 color='primary'
                 size='big'
                 onClick={this.saveSettings}
                 disabled={isLoading}
               />
               <Button
-                text={t('Cancel')}
+                text={t('cancel')}
                 color='secondary'
                 size='big'
                 onClick={this.cancel}

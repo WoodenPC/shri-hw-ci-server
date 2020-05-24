@@ -1,26 +1,25 @@
-import i18n, { Resource } from 'i18next';
+import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+import Backend from 'i18next-http-backend';
 
-import en from './translations/en.json';
-import ru from './translations/ru.json';
-
-const resources: Resource = {
-  en: {
-    translation: en,
-  },
-  ru: {
-    translation: ru,
-  },
-};
-
-i18n.use(initReactI18next).init({
-  resources,
-  lng: 'en',
-  fallbackLng: 'en',
-  debug: true,
-  interpolation: {
-    escapeValue: false, // react already safes from xss
-  },
-});
+i18n
+  .use(initReactI18next)
+  .use(Backend)
+  .use(LanguageDetector)
+  .init({
+    lng: 'en',
+    fallbackLng: 'en',
+    debug: true,
+    interpolation: {
+      escapeValue: false, // react already safes from xss
+    },
+    react: {
+      useSuspense: false,
+    },
+    backend: {
+      loadPath: '/translations/{{lng}}.json',
+    },
+  });
 
 export default i18n;

@@ -76,7 +76,7 @@ module.exports = {
     ],
   },
   optimization: {
-    nodeEnv: process.env.NODE_ENV || 'development',
+    nodeEnv: 'production',
   },
   resolve: {
     extensions: ['.js', '.jsx', '.tsx', '.ts'],

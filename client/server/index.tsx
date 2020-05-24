@@ -3,14 +3,34 @@ import React from 'react';
 import type { ReactElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import fs from 'fs';
+import { join } from 'path';
 import http from 'http';
 import path from 'path';
+import i18next from 'i18next';
+import middleware from 'i18next-http-middleware';
+import Backend from 'i18next-fs-backend';
 
 import { Provider } from 'react-redux';
 
 import { StaticRouter } from 'react-router-dom';
 import { createServerStore } from '../src/store/store';
 import { App } from '../src/App';
+
+i18next
+  .use(Backend)
+  .use(middleware.LanguageDetector)
+  .init({
+    preload: ['en', 'ru'],
+    initImmediate: false,
+    fallbackLng: 'en',
+    lng: 'en',
+    backend: {
+      loadPath: join(__dirname, '../src/i18n/translations/{{lng}}.json'),
+    },
+    react: {
+      useSuspense: false,
+    },
+  });
 
 let productionTemplate: string;
 const getProductionPageTemplate = () => {

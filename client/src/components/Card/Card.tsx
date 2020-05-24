@@ -17,7 +17,7 @@ type CardProps = {
   hash?: string;
   who?: string;
   start?: string;
-  duration: number;
+  duration?: number;
   onClick?: (id: string, hash: string) => void;
 };
 
@@ -87,7 +87,7 @@ const Card: React.FC<CardProps> = memo(
             </div>
             <div className={classes('BuildDuration')}>
               <Icon type='timer' />
-              <span>{prettyMs(duration)}</span>
+              <span>{prettyMs(duration as number)}</span>
             </div>
           </div>
         </div>
