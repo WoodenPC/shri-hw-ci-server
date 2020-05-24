@@ -1,0 +1,33 @@
+{
+  "runBuild": "Запустить сборку",
+  "cancel": "Отмена",
+  "newBuild": "Новая сборка",
+  "settings": "Настройки",
+  "header": {
+    "ciServer": "CI сервер ШРИ",
+    "rebuild": "Пересобрать"
+  },
+  "footer": {
+    "support": "Служба поддержки",
+    "learning": "Обучение",
+    "language": "Русская версия"
+  },
+  "runBuildModal": {
+    "description": "Введите хеш коммита, для которого нужно собрать сборку.",
+    "commitHash": "Хэш коммита"
+  },
+  "list": {
+    "showMore": "Показать больше"
+  },
+  "mainPage": {
+    "description": "Настроить соединение с репозиторием и параметры синхронизации",
+    "openSettings": "Открыть настройки"
+  },
+  "settingsPage": {
+    "githubRepo": "GitHub хранилище",
+    "buildCommand": "Команда построения",
+    "mainBranch": "Главная ветка",
+    "syncEvery": "Синхронизировать каждые",
+    "minutes": "минут"
+  }
+}
