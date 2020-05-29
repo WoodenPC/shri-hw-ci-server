@@ -11,6 +11,7 @@ import {
 import { Input } from 'components/Input';
 import { Button } from 'components/Button';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type RunBuildModalProps = {
   visible?: boolean;
@@ -35,18 +36,20 @@ const RunBuildModal: React.FC<RunBuildModalProps> = memo(
       }
     }, [hash, onRunBuild]);
 
+    const { t } = useTranslation();
+
     return (
       <Modal visible={visible}>
         <Form>
           <FormHeader
-            title='New build'
-            description='Enter the commit hash which you want to build.'
+            title={t('newBuild')}
+            description={t('runBuildModal.description')}
           />
           <FormFields>
             <FormField>
               <Input
                 id='commitHashField'
-                placeholder='Commit hash'
+                placeholder={t('runBuildModal.commitHash')}
                 value={hash}
                 onChange={onChangeHash}
               />
@@ -54,13 +57,13 @@ const RunBuildModal: React.FC<RunBuildModalProps> = memo(
           </FormFields>
           <FormFooter>
             <Button
-              text='Run build'
+              text={t('runBuild')}
               color='primary'
               size='big'
               onClick={onSubmit}
             />
             <Button
-              text='Cancel'
+              text={t('cancel')}
               color='default'
               variant='outlined'
               size='big'

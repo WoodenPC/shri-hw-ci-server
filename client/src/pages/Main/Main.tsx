@@ -6,20 +6,24 @@ import { Header } from 'components/Header';
 import { Footer } from 'components/Footer/Footer';
 import { Button } from 'components/Button/Button';
 import { Icon } from 'components/Icon/Icon';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 const classes = cn('Page');
 
-class MainPage extends React.PureComponent<RouteComponentProps> {
+type MainPageProps = RouteComponentProps & WithTranslation;
+
+class MainPage extends React.PureComponent<MainPageProps> {
   openSettings = () => {
     this.props.history.push('/settings');
   };
 
   render() {
+    const { t } = this.props;
     return (
       <div className={classes()}>
-        <Header title='School CI server'>
+        <Header title={t('header.ciServer')}>
           <Button
-            text='Settings'
+            text={t('settings')}
             color='secondary'
             icon={<Icon type='settings' />}
             onClick={this.openSettings}
@@ -29,10 +33,10 @@ class MainPage extends React.PureComponent<RouteComponentProps> {
           <div className={classes('CenterLogoContainer')}>
             <Icon type='logo' />
             <p className={classes('CenterLogoContainerText')}>
-              Configure repository connection and synchronization settings
+              {t('mainPage.description')}
             </p>
             <Button
-              text='Open settings'
+              text={t('mainPage.openSettings')}
               color='primary'
               onClick={this.openSettings}
             />
@@ -45,5 +49,6 @@ class MainPage extends React.PureComponent<RouteComponentProps> {
 }
 
 const PageWithRouter = withRouter(MainPage);
+const PageWithTranslation = withTranslation()(PageWithRouter);
 
-export { PageWithRouter as MainPage };
+export { PageWithTranslation as MainPage };

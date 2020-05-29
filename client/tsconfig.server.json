@@ -22,6 +22,11 @@
   "include": [
     "src"
   ],
+  "exclude": [
+    "src/workers/cacheWorkbox",
+    "src/workers/cacheVanilla",
+    "src/workers/push"
+  ],
   "paths": {
     "components": [
       "./src/components"

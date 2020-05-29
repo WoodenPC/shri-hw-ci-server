@@ -3,14 +3,50 @@ import React from 'react';
 import type { ReactElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import fs from 'fs';
+import { resolve } from 'path';
 import http from 'http';
 import path from 'path';
+import i18next from 'i18next';
+import middleware from 'i18next-http-middleware';
+import Backend from 'i18next-fs-backend';
 
 import { Provider } from 'react-redux';
 
 import { StaticRouter } from 'react-router-dom';
 import { createServerStore } from '../src/store/store';
 import { App } from '../src/App';
+import { initReactI18next, I18nextProvider } from 'react-i18next';
+
+import translationsEn from '../src/utils/i18n/translations/en.json';
+import translationsRu from '../src/utils/i18n/translations/ru.json';
+
+i18next
+  .use(initReactI18next)
+  .use(Backend)
+  .use(middleware.LanguageDetector)
+  .init({
+    preload: ['en', 'ru'],
+    initImmediate: false,
+    fallbackLng: 'en',
+    lng: 'en',
+    resources: {
+      en: {
+        translations: translationsEn,
+      },
+      ru: {
+        translations: translationsRu,
+      },
+    },
+    // backend: {
+    //   loadPath: resolve(
+    //     __dirname,
+    //     '../src/utils/i18n/translations/{{lng}}.json'
+    //   ),
+    // },
+    react: {
+      useSuspense: false,
+    },
+  });
 
 let productionTemplate: string;
 const getProductionPageTemplate = () => {
@@ -42,9 +78,11 @@ server.get('*', (req, res, next) => {
       renderPage(
         getProductionPageTemplate(),
         <Provider store={store}>
-          <StaticRouter location={req.url}>
-            <App />
-          </StaticRouter>
+          <I18nextProvider i18n={i18next}>
+            <StaticRouter location={req.url}>
+              <App />
+            </StaticRouter>
+          </I18nextProvider>
         </Provider>
       )
     );
