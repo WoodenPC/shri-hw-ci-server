@@ -95,7 +95,7 @@ class BuildHistoryPage extends React.PureComponent<BuildHistoryPageProps> {
         <Header title={repoName} color='black'>
           <Button
             dataTestId='openRunBuildModal'
-            text={t('Run build')}
+            text={t('runBuild')}
             icon={<Icon type='play' />}
             color='secondary'
             onClick={this.openModal}
