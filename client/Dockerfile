@@ -1,4 +1,5 @@
 FROM node:alpine as builder
+RUN apk add --no-cache python make g++
 WORKDIR '/app'
 COPY package.json .
 COPY package-lock.json .

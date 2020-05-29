@@ -45,6 +45,14 @@ class ApiService {
     return this.webClient.get('/conf');
   };
 
+  getBuildData = (buildId) => {
+    return this.webClient.get(`/build/details`, {
+      params: {
+        buildId
+      }
+    });
+  }
+
   checkBuildsAsync = async () => {
     try {
       const agentsSvc = svcContainer.getService('AgentsService');
