@@ -1,4 +1,5 @@
 FROM node:alpine as builder
+RUN apk update && apk upgrade && apk add python
 WORKDIR '/app'
 COPY package.json .
 COPY package-lock.json .
