@@ -74,7 +74,7 @@
     "ignore-styles": "^5.0.1",
     "jest": "^25.4.0",
     "jest-environment-jsdom-sixteen": "^1.0.3",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "nodemon": "^2.0.2",
     "prettier": "^2.0.2",
     "prop-types": "^15.7.2",
